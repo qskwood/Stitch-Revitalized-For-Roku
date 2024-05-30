@@ -23,8 +23,8 @@ sub updateFollowBar()
             "Accept": "*/*"
             "Client-Id": "ue6666qo983tsx6so1t0vnawi233wa"
             "Device-ID": device_code
-            "Origin": "https://switch.tv.twitch.tv"
-            "Referer": "https://switch.tv.twitch.tv/"
+            "Origin": "https://android.tv.twitch.tv"
+            "Referer": "https://android.tv.twitch.tv/"
             "Accept-Language": getDeviceLocale()
         }
         if access_token <> invalid
@@ -382,7 +382,7 @@ sub updateFollowBar()
                     "categoryFirst": 100
                     "itemsPerRow": 25
                     "limit": 8
-                    "platform": "switch_web_tv"
+                    "platform": "web_tv"
                     "requestID": di.GetRandomUUID()
                 }
             }

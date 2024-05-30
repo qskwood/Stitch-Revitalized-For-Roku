@@ -24,8 +24,8 @@ function TwitchGraphQLRequest(data)
         "Accept": "*/*"
         "Client-Id": "ue6666qo983tsx6so1t0vnawi233wa"
         "Device-ID": device_code
-        "Origin": "https://switch.tv.twitch.tv"
-        "Referer": "https://switch.tv.twitch.tv/"
+        "Origin": "https://android.tv.twitch.tv"
+        "Referer": "https://android.tv.twitch.tv/"
         "Accept-Language": getDeviceLocale()
     }
     if access_token <> invalid
@@ -62,8 +62,8 @@ function validateOauthToken() as object
         "Accept": "*/*"
         "Client-Id": "ue6666qo983tsx6so1t0vnawi233wa"
         "Device-ID": device_code
-        "Origin": "https://switch.tv.twitch.tv"
-        "Referer": "https://switch.tv.twitch.tv/"
+        "Origin": "https://android.tv.twitch.tv"
+        "Referer": "https://android.tv.twitch.tv/"
         "Accept-Language": getDeviceLocale()
     }
     if access_token <> invalid
@@ -241,7 +241,7 @@ function getHomePageQuery() as object
         variables: {
             "itemsPerRow": 20,
             "limit": 8,
-            "platform": "switch_web_tv",
+            "platform": "web_tv",
             "requestID": getRandomUUID()
         }
     })
@@ -357,7 +357,7 @@ function getStreamPlayerQuery()
         }`
         variables: {
             "login": m.top.request.params.id
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "playerType": "pulsar"
             "skipPlayToken": false
         }
@@ -392,7 +392,7 @@ function getVodPlayerWrapperQuery() as object
         }`
         variables: {
             "videoId": m.top.request.params.id
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "playerType": "pulsar"
             "skipPlayToken": false
         }
@@ -571,7 +571,7 @@ function getChannelInterstitialQuery() as object
         }`
         variables: {
             "login": m.top.request.params.id
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "playerType": "pulsar"
             "skipPlayToken": true
         }
@@ -597,27 +597,30 @@ function getChannelHomeQuery() as object
                 __typename
                 login
                 stream {
-                    id
-                    __typename
+                id
+                __typename
                 }
                 videoShelves {
-                    edges {
-                        node {
-                            id
-                            __typename
-                            title
-                            items {
-                                __typename
-                                __isVideoShelfItem: __typename
-                                ... on Clip {
-                                    ...FocusableClipCard_clip
-                                }
-                                ... on Video {
-                                    ...FocusableVodCard_video
-                                }
-                            }
+                edges {
+                    node {
+                    id
+                    __typename
+                    title
+                    items {
+                        __typename
+                        ... on Clip {
+                        id
+                        __typename
+                        ...FocusableClipCard_clip
+                        }
+                        ... on Video {
+                        id
+                        __typename
+                        ...FocusableVodCard_video
                         }
                     }
+                    }
+                }
                 }
                 ...ProfileBanner_channel
             }
@@ -625,29 +628,13 @@ function getChannelHomeQuery() as object
                 ...ProfileBanner_currentUser
                 id
                 __typename
-                login
-                roles {
-                    isStaff
-                }
             }
             ...StreamPlayer_token
             ...VodPreviewPlayerWrapper_previewToken
-        }
+            }
 
-        fragment BannerButtonsRow_channel on User {
-            ...FocusableFollowButton_channel
+            fragment BannerChannelStatus_channel on User {
             displayName
-            hosting {
-                displayName
-                id
-                __typename
-                login
-                stream {
-                    id
-                    __typename
-                    type
-                }
-            }
             id
             __typename
             login
@@ -656,80 +643,9 @@ function getChannelHomeQuery() as object
                 __typename
                 type
             }
-            videos(first: 1, sort: TIME) {
-                edges {
-                    node {
-                        id
-                        __typename
-                    }
-                }
             }
-        }
 
-        fragment BannerChannelStatus_channel on User {
-            displayName
-            hosting {
-                displayName
-                id
-                __typename
-                login
-                stream {
-                    id
-                    __typename
-                    type
-                }
-            }
-            id
-            __typename
-            login
-            stream {
-                id
-                __typename
-                type
-            }
-        }
-
-        fragment DefaultPreviewContent_channel on User {
-            ...SwitchPreviewContent_channel
-            ...StreamPreviewPlayer_channel
-            hosting {
-                id
-                __typename
-                login
-                stream {
-                    id
-                    __typename
-                    type
-                    viewersCount
-                }
-            }
-            id
-            __typename
-            login
-            stream {
-                id
-                __typename
-                type
-                viewersCount
-            }
-            videos(first: 1, sort: TIME) {
-                edges {
-                    node {
-                        id
-                        __typename
-                        previewThumbnailURL
-                        ...VodPreviewPlayer_video
-                    }
-                }
-            }
-        }
-
-        fragment DefaultPreviewContent_currentUser on User {
-            ...StreamPreviewPlayer_currentUser
-            ...VodPreviewPlayer_currentUser
-        }
-
-        fragment FocusableClipCard_clip on Clip {
+            fragment FocusableClipCard_clip on Clip {
             broadcaster {
                 login
                 id
@@ -749,25 +665,27 @@ function getChannelHomeQuery() as object
             thumbnailURL
             title
             viewCount
-        }
+            }
 
-        fragment FocusableFollowButton_channel on User {
+            fragment FocusableFollowChannelButton_channel on User {
             login
+            displayName
             id
             __typename
             self {
                 follower {
-                    followedAt
+                followedAt
                 }
             }
-        }
+            }
 
-        fragment FocusableVodCard_video on Video {
-            createdAt
+            fragment FocusableVodCard_video on Video {
+            vodCreatedAt: createdAt
             lengthSeconds
             game {
                 boxArtURL
                 displayName
+                name
                 id
                 __typename
             }
@@ -776,41 +694,96 @@ function getChannelHomeQuery() as object
             previewThumbnailURL
             self {
                 viewingHistory {
-                    position
+                position
                 }
             }
-            title
-            viewCount
-        }
+            vodTitle: title
+            vodViewCount: viewCount
+            }
 
-        fragment ProfileBanner_channel on User {
-            ...BannerButtonsRow_channel
+            fragment PreviewButton_channel on User {
+            id
+            __typename
+            login
+            stream {
+                id
+                __typename
+                type
+            }
+            videos(first: 1, sort: TIME) {
+                edges {
+                node {
+                    id
+                    __typename
+                }
+                }
+            }
+            }
+
+            fragment ProfileBanner_channel on User {
+            ...useBannerButtonsRowFragment_channel
             ...BannerChannelStatus_channel
-            ...SwitchPreviewContent_channel
-            ...DefaultPreviewContent_channel
+            ...ProfilePlayer_channel
+            ...PreviewButton_channel
             description
             displayName
             followers {
                 totalCount
             }
-            hosting {
+            stream {
                 id
                 __typename
-                login
-                profileImageURL(width: 150)
+                type
+            }
+            videos(first: 1, sort: TIME) {
+                edges {
+                node {
+                    id
+                    __typename
+                }
+                }
             }
             id
             __typename
             login
-            profileImageURL(width: 150)
+            profileImageURL(width: 70)
             profileViewCount
-        }
+            }
 
-        fragment ProfileBanner_currentUser on User {
-            ...DefaultPreviewContent_currentUser
-        }
+            fragment ProfileBanner_currentUser on User {
+            ...ProfilePlayer_currentUser
+            }
 
-        fragment StreamPlayer_channel on User {
+            fragment ProfilePlayer_channel on User {
+            ...StreamPreviewPlayer_channel
+            id
+            __typename
+            login
+            stream {
+                id
+                __typename
+                type
+                viewersCount
+            }
+            videos(first: 1, sort: TIME) {
+                edges {
+                node {
+                    id
+                    __typename
+                    previewThumbnailURL
+                    ...VodPreviewPlayer_video
+                }
+                }
+            }
+            }
+
+            fragment ProfilePlayer_currentUser on User {
+            ...StreamPreviewPlayer_currentUser
+            ...VodPreviewPlayer_currentUser
+            }
+
+            fragment StreamPlayer_channel on User {
+            ...useChannelSubscriptionPolling_subscription
             id
             __typename
             login
@@ -819,57 +792,54 @@ function getChannelHomeQuery() as object
             }
             self {
                 subscriptionBenefit {
-                    id
-                    __typename
+                id
+                __typename
                 }
             }
             stream {
+                contentClassificationLabels {
+                id
+                __typename
+                }
                 id
                 __typename
                 game {
-                    name
-                    id
-                    __typename
+                name
+                id
+                __typename
                 }
                 previewImageURL
             }
-        }
+            }
 
-        fragment StreamPlayer_currentUser on User {
+            fragment StreamPlayer_currentUser on User {
             hasTurbo
             id
             __typename
-        }
+            }
 
-        fragment StreamPlayer_token on Query {
+            fragment StreamPlayer_token on Query {
             user(login: $login) {
                 login
                 stream @skip(if: $skipPlayToken) {
-                    playbackAccessToken(params: {platform: $platform, playerType: $playerType}) {
-                        signature
-                        value
+                playbackAccessToken(params: {platform: $platform, playerType: $playerType}) {
+                    signature
+                    value
+                    expiresAt
+                    authorization {
+                    isForbidden
+                    forbiddenReasonCode
                     }
-                    id
-                    __typename
+                }
+                id
+                __typename
                 }
                 id
                 __typename
             }
-        }
+            }
 
-        fragment StreamPreviewPlayer_channel on User {
-            hosting {
-                ...StreamPlayer_channel
-                id
-                __typename
-                login
-                stream {
-                    id
-                    __typename
-                    type
-                    viewersCount
-                }
-            }
+            fragment StreamPreviewPlayer_channel on User {
             ...StreamPlayer_channel
             id
             __typename
@@ -879,50 +849,45 @@ function getChannelHomeQuery() as object
                 __typename
                 type
                 viewersCount
+                contentClassificationLabels {
+                id
+                __typename
+                localizedName
+                }
+                contentClassificationLabelPolicyProperties {
+                contentGateProperties {
+                    contentGate
+                }
+                signPostProperties {
+                    signPost
+                    contentClassificationLabels
+                }
+                }
                 restrictionType
                 self {
-                    canWatch
+                canWatch
                 }
             }
             displayName
-            broadcastSettings {
-                isMature
-                id
-                __typename
             }
-        }
 
-        fragment StreamPreviewPlayer_currentUser on User {
-            ...StreamPlayer_currentUser
-        }
-
-        fragment SwitchPreviewContent_channel on User {
+            fragment StreamPreviewPlayer_currentUser on User {
             id
             __typename
-            login
-            stream {
-                id
-                __typename
-                previewImageURL
+            ...StreamPlayer_currentUser
             }
-            videos(first: 1, sort: TIME) {
-                edges {
-                    node {
-                        id
-                        __typename
-                        previewThumbnailURL
-                    }
-                }
-            }
-        }
 
-        fragment VodPlayerBase_currentUser on User {
+            fragment VodPlayerBase_currentUser on User {
             id
             __typename
             hasTurbo
-        }
+            }
 
-        fragment VodPlayerBase_video on Video {
+            fragment VodPlayerBase_video on Video {
+            contentClassificationLabels {
+                id
+                __typename
+            }
             broadcastType
             id
             __typename
@@ -936,90 +901,109 @@ function getChannelHomeQuery() as object
                 __typename
                 login
                 roles {
-                    isPartner
+                isPartner
                 }
                 self {
-                    subscriptionBenefit {
-                        id
-                        __typename
-                    }
+                subscriptionBenefit {
+                    id
+                    __typename
+                }
                 }
             }
-            self {
-                viewingHistory {
-                    position
-                }
             }
-        }
 
-        fragment VodPlayerOverlay_video on Video {
+            fragment VodPlayerOverlay_video on Video {
             createdAt
             lengthSeconds
             viewCount
-        }
+            }
 
-        fragment VodPreviewPlayerWrapper_previewToken on Query {
-            user(login: $login) @skip(if: $skipPlayToken) {
+            fragment VodPreviewPlayerWrapper_previewToken on Query {
+            user(login: $login) {
                 videos(first: 1) {
-                    edges {
-                        node {
-                            playbackAccessToken(params: {platform: $platform, playerType: $playerType}) {
-                                signature
-                                value
-                            }
-                            id
-                            __typename
+                edges {
+                    node {
+                    id
+                    __typename
+                    playbackAccessToken(params: {platform: $platform, playerType: $playerType}) @skip(if: $skipPlayToken) {
+                        signature
+                        value
+                        expiresAt
+                        authorization {
+                        isForbidden
+                        forbiddenReasonCode
                         }
                     }
+                    }
+                }
                 }
                 id
                 __typename
             }
-        }
+            }
 
-        fragment VodPreviewPlayer_currentUser on User {
+            fragment VodPreviewPlayer_currentUser on User {
+            id
+            __typename
             ...VodPlayerBase_currentUser
-        }
+            }
 
-        fragment VodPreviewPlayer_video on Video {
+            fragment VodPreviewPlayer_video on Video {
+            contentClassificationLabels {
+                isEnabled
+                localizedName
+                id
+                __typename
+            }
+            contentClassificationLabelPolicyProperties {
+                contentGateProperties {
+                contentGate
+                }
+                signPostProperties {
+                signPost
+                contentClassificationLabels
+                }
+            }
+            creator {
+                displayName
+                id
+                __typename
+            }
             ...VodPlayerBase_video
             ...VodPlayerOverlay_video
             muteInfo {
                 mutedSegmentConnection {
-                    nodes {
-                        duration
-                    }
+                nodes {
+                    duration
+                }
                 }
             }
             owner {
                 id
                 __typename
-                login
-                broadcastSettings {
-                    isMature
-                    id
-                    __typename
-                }
-                subscriptionProducts {
-                    displayName
-                    hasSubonlyVideoArchive
-                    id
-                    __typename
-                }
-                displayName
             }
-            resourceRestriction {
-                type
+            }
+
+            fragment useBannerButtonsRowFragment_channel on User {
+            ...FocusableFollowChannelButton_channel
+            displayName
+            id
+            __typename
+            login
+            }
+
+            fragment useChannelSubscriptionPolling_subscription on User {
+            login
+            self {
+                subscriptionBenefit {
                 id
                 __typename
+                }
             }
-            self {
-                isRestricted
-            }
-        }`
+            }`
         variables: {
             "login": m.top.request.params.id
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "playerType": "quasar"
             "skipPlayToken": false
         }
@@ -1384,7 +1368,7 @@ function getFollowingPageQuery() as object
             "categoryFirst": 100
             "itemsPerRow": 25
             "limit": 8
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "requestID": getRandomUUID()
         }
     })
@@ -1401,8 +1385,8 @@ function getRendezvouzToken()
         url: "https://id.twitch.tv/oauth2/device?scopes=channel_read%20chat%3Aread%20user_blocks_edit%20user_blocks_read%20user_follows_edit%20user_read&client_id=ue6666qo983tsx6so1t0vnawi233wa"
         headers: {
             "content-type": "application/x-www-form-urlencoded"
-            "origin": "https://switch.tv.twitch.tv"
-            "referer": "https://switch.tv.twitch.tv/"
+            "origin": "https://android.tv.twitch.tv"
+            "referer": "https://android.tv.twitch.tv/"
         }
         method: "POST"
     })
@@ -1422,8 +1406,8 @@ function getOauthToken()
         url: "https://id.twitch.tv/oauth2/token" + "?client_id=ue6666qo983tsx6so1t0vnawi233wa&device_code=" + m.top.request.params.device_code + "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code"
         headers: {
             "content-type": "application/x-www-form-urlencoded"
-            "origin": "https://switch.tv.twitch.tv"
-            "referer": "https://switch.tv.twitch.tv/"
+            "origin": "https://android.tv.twitch.tv"
+            "referer": "https://android.tv.twitch.tv/"
             "accept": "application/json"
         }
         method: "POST"
@@ -1619,7 +1603,7 @@ function getSearchQuery()
         }`
         variables: {
             "userQuery": m.top.request.query.toStr()
-            "platform": "switch_web_tv"
+            "platform": "web_tv"
             "noQuery": noQuery
         }
     })
@@ -1793,8 +1777,8 @@ function TwitchHelixApiRequest()
             "Authorization": access_token
             "Client-Id": "ue6666qo983tsx6so1t0vnawi233wa"
             "Device-ID": device_code
-            "Origin": "https://switch.tv.twitch.tv"
-            "Referer": "https://switch.tv.twitch.tv/"
+            "Origin": "https://android.tv.twitch.tv"
+            "Referer": "https://android.tv.twitch.tv/"
         }
         method: m.top.request.params.method
     }

@@ -81,8 +81,8 @@ function getTwitchBadges()
                 "Authorization": access_token
                 "Client-Id": "ue6666qo983tsx6so1t0vnawi233wa"
                 "Device-ID": device_code
-                "Origin": "https://switch.tv.twitch.tv"
-                "Referer": "https://switch.tv.twitch.tv/"
+                "Origin": "https://android.tv.twitch.tv"
+                "Referer": "https://android.tv.twitch.tv/"
             }
             method: "POST"
             data: {
