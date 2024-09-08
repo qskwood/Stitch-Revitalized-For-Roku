@@ -111,16 +111,20 @@ function buildContentNodeFromShelves(inputData)
             if stream.slug <> invalid
                 rowItem.contentType = "CLIP"
                 rowItem.clipSlug = stream.slug
+                rowItem.contentTitle = stream.title
+                rowItem.viewersCount = stream.viewCount
+                rowItem.datePublished = stream.createdAt
             else
                 rowItem.contentType = "VOD"
+                rowItem.contentTitle = stream.vodTitle
+                rowItem.viewersCount = stream.vodViewCount
+                rowItem.datePublished = stream.vodCreatedAt
             end if
             if stream.previewThumbnailURL <> invalid
                 rowItem.previewImageURL = Left(stream.previewThumbnailURL, len(stream.previewThumbnailURL) - 20) + "320x180." + Right(stream.previewThumbnailURL, 3)
             else if stream.thumbnailURL <> invalid
                 rowItem.previewImageURL = stream.thumbnailURL
             end if
-            rowItem.contentTitle = stream.title
-            rowItem.viewersCount = stream.viewCount
             rowItem.streamerDisplayName = m.top.contentRequested.streamerDisplayName
             rowItem.streamerLogin = m.top.contentRequested.streamerLogin
             rowItem.streamerId = m.top.contentRequested.streamerId
