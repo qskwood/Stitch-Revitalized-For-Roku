@@ -1,7 +1,0 @@
-*.zip
-.out/
-dist/
-out/
-template.env
-.dev
-node_modules
