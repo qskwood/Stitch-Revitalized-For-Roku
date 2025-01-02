@@ -19,7 +19,7 @@ function getPlaybackAccessToken()
             "Accept": "*/*"
             ' "Accept-Encoding": "gzip, deflate, br"
             ' "Accept-Language": "en-US"
-            ' "Authorization": "OAuth uk5seeh033g141pr69vdw7f8s1y0b7"
+            ' "Authorization": "OAuth ##"
             ' "Cache-Control": "no-cache"
             "Client-Id": "kimne78kx3ncx6brgo4mv6wki5h1ko"
             ' "Content-Type": "text/plain; charset=UTF-8"
