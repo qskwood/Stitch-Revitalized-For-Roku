@@ -1,5 +1,5 @@
 {
-    "name": "@0xw1sky/stitch-for-roku",
+    "name": "@0Narehood/stitch-revitalized-for-roku",
     "scripts": {
         "build": "bsc --createPackage=false",
         "watch": "npm run build -- --watch",
