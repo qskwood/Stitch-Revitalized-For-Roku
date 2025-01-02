@@ -110,6 +110,15 @@ function lastFocusedChild(obj as object) as object
     end if
 end function
 
+
+function message_dialog(message = "" as string)
+    return show_dialog(message, ["OK"])
+end function
+
+function option_dialog(options, message = "", defaultSelection = 0) as integer
+    return show_dialog(message, options, defaultSelection)
+end function
+
 sub setFieldTextValue(field, value)
     node = m.top.findNode(field)
     if node = invalid or value = invalid then return
@@ -270,6 +279,30 @@ function toString(input, replaceInvalid = false) as string
     return str(input)
 end function
 
+sub startLoadingSpinner()
+    m.spinner = createObject("roSGNode", "Spinner")
+    m.spinner.translation = "[900, 450]"
+    m.spinner.visible = true
+    m.scene.appendChild(m.spinner)
+end sub
+
+sub startMediaLoadingSpinner()
+    dialog = createObject("roSGNode", "ProgressDialog")
+    dialog.id = "invisibiledialog"
+    dialog.visible = false
+    m.scene.dialog = dialog
+    startLoadingSpinner()
+end sub
+
+sub stopLoadingSpinner()
+    if isValid(m.spinner)
+        m.spinner.visible = false
+    end if
+    if isValid(m.scene) and isValid(m.scene.dialog)
+        m.scene.dialog.close = true
+    end if
+end sub
+
 function select(arr, start = invalid, finish = invalid, step_ = 1):
     if step_ = 0 then print "ValueError: slice step cannot be zero" : stop
     if start = invalid then if step_ > 0 then start = 0 else start = arr.count() - 1
@@ -283,71 +316,6 @@ function select(arr, start = invalid, finish = invalid, step_ = 1):
     return res
 end function
 
-function TimeStamp()
-    date = CreateObject("roDateTime")
-    return date.AsSeconds()
-end function
-
-
-function setTwitchContentFields(twitchContentNode, fields)
-    if fields.contentId <> invalid
-        twitchContentNode.contentId = fields.contentId
-    end if
-    if fields.createdAt <> invalid
-        twitchContentNode.createdAt = fields.createdAt
-    end if
-    if fields.contentType <> invalid
-        twitchContentNode.contentType = fields.contentType
-    end if
-    if fields.previewImageURL <> invalid
-        twitchContentNode.previewImageUrl = fields.previewImageURL
-    end if
-    if fields.contentTitle <> invalid
-        twitchContentNode.contentTitle = fields.contentTitle
-    end if
-    if fields.viewersCount <> invalid
-        twitchContentNode.viewersCount = fields.viewersCount
-    end if
-    if fields.followerCount <> invalid
-        twitchContentNode.followerCount = fields.followerCount
-    end if
-    if fields.streamerDisplayName <> invalid
-        twitchContentNode.streamerDisplayName = fields.streamerDisplayName
-    end if
-    if fields.streamerLogin <> invalid
-        twitchContentNode.streamerLogin = fields.streamerLogin
-    end if
-    if fields.streamerid <> invalid
-        twitchContentNode.streamerId = fields.streamerId
-    end if
-    if fields.streamerProfileImageUrl <> invalid
-        twitchContentNode.streamerProfileImageUrl = fields.streamerProfileImageUrl
-    end if
-    if fields.followerCount <> invalid
-        twitchContentNode.followerCount = fields.followerCount
-    end if
-    if fields.gameDisplayName <> invalid
-        twitchContentNode.gameDisplayName = fields.gameDisplayName
-    end if
-    if fields.gameBoxArtUrl <> invalid
-        twitchContentNode.gameBoxArtUrl = fields.gameBoxArtUrl
-    end if
-    if fields.gameId <> invalid
-        twitchContentNode.gameId = fields.gameId
-    end if
-    if fields.gameName <> invalid
-        twitchContentNode.gameName = fields.gameName
-    end if
-    if fields.url <> invalid
-        twitchContentNode.url = fields.url
-    end if
-    if fields.clipslug <> invalid
-        twitchContentNode.clipslug = fields.clipslug
-    end if
-    if fields.datePublished <> invalid
-        twitchContentNode.datePublished = fields.datePublished
-    end if
-end function
 
 ' Helper function to add and set fields of a content node
 function AddAndSetFields(node as object, aa as object)
@@ -401,74 +369,4 @@ function createGrid(list as object)
         Parent.appendChild(row)
     end for
     return Parent
-end function
-
-
-sub numberToText(number as object) as object
-    result = ""
-    if number < 1000
-        result = number.toStr()
-    else if number < 1000 * 1000
-        n = (number / 1000).toStr()
-        ' Regex: any numbers with a dot and a decimal different from 0 OR any amount of numbers (stops at the dot). In that order.
-        r = CreateObject("roRegex", "([0-9]+\.[1-9])|([0-9]+)", "")
-        result = r.Match(n)[0] + "K"
-    else
-        n = (number / 1000 * 1000).toStr()
-        r = CreateObject("roRegex", "([0-9]+\.[1-9])|([0-9]+)", "")
-        result = r.Match(n)[0] + "M"
-    end if
-    return result
-end sub
-
-
-function getRelativeTimePublished(timePublished as string) as string
-    secondsSincePublished = createObject("roDateTime")
-    secondsSincePublished.FromISO8601String(timePublished)
-    currentTime = createObject("roDateTime").AsSeconds()
-    elapsedTime = currentTime - secondsSincePublished.AsSeconds()
-
-    elapsedTime = Int(elapsedTime / 60)
-    if elapsedTime < 60
-        if elapsedTime = 1
-            return "1 minute ago"
-        else
-            return elapsedTime.ToStr() + " minutes ago"
-        end if
-    end if
-
-    elapsedTime = Int(elapsedTime / 60)
-    if elapsedTime < 24
-        if elapsedTime = 1
-            return "1 hour ago"
-        else
-            return elapsedTime.ToStr() + " hours ago"
-        end if
-    end if
-
-    elapsedTime = Int(elapsedTime / 24)
-    if elapsedTime < 30
-        if elapsedTime = 1
-            return "1 day ago"
-        else
-            return elapsedTime.ToStr() + " days ago"
-        end if
-    end if
-
-    elapsedTime = Int(elapsedTime / 30)
-    if elapsedTime < 12
-        if elapsedTime = 1
-            return "Last month"
-        else
-            return elapsedTime.ToStr() + " months ago"
-        end if
-    end if
-
-    elapsedTime = Int(elapsedTime / 12)
-    if elapsedTime = 1
-        return "1 year ago"
-    else
-        return elapsedTime.ToStr() + " years ago"
-    end if
-
 end function

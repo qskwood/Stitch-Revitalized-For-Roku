@@ -9,18 +9,6 @@ sub Main(input as dynamic)
     ' the content details, or right data from feed for id
     if input <> invalid
         print "Received Input -- write code here to check it!"
-        ' if input.instant_on_run_mode <> invalid
-        '     print "Instant On Run Mode: "; input.instant_on_run_mode
-        ' end if
-        ' if input.lastExitOrTerminationReason <> invalid
-        '     print "Last Exit or Termination Reason: "; input.lastExitOrTerminationReason
-        ' end if
-        ' if input.source <> invalid
-        '     print "Source: "; input.source
-        ' end if
-        ' if input.splashTime <> invalid
-        '     print "Splash Time: "; input.splashTime
-        ' end if
         if input.reason <> invalid
             if input.reason = "ad" then
                 print "Channel launched from ad click"
@@ -33,22 +21,29 @@ sub Main(input as dynamic)
             'launch/prep the content mapped to the contentID here
         end if
     end if
-    screen = CreateObject("roSGScreen")
+    RunUserInterface()
+end sub
+
+' Initializes the scene and shows the main homepage.
+' Handles closing of the channel.
+sub RunUserInterface()
+    ' The main function that runs when the application is launched.
+    m.screen = CreateObject("roSGScreen")
     m.port = CreateObject("roMessagePort")
     ' Set global constants
-    m.global = screen.getGlobalNode()
     setConstants()
-    screen.setMessagePort(m.port)
-    m.scene = screen.CreateScene("HeroScene")
-    ' The main function that runs when the application is launched.
-    screen.show()
-    ' vscode_rdb_on_device_component_entry
+    m.screen.setMessagePort(m.port)
+    m.scene = m.screen.CreateScene("MainScene")
+    m.screen.show()
     m.scene.observeField("exitApp", m.port)
     m.scene.setFocus(true)
-    ' m.global = m.screen.getGlobalNode()
-    while (true)
+    m.global = m.screen.getGlobalNode()
+    ' vscode_rdb_on_device_component_entry
+    while(true)
         msg = wait(0, m.port)
         msgType = type(msg)
+        ? "msgType: "; msgType
+        ? "field: "; msg.getField()
         if msgType = "roSGScreenEvent" then
             if msg.isScreenClosed() then
                 return

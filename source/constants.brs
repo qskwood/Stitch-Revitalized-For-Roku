@@ -1,63 +1,11 @@
+
 ' Set global constants
 sub setConstants()
-    deviceInfo = CreateObject("roDeviceInfo")
-    appInfo = CreateObject("roAppInfo")
-    uiResolutionWidth = deviceInfo.GetUIResolution().width
-    scaleFactor = uiResolutionWidth / 1280
-    maxResolution = invalid
-    for each res in deviceInfo.GetSupportedGraphicsResolutions()
-        if maxResolution <> invalid
-            if res.height > maxResolution
-                maxResolution = res.height
-            end if
-        else
-            maxResolution = res.height
-        end if
-    end for
+    globals = m.screen.getGlobalNode()
+
     ' Set Global Constants
-    m.global.addFields({
-        appID: "StitchForRoku"
-        appInfo: {
-            ID: appInfo.GetID()
-            IsDev: appInfo.IsDev()
-            DevID: appInfo.GetDevId()
-            Title: appInfo.GetTitle()
-            Version: {
-                Version: appInfo.GetVersion()
-                major: appInfo.GetValue("major_version")
-                minor: appInfo.GetValue("minor_version")
-                build: appInfo.GetValue("build_version")
-            }
-        }
-        supportedGraphicsResolution: maxResolution
-        emoteCache: {}
-        globalTTVEmotes: {}
-        channelTTVEmotes: {}
-        channelTTVFrankerEmotes: {}
-        global7TVEmotes: {}
-        channel7TVEmotes: {}
-        twitchBadges: {}
+    globals.addFields({
         constants: {
-            screenWidth: deviceInfo.GetUIResolution().width
-            screenHeight: deviceInfo.GetUIResolution().height
-            maskScaleFactor: scaleFactor
-            defaultIcons: {
-                search: "pkg:/images/iconSearch.png"
-                settings: "pkg:/images/iconSettings.png"
-                login: "pkg:/images/iconLogin.png"
-            },
-            menuOptions: [
-                "Home",
-                "Categories",
-                "Following",
-                "Vods",
-                "Search",
-                "Settings",
-                "LoginPage",
-                "GamePage",
-                "ChannelPage",
-                "VideoPlayer"
-            ]
             colors: {
                 muted: {
                     black: "0x020202FF"
