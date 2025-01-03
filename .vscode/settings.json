@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "translations.ts": "xml"
-    },
-    "xml.format.maxLineWidth": 0,
-    "editor.formatOnSave": true
-}
