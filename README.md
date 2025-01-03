@@ -1,5 +1,7 @@
 # Stitch Revitalized (for Roku)
 # COMING SOON
+![Stitch Beta Logo](stitch-beta-logo.jpg)
+
 
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
 
