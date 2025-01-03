@@ -33,7 +33,7 @@ function buildContentNodeFromShelves(streams)
         rowItem = createObject("RoSGNode", "TwitchContentNode")
         rowItem.contentId = stream.node.Id
         rowItem.contentType = "LIVE"
-        rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "320", "180")
+        rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "1280", "720")
         rowItem.contentTitle = stream.node.broadcaster.broadcastSettings.title
         rowItem.viewersCount = stream.node.viewersCount
         rowItem.streamerDisplayName = stream.node.broadcaster.displayName
@@ -43,7 +43,7 @@ function buildContentNodeFromShelves(streams)
         ' rowItem.gameDisplayName = stream.node.game.displayName
         ' rowItem.Title = stream.node.broadcaster.broadcastsettings.title
         ' rowItem.secondaryTitle = stream.node.broadcaster.displayName
-        ' rowItem.HDPosterUrl = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "320", "180")
+        ' rowItem.HDPosterUrl = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "1280", "720")
         ' rowItem.ShortDescriptionLine1 = stream.node.viewersCount
         ' rowItem.ShortDescriptionLine2 = stream.node.game.displayName
         row.appendChild(rowItem)

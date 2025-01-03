@@ -2,7 +2,7 @@
     "rootDir": "./",
     "host": "10.0.1.81",
     "username": "rokudev",
-    "password": "11111",
+    "password": "193611",
     "deploy": true,
     "stagingDir": "./out/.debugStaging",
     "sourceMap": false,
@@ -21,15 +21,8 @@
         "manifest",
         "env"
     ],
-    "diagnosticFilters": [
-        {
-            "src": "vendor/**/*",
-            "codes": [
-                1000,
-                1011,
-                1013,
-                1045
-            ] //ignore these specific codes from vendor libraries
-        }
-    ]
+    "diagnosticFilters": [{
+        "src": "vendor/**/*",
+        "codes": [1000, 1011, 1013, 1045] //ignore these specific codes from vendor libraries
+    }]
 }

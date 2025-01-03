@@ -34,7 +34,7 @@ function buildContentNodeFromShelves(streams)
             rowItem.gameBoxArtUrl = Left(stream.node.game.boxArtUrl, Len(stream.node.game.boxArtUrl) - 20) + "188x250.jpg"
             rowItem.gameId = stream.node.game.Id
             rowItem.gameName = stream.node.game.name
-            rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "320", "180")
+            rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "1280", "720")
             rowItem.streamerDisplayName = stream.node.broadcaster.displayName
             rowItem.streamerLogin = stream.node.broadcaster.login
             rowItem.streamerId = stream.node.broadcaster.id
