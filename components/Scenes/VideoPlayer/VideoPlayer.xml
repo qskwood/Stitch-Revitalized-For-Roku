@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="VideoPlayer" extends="SceneManagerGroup" initialFocus="videoWindow">
+    <interface>
+        <field id="contentRequested" type="Node" onChange="handleContent" />
+        <field id="contentStore" type="assocarray" />
+        <field id="metadata" type="array" />
+        <field id="content" type="node" />
+
+        <!-- state - Same as Task states. -->
+        <field id="state" type="string" alwaysNotify="true" />
+
+        <!-- control - "play" starts content playback -->
+        <field id="control" type="string" alwaysNotify="true" onChange="controlChanged" />
+        <field id="streams" type="assocarray" />
+        <field id="ChatStarted" type="bool" value="false" />
+    </interface>
+    <script type="text/brightscript" uri="VideoPlayer.brs" />
+    <script type="text/brightscript" uri="pkg:/source/utils/misc.brs" />
+    <script type="text/brightscript" uri="pkg:/source/utils/config.brs" />
+    <children>
+        <Chat
+            id="chat"
+            visible="false"
+            translation="[960,0]"
+            forceLive="false" />
+        <TwitchApiTask
+            functionName="getTwitchBookmarks"
+            control="run"
+        />
+    </children>
+
+</component>
