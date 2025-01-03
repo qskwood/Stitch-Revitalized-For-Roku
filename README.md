@@ -11,6 +11,8 @@ Stich Revitalized exists because Twitch does not presently have any official cha
 
 You can add Stitch Revitalized to your Roku account by clicking the following link: (coming soon)
 
+You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (limited to 20 installs)
+
 ## Contributing
 
 If you are comfortable using the GitHub interface, you can report bugs or request features by opening a [GitHub Issue](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues). (Please check to see if your issue has already been reported before opening a new one.)
