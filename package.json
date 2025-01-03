@@ -6,10 +6,10 @@
         "package": "bsc --create-package"
     },
     "devDependencies": {
-        "@rokucommunity/bslint": "^0.8.8",
-        "brighterscript-formatter": "^1.6.30",
+        "@rokucommunity/bslint": "^0.8.27",
+        "brighterscript-formatter": "^1.7.7",
         "ghooks": "^2.0.4",
-        "ropm": "^0.10.12"
+        "ropm": "^0.10.29"
     },
     "dependencies": {
         "@npmcli/fs": "^4.0.0",
