@@ -1,5 +1,5 @@
 function init()
-    ' Existing initializations
+    ' bump
     m.top.enableUI = "false"
     m.top.enableTrickPlay = "false"
     m.progressBar = m.top.findNode("progressBar")
@@ -12,6 +12,7 @@ function init()
     m.controlButton = m.top.findNode("controlButton")
     m.timeTravelButton = m.top.findNode("timeTravelButton")
     m.messagesButton = m.top.findNode("messagesButton")
+    ' m.qualitySelectButton = m.top.findNode("qualitySelectButton")
     m.QualityDialog = m.top.findNode("QualityDialog")
     m.glow = m.top.findNode("bg-glow")
     m.timeTravelRect = m.top.findNode("timeTravelRect")
@@ -21,49 +22,62 @@ function init()
     m.thumbnails = m.top.findNode("thumbnails")
     m.thumbnailImage = m.top.findNode("thumbnailImage")
     m.arrows = m.top.findNode("arrows")
+
     m.videoTitle = m.top.findNode("videoTitle")
     m.channelUsername = m.top.findNode("channelUsername")
     m.avatar = m.top.findNode("avatar")
+
     hour0 = m.top.findNode("hour0")
     hour1 = m.top.findNode("hour1")
     minute0 = m.top.findNode("minute0")
     minute1 = m.top.findNode("minute1")
     second0 = m.top.findNode("second0")
     second1 = m.top.findNode("second1")
+
     m.focusedTimeSlot = 0
     m.timeTravelTimeSlot = [hour0, hour1, minute0, minute1, second0, second1]
+
     cancelButton = m.top.findNode("cancelButton")
     acceptButton = m.top.findNode("acceptButton")
+
     m.focusedTimeButton = 0
     m.timeTravelButtons = [cancelButton, acceptButton]
+
     m.progressBarFocused = false
+
     m.top.observeField("position", "watcher")
     m.top.observeField("state", "onvideoStateChange")
+    ' m.top.observeField("channelAvatar", "onChannelInfoChange")
+    ' m.top.observeField("videoTitle", "onChannelInfoChange")
+    ' m.top.observeField("channelUsername", "onChannelInfoChange")
     m.top.observeField("chatIsVisible", "onChatVisibilityChange")
     m.uiResolution = createObject("roDeviceInfo").GetUIResolution()
     m.uiResolutionWidth = m.uiResolution.width
     if m.uiResolutionWidth = 1920
         m.thumbnails.clippingRect = [0, 0, 146.66, 82.66]
     end if
+
     deviceInfo = CreateObject("roDeviceInfo")
     uiResolutionWidth = deviceInfo.GetUIResolution().width
     m.sec = createObject("roRegistrySection", "VideoSettings")
+
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
     m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
     m.fadeAwayTimer.duration = "8"
     m.fadeAwayTimer.control = "stop"
+
     m.buttonHoldTimer = createObject("roSGNode", "Timer")
     m.buttonHoldTimer.observeField("fire", "onButtonHold")
     m.buttonHoldTimer.repeat = true
     m.buttonHoldTimer.duration = "0.070"
     m.buttonHoldTimer.control = "stop"
-    m.buttonHeld = 0
 
-    ' Latency component settings
-    m.components = {
-        "latency_mode_toggle": "enable"
-    }
+    m.buttonHeld = invalid
+    m.scrollInterval = 10
+    m.top.streamLayoutMode = 0
+    ? "Check the bookmark"
+
 end function
 
 
