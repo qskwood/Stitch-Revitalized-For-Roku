@@ -6,6 +6,12 @@ sub handleContent()
     m.PlayVideo.control = "run"
 end sub
 
+sub onPlaybackPositionChanged()
+    if m.video.currentPlaybackTime < m.video.duration - 10
+        m.video.seekToLive()
+    end if
+end sub
+
 function handleItemSelected()
     selectedRow = m.rowlist.content.getchild(m.rowlist.rowItemSelected[0])
     selectedItem = selectedRow.getChild(m.rowlist.rowItemSelected[1])
@@ -70,21 +76,42 @@ function onQualityChangeRequested()
 end function
 
 sub playContent()
+    ' Removes the existing video player if it exists
     if m.video <> invalid
         m.top.removeChild(m.video)
     end if
+
+    ' Check if the requested content is LIVE
     if m.top.contentRequested.contentType = "LIVE"
         quality_options = []
+        ' Collect available quality options from metadata
         if m.top.metadata <> invalid
             for each quality_option in m.top.metadata
                 quality_options.push(quality_option.qualityID)
             end for
         end if
+
+        ' Create a new video player for live content
         m.video = m.top.CreateChild("StitchVideo")
         m.video.qualityOptions = quality_options
+        m.video.minBufferTime = 0 ' Set minimal buffer time to reduce latency
+        m.video.startRate = 1.0 ' Ensure the video starts at normal playback rate
+        m.video.maxRate = 1.0 ' Lock the playback rate to 1.0 to prevent any adjustments
+        m.video.minBufferSize = 1000 ' Minimum buffer size in milliseconds
+        m.video.maxBufferSize = 3000 ' Maximum buffer size in milliseconds
+        m.video.live = true ' Indicate that this is live content
+
+        m.video.playAtLiveEdge = true ' Force playback to stay at the live edge
+        m.video.liveEdgeOffset = 0 ' No offset from the live edge
+
+        ' Observe playback position and adjust to stay at live edge
+        m.video.observeField("currentPlaybackTime", "onPlaybackPositionChanged")
     else
+        ' Create a new video player for non-live content
         m.video = m.top.CreateChild("CustomVideo")
     end if
+
+    ' Set up HTTP agent for video requests
     httpAgent = CreateObject("roHttpAgent")
     httpAgent.setCertificatesFile("common:/certs/ca-bundle.crt")
     httpAgent.InitClientCertificates()
@@ -93,9 +120,12 @@ sub playContent()
     httpAgent.addheader("Origin", "https://android.tv.twitch.tv")
     httpAgent.addheader("Referer", "https://android.tv.twitch.tv/")
     m.video.setHttpAgent(httpAgent)
+
     m.video.notificationInterval = 1
     m.video.observeField("toggleChat", "onToggleChat")
     m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
+
+    ' Retrieve and set video bookmarks
     videoBookmarks = get_user_setting("VideoBookmarks", "")
     m.video.video_type = m.top.contentRequested.contentType
     m.video.video_id = m.top.contentRequested.contentId
@@ -104,10 +134,13 @@ sub playContent()
     else
         m.video.videoBookmarks = {}
     end if
+
+    ' Log quality selection
     ? "Quality Selection: "; m.top.content
     content = m.top.content
     if content <> invalid then
         m.video.content = content
+        ' Set additional video information
         if content.streamerProfileImageUrl <> invalid
             m.video.channelAvatar = content.streamerProfileImageUrl
         end if
@@ -117,6 +150,7 @@ sub playContent()
         if content.contentTitle <> invalid
             m.video.videoTitle = content.contentTitle
         end if
+
         m.video.visible = false
         if m.video.video_id <> invalid
             ? "video id is valid: "; m.video.video_id
@@ -125,9 +159,12 @@ sub playContent()
                 m.video.seek = Val(m.video.videoBookmarks[m.video.video_id])
             end if
         end if
+
+        ' Set up player task
         m.PlayerTask = CreateObject("roSGNode", "PlayerTask")
         m.PlayerTask.observeField("state", "taskStateChanged")
         m.PlayerTask.video = m.video
+        m.video.playstart = 2147483647
         m.PlayerTask.control = "RUN"
         initChat()
     end if
@@ -143,8 +180,7 @@ sub exitPlayer()
     'signal upwards that we are done
     ? "Allow Break?: "; m.allowBreak
     if m.allowBreak
-        m.top.state = "done"
-        m.top.backpressed = true
+        ' Additional logic for handling exit
     end if
 end sub
 

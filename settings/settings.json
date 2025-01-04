@@ -4,7 +4,7 @@
         "description": "Determines default state of chat window when opening a stream",
         "settingName": "ChatOption",
         "type": "bool",
-        "default": "true"
+        "default": "false"
     },
     {
         "title": "Enable Following Bar",
@@ -91,21 +91,21 @@
         "description": "Enables or Disables 7TV Emotes",
         "settingName": "7tvEmote",
         "type": "bool",
-        "default": "true"
+        "default": "false"
     },
     {
         "title": "BetterTTV Emotes",
         "description": "Enables or Disables BetterTTV Emotes",
         "settingName": "BetterTTVEmote",
         "type": "bool",
-        "default": "true"
+        "default": "false"
     },
     {
         "title": "FrankerFaceZ Emotes",
         "description": "Enables or Disables FrankerFaceZ Emotes",
         "settingName": "FFZEmote",
         "type": "bool",
-        "default": "true"
+        "default": "false"
     },
     {
         "title": "Live Channel Sorting",
