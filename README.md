@@ -18,6 +18,17 @@ If you are comfortable using the GitHub interface, you can report bugs or reques
 
 In addition to issues, Pull Requests are welcome. All contributions must be made [under the Unlicense](./LICENSE).
 
+## Side Loading
+If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
+
+- Download this repo
+- Install Visual Studio Code
+- Install the required extensions/software (BrightScript Funtion Comment, BrightScript Language, nodejs, any anything else it requires
+- Enable Dev mode on your Roku
+- Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
+- Click on Run > Start Debugging and it will install the app on your device
+- You may need to run a 'npm install' command in the terminal of Visual Studio Code 
+
 ## Authorship and License
 
 Stitch began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-reloaded-roku), due to that application's apparent abandonment. Since then Stitch has been almost completely rewritten.
