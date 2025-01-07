@@ -91,21 +91,21 @@
         "description": "Enables or Disables 7TV Emotes",
         "settingName": "7tvEmote",
         "type": "bool",
-        "default": "false"
+        "default": "true"
     },
     {
         "title": "BetterTTV Emotes",
         "description": "Enables or Disables BetterTTV Emotes",
         "settingName": "BetterTTVEmote",
         "type": "bool",
-        "default": "false"
+        "default": "true"
     },
     {
         "title": "FrankerFaceZ Emotes",
         "description": "Enables or Disables FrankerFaceZ Emotes",
         "settingName": "FFZEmote",
         "type": "bool",
-        "default": "false"
+        "default": "true"
     },
     {
         "title": "Live Channel Sorting",
