@@ -47,8 +47,9 @@ sub Main(input as dynamic)
     m.scene.setFocus(true)
 
     ' Add the signal beacon function here
-    m.scene.signalBeacon("AppDialogInitiate")
     m.scene.signalBeacon("AppLaunchComplete")
+    m.scene.signalBeacon("AppDialogInitiate")
+    m.scene.signalBeacon("AppDialogComplete")
 
     while (true)
         msg = wait(0, m.port)
