@@ -14,7 +14,7 @@
             translation="[75,20]"
             text="Browse"
             fontSize="48"
-            fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+            fontUri="pkg:/fonts/Archivo-Bold.otf" />
         <RowList
             id="exampleRowList"
             visible="true"

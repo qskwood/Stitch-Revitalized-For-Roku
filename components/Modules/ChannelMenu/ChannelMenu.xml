@@ -30,7 +30,7 @@
         <field id="menuOptionsTranslation" type="vector2d" value="[15,0]"
             alias="MenuOptions.translation" />
         <field id="menuFontSize" type="int" value="20" />
-        <field id="menuFontUri" type="uri" value="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+        <field id="menuFontUri" type="uri" value="pkg:/fonts/Archivo-Bold.otf" />
         <field id="IsFollowing" type="bool" value="false" />
         <field id="updateUserIcon" type="bool" value="false" onChange="handleUserLogin" />
     </interface>

@@ -37,12 +37,12 @@
             </MaskGroup>
             <SimpleLabel
                 id="timeProgress"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+                fontUri="pkg:/fonts/Archivo-Regular.otf"
                 fontSize="10"
                 translation="[40,61]" />
             <SimpleLabel
                 id="timeDuration"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+                fontUri="pkg:/fonts/Archivo-Regular.otf"
                 fontSize="10"
                 translation="[1198,61]" />
             <Rectangle
@@ -105,7 +105,7 @@
                 repeatCount="-1"
                 color="0xC4C4C4FF"
                 translation="[82, -594]">
-                <Font role="font" uri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" size="18" />
+                <Font role="font" uri="pkg:/fonts/Archivo-Regular.otf" size="18" />
             </EmojiLabel>
             <SimpleLabel
                 id="channelUsername"
@@ -113,7 +113,7 @@
                 text="Streamer Username"
                 color="0xFFFFFFFF"
                 fontSize="14"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                fontUri="pkg:/fonts/Archivo-Bold.otf" />
 
             <Group id="thumbnails" clippingRect="[0,0,220,124]" translation="[0,-150]">
                 <Poster

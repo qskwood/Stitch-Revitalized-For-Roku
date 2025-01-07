@@ -45,7 +45,12 @@ sub Main(input as dynamic)
     ' vscode_rdb_on_device_component_entry
     m.scene.observeField("exitApp", m.port)
     m.scene.setFocus(true)
-    ' m.global = m.screen.getGlobalNode()
+
+    ' Add the signal beacon function here
+    m.scene.signalBeacon("AppDialogInitiate")
+    m.scene.signalBeacon("AppLaunchComplete")
+
+
     while (true)
         msg = wait(0, m.port)
         msgType = type(msg)

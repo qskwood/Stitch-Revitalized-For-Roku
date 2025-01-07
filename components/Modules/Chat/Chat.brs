@@ -154,14 +154,14 @@ function buildUsername(display_name, color)
     username.color = "0x" + color + "FF"
     username.visible = true
     username.fontSize = m.font_size
-    username.fontUri = "pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf"
+    username.fontUri = "pkg:/fonts/Archivo-Bold.otf"
     return username
 end function
 
 function buildColon()
     colon = createObject("roSGNode", "SimpleLabel")
     colon.fontSize = m.font_size
-    colon.fontUri = "pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+    colon.fontUri = "pkg:/fonts/Archivo-Regular.otf"
     colon.color = "0xFFFFFFFF"
     colon.visible = true
     colon.text = ": "
@@ -177,9 +177,9 @@ function wordOrImage(word, isUrl = false)
     else
         message_text = createObject("roSGNode", "SimpleLabel")
         message_text.fontSize = m.font_size
-        message_text.fontUri = "pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+        message_text.fontUri = "pkg:/fonts/Archivo-Regular.otf"
         message_text.visible = true
-        message_text.text = word + chr(20)
+        message_text.text = word + " "
         if isUrl
             message_text.color = m.global.constants.colors.twitch.purple9
         end if
@@ -220,7 +220,7 @@ function buildMessage(message, x_translation, emote_set, username_translation)
             for each char in word.split("")
                 charNode = createObject("roSGNode", "SimpleLabel")
                 charNode.fontSize = m.font_size
-                charNode.fontUri = "pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+                charNode.fontUri = "pkg:/fonts/Archivo-Regular.otf"
                 charNode.visible = true
                 charNode.text = char
                 if isUrl

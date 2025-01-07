@@ -36,25 +36,25 @@
                 text="Timetravel"
                 color="0xFFFFFFFF"
                 fontSize="18"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                fontUri="pkg:/fonts/Archivo-Regular.otf" />
             <SimpleLabel
                 translation="[110,59]"
                 text="Fast forward to a select time in your video."
                 color="0xC4C4C4FF"
                 fontSize="14"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                fontUri="pkg:/fonts/Archivo-Regular.otf" />
             <SimpleLabel
                 translation="[120,180]"
                 text="Move with your arrows to each number, and"
                 color="0xC4C4C4FF"
                 fontSize="12"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                fontUri="pkg:/fonts/Archivo-Regular.otf" />
             <SimpleLabel
                 translation="[120,95]"
                 text="press up/down to change the desired time."
                 color="0xC4C4C4FF"
                 fontSize="12"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                fontUri="pkg:/fonts/Archivo-Regular.otf" />
 
             <Group id="arrows">
                 <Poster
@@ -82,7 +82,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
             <Poster
                 id="hour1"
@@ -95,7 +95,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
             <Poster
                 id="minute0"
@@ -108,7 +108,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
             <Poster
                 id="minute1"
@@ -121,7 +121,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
             <Poster
                 id="second0"
@@ -134,7 +134,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
             <Poster
                 id="second1"
@@ -147,7 +147,7 @@
                     text="0"
                     color="0x3F3F3FFF"
                     fontSize="32"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                    fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Poster>
 
             <SimpleLabel
@@ -155,13 +155,13 @@
                 text=":"
                 color="0xFFFFFFFF"
                 fontSize="24"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                fontUri="pkg:/fonts/Archivo-Bold.otf" />
             <SimpleLabel
                 translation="[289,114]"
                 text=":"
                 color="0xFFFFFFFF"
                 fontSize="24"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                fontUri="pkg:/fonts/Archivo-Bold.otf" />
 
             <Rectangle
                 id="cancelButton"
@@ -175,7 +175,7 @@
                     text="CANCEL"
                     color="0x060609FF"
                     fontSize="12"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                    fontUri="pkg:/fonts/Archivo-Regular.otf" />
             </Rectangle>
             <Rectangle
                 id="acceptButton"
@@ -189,7 +189,7 @@
                     text="ACCEPT"
                     color="0x060609FF"
                     fontSize="12"
-                    fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" />
+                    fontUri="pkg:/fonts/Archivo-Regular.otf" />
             </Rectangle>
         </Poster>
         <Group id="progressBar" translation="[0,620]">
@@ -203,12 +203,12 @@
             </MaskGroup>
             <SimpleLabel
                 id="timeProgress"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+                fontUri="pkg:/fonts/Archivo-Regular.otf"
                 fontSize="10"
                 translation="[40,61]" />
             <SimpleLabel
                 id="timeDuration"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf"
+                fontUri="pkg:/fonts/Archivo-Regular.otf"
                 fontSize="10"
                 translation="[1198,61]" />
             <Rectangle
@@ -277,7 +277,7 @@
                 repeatCount="-1"
                 color="0xC4C4C4FF"
                 translation="[82, -594]">
-                <Font role="font" uri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" size="18" />
+                <Font role="font" uri="pkg:/fonts/Archivo-Regular.otf" size="18" />
             </EmojiLabel>
             <SimpleLabel
                 id="channelUsername"
@@ -285,7 +285,7 @@
                 text="Streamer Username"
                 color="0xFFFFFFFF"
                 fontSize="14"
-                fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Bold.otf" />
+                fontUri="pkg:/fonts/Archivo-Bold.otf" />
 
             <Group id="thumbnails" clippingRect="[0,0,220,124]" translation="[0,-150]">
                 <Poster
