@@ -50,7 +50,6 @@ sub Main(input as dynamic)
     m.scene.signalBeacon("AppDialogInitiate")
     m.scene.signalBeacon("AppLaunchComplete")
 
-
     while (true)
         msg = wait(0, m.port)
         msgType = type(msg)
