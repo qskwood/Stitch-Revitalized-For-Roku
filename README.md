@@ -28,7 +28,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 - Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
 - Click on Run > Start Debugging and it will install the app on your device
 - You may need to run a 'npm install' command in the terminal of Visual Studio Code
-- You can also download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.4/Stitch-Revitalized.pkg
+- You can also download the .zip here: (coming soon)
 
 ## Data Collection
 
