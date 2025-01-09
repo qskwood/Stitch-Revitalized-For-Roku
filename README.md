@@ -29,6 +29,11 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 - Click on Run > Start Debugging and it will install the app on your device
 - You may need to run a 'npm install' command in the terminal of Visual Studio Code 
 
+## Data Collection
+
+I do not collect any data from this app, but Roku and Twitch may do so. If this is a concern you should read their policies on data collection.
+
+
 ## Authorship and License
 
 Stitch began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-reloaded-roku), due to that application's apparent abandonment. Since then Stitch has been almost completely rewritten.
