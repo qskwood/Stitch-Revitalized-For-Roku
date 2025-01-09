@@ -3,7 +3,7 @@
 
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
 
-Stich Revitalized exists because Twitch does not presently have any official channel for Roku, despite [Roku being the most popular smart TV platform, with (as of early 2022), a 39% market share in North America and a 31% market share worldwide](https://seekingalpha.com/article/4547471-the-sleeping-giant-in-streaming-turning-roku-into-a-huge-2023-winner). If Stitch becomes active or Twitch makes a official app, this project will no longer be maintained.
+Stich Revitalized exists because Twitch does not presently have any official channel for Roku, despite [Roku being the most popular smart TV platform, with (as of early 2022), a 39% market share in North America and a 31% market share worldwide](https://seekingalpha.com/article/4547471-the-sleeping-giant-in-streaming-turning-roku-into-a-huge-2023-winner). If Stitch becomes active or Twitch makes an official app, this project will no longer be maintained.
 
 ## Installation
 
@@ -23,7 +23,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 - Download this repo
 - Install Visual Studio Code
-- Install the required extensions/software (BrightScript Funtion Comment, BrightScript Language, nodejs, any anything else it requires
+- Install the required extensions/software (BrightScript Function Comment, BrightScript Language, nodejs, and anything else it requires
 - Enable Dev mode on your Roku
 - Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
 - Click on Run > Start Debugging and it will install the app on your device
@@ -31,7 +31,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 ## Data Collection
 
-I do not collect any data from this app, but Roku and Twitch may do so. If this is a concern you should read their policies on data collection.
+I do not collect any data from this app, but Roku and Twitch may do so. If this is a concern you should read their policies on data collection. The data Roku collects may be in whole or in part accessible by myself, but I, nor anyone working with me or on my behalf will use this data for any purpose except for fixing bugs/errors if they are reported.
 
 
 ## Authorship and License
@@ -40,7 +40,7 @@ Stitch began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-rel
 
 Twoku was released without an explicit license, but, as a non-cleanroom rewrite, all subsequent contributions to Stitch are released [under the Unlicense](./LICENSE).
 
-If license encumberance is an issue for you, you can compare [the final upstream commit to this repository](https://github.com/0xW1sKy/Stitch-For-Roku/commit/268187c63e1eaf3922f577a2dab6ccb6a2e089f8) to see what code is unclearly licensed.
+If license encumbrance is an issue for you, you can compare [the final upstream commit to this repository](https://github.com/0xW1sKy/Stitch-For-Roku/commit/268187c63e1eaf3922f577a2dab6ccb6a2e089f8) to see what code is unclearly licensed.
 
 While removing any residual upstream code is not a priority for Stitch, Pull Requests replacing unclearly licensed code with unencumbered code are welcome.
 
