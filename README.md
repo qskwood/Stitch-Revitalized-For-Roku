@@ -35,7 +35,7 @@ I do not collect any data from this app, but Roku and Twitch may do so. If this 
 
 ## Authorship and License
 
-Stitch began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-reloaded-roku), due to that application's apparent abandonment. Since then Stitch has been almost completely rewritten.
+Stitch (and now Stitch Revitalized) began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-reloaded-roku), due to that application's apparent abandonment. Since then Stitch has been almost completely rewritten.
 
 Twoku was released without an explicit license, but, as a non-cleanroom rewrite, all subsequent contributions to Stitch are released [under the Unlicense](./LICENSE).
 
