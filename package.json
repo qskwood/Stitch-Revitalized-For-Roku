@@ -1,21 +1,24 @@
 {
-    "name": "@Narehood/Stitch-Revitalized-For-Roku",
+    "name": "@narehood/stitch-revitalized-for-roku",
     "scripts": {
         "build": "bsc --createPackage=false",
         "watch": "npm run build -- --watch",
         "package": "bsc --create-package"
     },
     "devDependencies": {
-        "@rokucommunity/bslint": "^0.8.27",
-        "brighterscript-formatter": "^1.7.7",
+        "@rokucommunity/bslint": "^0.8.28",
+        "brighterscript-formatter": "^1.7.8",
         "ghooks": "^2.0.4",
-        "ropm": "^0.10.29"
+        "ropm": "^0.10.30"
     },
     "dependencies": {
         "@npmcli/fs": "^4.0.0",
         "@rokucommunity/bslib": "^0.1.1",
-        "brighterscript": "^0.68.2",
-        "bslib": "npm:@rokucommunity/bslib@^0.1.1"
+        "brighterscript": "^0.68.3",
+        "bslib": "npm:@rokucommunity/bslib@^0.1.1",
+        "glob": "^11.0.1",
+        "lru-cache": "^11.0.2",
+        "rimraf": "^6.0.1"
     },
     "config": {
         "ghooks": {
