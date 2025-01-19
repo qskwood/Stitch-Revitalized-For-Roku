@@ -12,7 +12,7 @@ You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (li
 ## Side Loading
 If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
 
-Easy: You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.5/Stitch.Revitalized1-5.zip
+Easy: You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.5/Stitch.Revitalized-1-5.zip
 
 Manual Compiling:
 
