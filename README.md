@@ -9,24 +9,27 @@ Stich Revitalized exists because Twitch does not presently have any official cha
 
 You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (limited to 20 installs and expires May 2, 2025)
 
+## Side Loading
+If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
+
+Easy: You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.5/Stitch.Revitalized1-5.zip
+
+Manual Compiling:
+
+- Download this repo
+- Install Visual Studio Code
+- Install the required extensions/software: BrightScript Function Comment, BrightScript Language, nodejs, and anything else it requires; it should prompt you
+- Enable Dev mode on your Roku
+- Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
+- Click on Run > Start Debugging and it will install the app on your device
+- You may need to run a 'npm install' command in the terminal of Visual Studio Code
+
 ## Contributing
 
 If you are comfortable using the GitHub interface, you can report bugs or request features by opening a [GitHub Issue](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues). (Please check to see if your issue has already been reported before opening a new one.)
 
 
 In addition to issues, Pull Requests are welcome. All contributions must be made [under the Unlicense](./LICENSE).
-
-## Side Loading
-If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
-
-- Download this repo
-- Install Visual Studio Code
-- Install the required extensions/software (BrightScript Function Comment, BrightScript Language, nodejs, and anything else it requires
-- Enable Dev mode on your Roku
-- Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
-- Click on Run > Start Debugging and it will install the app on your device
-- You may need to run a 'npm install' command in the terminal of Visual Studio Code
-- You can also download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.4/Stitch.Revitalized.1-4.zip
 
 ## Data Collection
 
