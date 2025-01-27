@@ -3,11 +3,28 @@
 
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
 
-Stich Revitalized exists because Twitch does not presently have any official channel for Roku, despite [Roku being the most popular smart TV platform, with (as of early 2022), a 39% market share in North America and a 31% market share worldwide](https://seekingalpha.com/article/4547471-the-sleeping-giant-in-streaming-turning-roku-into-a-huge-2023-winner). If Stitch becomes active or Twitch makes an official app, this project will no longer be maintained.
-
 ## Installation
 
 You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (limited to 20 installs and expires May 2, 2025)
+
+## Side Loading
+If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
+
+Easy: 
+
+- You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.5/Stitch.Revitalized-1-5.zip
+- Enable/Configure Dev mode on your Roku
+- Upload the ZIP file
+
+Manual Compiling:
+
+- Download this repo
+- Install Visual Studio Code
+- Install the required extensions/software: BrightScript Function Comment, BrightScript Language, nodejs, and anything else it requires; it should prompt you
+- Enable Dev mode on your Roku
+- Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
+- Click on Run > Start Debugging and it will install the app on your device
+- You may need to run a 'npm install' command in the terminal of Visual Studio Code
 
 ## Contributing
 
@@ -16,24 +33,14 @@ If you are comfortable using the GitHub interface, you can report bugs or reques
 
 In addition to issues, Pull Requests are welcome. All contributions must be made [under the Unlicense](./LICENSE).
 
-## Side Loading
-If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
-
-- Download this repo
-- Install Visual Studio Code
-- Install the required extensions/software (BrightScript Function Comment, BrightScript Language, nodejs, and anything else it requires
-- Enable Dev mode on your Roku
-- Modify the bsconfig.json by entering your Rokus IP address and the password you set (you can also access the Roku through telnet or web browser once this is enabled
-- Click on Run > Start Debugging and it will install the app on your device
-- You may need to run a 'npm install' command in the terminal of Visual Studio Code
-- You can also download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.4/Stitch.Revitalized.1-4.zip
-
 ## Data Collection
 
 I do not collect any data from this app, but Roku and Twitch may do so. If this is a concern you should read their policies on data collection. The data Roku collects may be in whole or in part accessible by myself, but I, nor anyone working with me or on my behalf will use this data for any purpose except for fixing bugs/errors if they are reported.
 
 
 ## Authorship and License
+
+Stich Revitalized exists because Twitch does not presently have any official channel for Roku, despite [Roku being the most popular smart TV platform, with (as of early 2022), a 39% market share in North America and a 31% market share worldwide](https://seekingalpha.com/article/4547471-the-sleeping-giant-in-streaming-turning-roku-into-a-huge-2023-winner). If Stitch becomes active or Twitch makes an official app, this project will no longer be maintained.
 
 Stitch (and now Stitch Revitalized) began as a hard fork of [Twoku](https://github.com/worldreboot/twitch-reloaded-roku), due to that application's apparent abandonment. Since then Stitch has been almost completely rewritten.
 
