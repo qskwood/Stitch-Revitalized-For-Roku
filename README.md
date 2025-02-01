@@ -12,7 +12,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 Easy: 
 
-- You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.5/Stitch.Revitalized-1-5.zip
+- You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6/Stitch.Revitalized1-5-0003.zip
 - Enable/Configure Dev mode on your Roku
 - Upload the ZIP file
 
