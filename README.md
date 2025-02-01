@@ -5,6 +5,9 @@
 [![License](https://img.shields.io/badge/License-Unlicense-blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/blob/main/LICENSE)
 [![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/Narehood/Stitch-Revitalized-For-Roku)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues)
 
+![Roku](https://img.shields.io/badge/roku-6f1ab1?style=for-the-badge&logo=roku&logoColor=white)
+![Twitch](https://img.shields.io/badge/Twitch-9347FF?style=for-the-badge&logo=twitch&logoColor=white)
+
 # Stitch Revitalized (for Roku)
 
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
