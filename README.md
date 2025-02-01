@@ -1,5 +1,11 @@
+[![Narehood - Stitch-Revitalized-For-Roku](https://img.shields.io/static/v1?label=Narehood&message=Stitch-Revitalized-For-Roku&color=blue&logo=github)](https://github.com/Narehood/Stitch-Revitalized-For-Roku "Go to GitHub repo")
+[![stars - Stitch-Revitalized-For-Roku](https://img.shields.io/github/stars/Narehood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/Narehood/Stitch-Revitalized-For-Roku)
+[![forks - Stitch-Revitalized-For-Roku](https://img.shields.io/github/forks/Narehood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/Narehood/Stitch-Revitalized-For-Roku)
+[![GitHub release](https://img.shields.io/github/release/Narehood/Stitch-Revitalized-For-Roku?include_prereleases=&sort=semver&color=blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/)
+[![License](https://img.shields.io/badge/License-Unlicense-blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/blob/main/LICENSE)
+[![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/Narehood/Stitch-Revitalized-For-Roku)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues)
+
 # Stitch Revitalized (for Roku)
-![Stitch Beta Logo](stitch-beta-logo.jpg)
 
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
 
@@ -12,7 +18,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 Easy: 
 
-- You can download the .zip here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6/Stitch.Revitalized1-5-0003.zip
+- Download the ZIP here: https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6/Stitch.Revitalized1-5-0003.zip
 - Enable/Configure Dev mode on your Roku
 - Upload the ZIP file
 
