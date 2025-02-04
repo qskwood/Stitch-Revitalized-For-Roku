@@ -16,7 +16,7 @@ Stitch Revitalized is a Roku channel that aims to provide an actively maintained
 
 You can install the channel here: https://my.roku.com/account/add/StitchRevitalized
 
-You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (limited to 20 installs and expires May 2, 2025)
+You can install the beta channel at: https://my.roku.com/account/add/NR9GXRQ (expires May 2, 2025)
 
 ## Side Loading
 If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
