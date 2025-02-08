@@ -14,7 +14,7 @@ Stitch Revitalized is a Roku channel that aims to provide an actively maintained
 
 ## Installation
 
-You can install the channel here: https://my.roku.com/account/add/StitchRevitalized
+You can add the channel here: https://my.roku.com/account/add/StitchRevitalized
 
 
 ## Side Loading
@@ -24,7 +24,7 @@ Easy:
 
 - Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6/Stitch.Revitalized1-5-0003.zip)
 - Enable/Configure Dev mode on your Roku
-- Upload the ZIP file
+- Upload the ZIP file to your Roku through a web browser
 
 Manual Compiling:
 
