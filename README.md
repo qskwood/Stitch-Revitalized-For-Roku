@@ -22,7 +22,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 Easy: 
 
-- Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6/Stitch.Revitalized1-5-0003.zip)
+- Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6.4/Stitch.Revitalized.zip)
 - Enable/Configure Dev mode on your Roku
 - Upload the ZIP file to your Roku through a web browser
 
