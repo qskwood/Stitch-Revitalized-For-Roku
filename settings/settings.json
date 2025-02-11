@@ -158,7 +158,7 @@
         "description": "Determines the default behavior of video quality selection when starting a stream.",
         "settingName": "playback.video.quality",
         "type": "radio",
-        "default": "auto",
+        "default": "highest",
         "options": [
             {
                 "title": "Automatic (Adjust based on network conditions)",
