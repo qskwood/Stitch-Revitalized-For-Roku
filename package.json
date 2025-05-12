@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@rokucommunity/bslint": "^0.8.29",
-        "brighterscript-formatter": "^1.7.11",
+        "brighterscript-formatter": "^1.7.13",
         "ghooks": "^2.0.4",
         "ropm": "^0.10.32"
     },
