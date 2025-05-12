@@ -6,7 +6,7 @@
         "package": "bsc --create-package"
     },
     "devDependencies": {
-        "@rokucommunity/bslint": "^0.8.29",
+        "@rokucommunity/bslint": "^0.8.30",
         "brighterscript-formatter": "^1.7.13",
         "ghooks": "^2.0.4",
         "ropm": "^0.10.32"
