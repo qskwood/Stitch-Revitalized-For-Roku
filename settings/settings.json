@@ -1,17 +1,44 @@
 [
     {
+        "title": "Preferred Video Quality",
+        "description": "Determines the default behavior of video quality selection when starting a stream.",
+        "settingName": "playback.video.quality",
+        "type": "radio",
+        "default": "highest",
+        "options": [
+            {
+                "title": "Automatic (Adjust based on network conditions)",
+                "id": "auto"
+            },
+            {
+                "title": "Highest (Choose highest possible option)",
+                "id": "highest"
+            }
+        ]
+    },
+    {
+        "title": "Stream Latency",
+        "description": "Configures the latency mode for live streams.",
+        "settingName": "preferred.latency",
+        "type": "radio",
+        "default": "low",
+        "options": [
+            {
+                "title": "Low Latency",
+                "id": "low"
+            },
+            {
+                "title": "Normal Latency",
+                "id": "normal"
+            }
+        ]
+    },
+    {
         "title": "Chat On-By-Default",
         "description": "Determines default state of chat window when opening a stream",
         "settingName": "ChatOption",
         "type": "bool",
         "default": "false"
-    },
-    {
-        "title": "Enable Following Bar",
-        "description": "Enables or Disables streams from appearing in the following bar.",
-        "settingName": "FollowBarOption",
-        "type": "bool",
-        "default": "true"
     },
     {
         "title": "Enable Chat Job",
@@ -53,7 +80,7 @@
             }
         ]
     },
-        {
+    {
         "title": "FS Chat Font Size",
         "description": "Base font size for chat on Your Profile Page when in fullscreen. Emotes/Badges/Etc scale based on this value.",
         "settingName": "FullScreenChatFontSize",
@@ -87,16 +114,16 @@
         ]
     },
     {
-        "title": "7TV Emotes",
-        "description": "Enables or Disables 7TV Emotes",
-        "settingName": "7tvEmote",
+        "title": "BetterTTV Emotes",
+        "description": "Enables or Disables BetterTTV Emotes",
+        "settingName": "BetterTTVEmote",
         "type": "bool",
         "default": "true"
     },
     {
-        "title": "BetterTTV Emotes",
-        "description": "Enables or Disables BetterTTV Emotes",
-        "settingName": "BetterTTVEmote",
+        "title": "7TV Emotes",
+        "description": "Enables or Disables 7TV Emotes",
+        "settingName": "7tvEmote",
         "type": "bool",
         "default": "true"
     },
@@ -150,23 +177,6 @@
             {
                 "title": "Followers (Low to High)",
                 "id": "ASC_followerCount"
-            }
-        ]
-    },
-        {
-        "title": "Preferred Video Quality",
-        "description": "Determines the default behavior of video quality selection when starting a stream.",
-        "settingName": "playback.video.quality",
-        "type": "radio",
-        "default": "highest",
-        "options": [
-            {
-                "title": "Automatic (Adjust based on network conditions)",
-                "id": "auto"
-            },
-            {
-                "title": "Highest (Choose highest possible option)",
-                "id": "highest"
             }
         ]
     }
