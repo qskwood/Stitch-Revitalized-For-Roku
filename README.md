@@ -7,6 +7,7 @@
 
 ![Roku](https://img.shields.io/badge/roku-6f1ab1?style=for-the-badge&logo=roku&logoColor=white)
 ![Twitch](https://img.shields.io/badge/Twitch-9347FF?style=for-the-badge&logo=twitch&logoColor=white)
+[![CI Build](https://github.com/Narehood/Stitch-Revitalized-For-Roku/actions/workflows/ci.yml/badge.svg)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/actions)
 
 # Stitch Revitalized (for Roku)
 
@@ -22,7 +23,7 @@ If the link is not loading or you otherwise want to sideload this you can do so 
 
 Easy: 
 
-- Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6.5/Stitch.Revitalized.zip)
+- Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6.6/Stitch.Revitalized.zip)
 - Enable/Configure Dev mode on your Roku
 - Upload the ZIP file to your Roku through a web browser
 
