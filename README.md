@@ -7,7 +7,6 @@
 
 ![Roku](https://img.shields.io/badge/roku-6f1ab1?style=for-the-badge&logo=roku&logoColor=white)
 ![Twitch](https://img.shields.io/badge/Twitch-9347FF?style=for-the-badge&logo=twitch&logoColor=white)
-[![CI Build](https://github.com/Narehood/Stitch-Revitalized-For-Roku/actions/workflows/ci.yml/badge.svg)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/actions)
 
 # Stitch Revitalized (for Roku)
 
