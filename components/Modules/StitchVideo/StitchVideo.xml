@@ -26,6 +26,26 @@
     <script type="text/brightscript" uri="pkg:/source/utils/config.brs" />
     <script type="text/brightscript" uri="pkg:/source/utils/misc.brs" />
     <children>
+        <!-- Low Latency Indicator - positioned in top right -->
+        <Rectangle
+            id="lowLatencyIndicator"
+            color="0x9146FF"
+            width="90"
+            height="22"
+            translation="[1180, 10]"
+            visible="false" />
+        <Label
+            id="latencyModeLabel"
+            text="Low Latency"
+            color="0xFFFFFF"
+            translation="[1185, 12]"
+            width="80"
+            height="18"
+            horizAlign="center"
+            vertAlign="center">
+            <Font role="font" uri="pkg:/fonts/Archivo-Bold.otf" size="11" />
+        </Label>
+        
         <Group id="progressBar" translation="[0,620]">
             <MaskGroup maskuri="pkg:/images/vertical-mask-down.png" masksize="[2,200]"
                 translation="[0,-620]">

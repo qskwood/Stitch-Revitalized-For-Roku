@@ -16,29 +16,44 @@ function init()
     m.QualityDialog = m.top.findNode("QualityDialog")
     m.glow = m.top.findNode("bg-glow")
 
+    ' Low latency indicator
+    m.lowLatencyIndicator = m.top.findNode("lowLatencyIndicator")
+    m.latencyModeLabel = m.top.findNode("latencyModeLabel")
+
     m.currentProgressBarState = 0
     m.currentPositionSeconds = 0
     m.currentPositionUpdated = false
     m.thumbnails = m.top.findNode("thumbnails")
     m.thumbnailImage = m.top.findNode("thumbnailImage")
 
-
     m.videoTitle = m.top.findNode("videoTitle")
     m.channelUsername = m.top.findNode("channelUsername")
     m.avatar = m.top.findNode("avatar")
 
     m.focusedTimeSlot = 0
-
     m.focusedTimeButton = 0
-
     m.progressBarFocused = false
+
+    ' Initialize latency monitoring
+    m.latencyPreference = get_user_setting("preferred.latency", "low")
+    m.isLowLatencyMode = (m.latencyPreference = "low")
+    m.lastBufferCheck = 0
+    m.bufferHealthTimer = createObject("roSGNode", "Timer")
+    m.bufferHealthTimer.observeField("fire", "onBufferHealthCheck")
+    m.bufferHealthTimer.repeat = true
+    m.bufferHealthTimer.duration = "2"
+
+    ' Stream quality monitoring
+    m.qualityChangeCount = 0
+    m.lastQualityChange = 0
+    m.streamStartTime = createObject("roDateTime").AsSeconds()
 
     m.top.observeField("position", "watcher")
     m.top.observeField("state", "onvideoStateChange")
-    ' m.top.observeField("channelAvatar", "onChannelInfoChange")
-    ' m.top.observeField("videoTitle", "onChannelInfoChange")
-    ' m.top.observeField("channelUsername", "onChannelInfoChange")
     m.top.observeField("chatIsVisible", "onChatVisibilityChange")
+    m.top.observeField("bufferingStatus", "onBufferingStatusChange")
+    m.top.observeField("streamInfo", "onStreamInfoChange")
+
     m.uiResolution = createObject("roDeviceInfo").GetUIResolution()
     m.uiResolutionWidth = m.uiResolution.width
     if m.uiResolutionWidth = 1920
@@ -65,9 +80,80 @@ function init()
     m.scrollInterval = 10
     m.top.streamLayoutMode = 0
     m.buttonFocused = "controlButton"
+
+    ' Initialize latency indicator
+    updateLatencyIndicator()
+
     ? "Check the bookmark"
+    ? "[StitchVideo] Initialized with latency mode: "; m.latencyPreference
 end function
 
+sub updateLatencyIndicator()
+    if m.lowLatencyIndicator <> invalid and m.latencyModeLabel <> invalid
+        if m.isLowLatencyMode
+            m.lowLatencyIndicator.visible = true
+            m.latencyModeLabel.text = "Low Latency"
+            m.latencyModeLabel.color = "0x00FF00"
+        else
+            m.lowLatencyIndicator.visible = true
+            m.latencyModeLabel.text = "Normal"
+            m.latencyModeLabel.color = "0xFFFFFF"
+        end if
+    end if
+end sub
+
+sub onBufferHealthCheck()
+    ' Monitor buffer health for low latency streams
+    if m.isLowLatencyMode and m.top.state = "playing"
+        currentTime = createObject("roDateTime").AsSeconds()
+
+        ' Check if we're experiencing frequent buffering
+        if m.top.bufferingStatus <> invalid
+            bufferPercent = m.top.bufferingStatus.percentage
+            if bufferPercent < 20 and (currentTime - m.lastBufferCheck) > 5
+                ? "[StitchVideo] Low buffer detected in low latency mode: "; bufferPercent; "%"
+                m.lastBufferCheck = currentTime
+
+                ' Could implement adaptive quality reduction here if needed
+                if m.qualityChangeCount < 3
+                    ? "[StitchVideo] Consider quality adaptation for better low latency performance"
+                end if
+            end if
+        end if
+    end if
+end sub
+
+sub onBufferingStatusChange()
+    if m.top.bufferingStatus <> invalid
+        bufferInfo = m.top.bufferingStatus
+        if m.isLowLatencyMode
+            ? "[StitchVideo] Low Latency Buffer Status - Percentage: "; bufferInfo.percentage; "%, Target: "; bufferInfo.targetMs; "ms"
+
+            ' Show buffer status in low latency mode for debugging
+            if bufferInfo.percentage < 10
+                ? "[StitchVideo] WARNING: Very low buffer in low latency mode"
+            end if
+        end if
+    end if
+end sub
+
+sub onStreamInfoChange()
+    if m.top.streamInfo <> invalid
+        streamInfo = m.top.streamInfo
+        ? "[StitchVideo] Stream Info Updated - Bitrate: "; streamInfo.bitrate; ", Resolution: "; streamInfo.resolution
+
+        ' Track quality changes for low latency optimization
+        currentTime = createObject("roDateTime").AsSeconds()
+        if (currentTime - m.lastQualityChange) > 10
+            m.qualityChangeCount += 1
+            m.lastQualityChange = currentTime
+
+            if m.isLowLatencyMode and m.qualityChangeCount > 5
+                ? "[StitchVideo] Frequent quality changes detected in low latency mode"
+            end if
+        end if
+    end if
+end sub
 
 function watcher()
     m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
@@ -81,6 +167,11 @@ function watcher()
     checker = m.top.position mod 20
     if checker = 0
         saveVideoBookmark()
+    end if
+
+    ' Start buffer monitoring for live streams
+    if m.top.video_type = "LIVE" and not m.bufferHealthTimer.control = "start"
+        m.bufferHealthTimer.control = "start"
     end if
 end function
 
@@ -101,6 +192,11 @@ sub onQualityButtonSelect()
     m.progressBar.getParent().setFocus(true)
     m.top.qualityChangeRequest = m.QualityDialog.buttonSelected
     m.top.qualityChangeRequestFlag = true
+
+    ' Log quality change for low latency monitoring
+    if m.isLowLatencyMode
+        ? "[StitchVideo] Manual quality change in low latency mode to: "; m.QualityDialog.buttonSelected
+    end if
 end sub
 
 sub onQualitySelectButtonPressed()
@@ -108,6 +204,9 @@ sub onQualitySelectButtonPressed()
         m.QualityDialog.title = "Please Choose Your Video Quality"
         if m.top.content.qualityId <> invalid
             activeText = "Active: " + m.top.content.qualityId
+            if m.isLowLatencyMode
+                activeText += " (Low Latency)"
+            end if
             m.QualityDialog.message = [activeText]
         end if
         m.QualityDialog.buttons = m.top.qualityOptions
@@ -119,20 +218,64 @@ sub onQualitySelectButtonPressed()
 end sub
 
 sub onChatVisibilityChange()
-    m.progressBarBase.width = 1200
-    m.glow.translation = [692, 32]
-    m.qualitySelectButton.translation = [548, 51]
-    m.controlButton.translation = [634, 53]
-    m.messagesButton.translation = [710, 52]
-    m.timeDuration.translation = [1198, 61]
+    if m.top.chatIsVisible
+        ' Adjust layout when chat is visible
+        m.progressBarBase.width = 960
+        m.glow.translation = [552, 32]
+        m.qualitySelectButton.translation = [408, 51]
+        m.controlButton.translation = [494, 53]
+        m.messagesButton.translation = [570, 52]
+        m.timeDuration.translation = [958, 61]
+
+        ' Position latency indicator when chat is visible
+        if m.lowLatencyIndicator <> invalid
+            m.lowLatencyIndicator.translation = [850, 10]
+        end if
+    else
+        ' Full width layout when chat is hidden
+        m.progressBarBase.width = 1200
+        m.glow.translation = [692, 32]
+        m.qualitySelectButton.translation = [548, 51]
+        m.controlButton.translation = [634, 53]
+        m.messagesButton.translation = [710, 52]
+        m.timeDuration.translation = [1198, 61]
+
+        ' Position latency indicator when chat is hidden
+        if m.lowLatencyIndicator <> invalid
+            m.lowLatencyIndicator.translation = [1100, 10]
+        end if
+    end if
 end sub
 
 sub onVideoStateChange()
     if m.top.state = "playing"
         m.top.setFocus(true)
         m.controlButton.uri = "pkg:/images/pause.png"
+
+        ' Start monitoring for live streams
+        if m.top.video_type = "LIVE"
+            m.bufferHealthTimer.control = "start"
+        end if
+
+        ? "[StitchVideo] Playback started in "; m.latencyPreference; " latency mode"
+    else if m.top.state = "paused"
+        m.controlButton.uri = "pkg:/images/play.png"
+        m.bufferHealthTimer.control = "stop"
+    else if m.top.state = "buffering"
+        if m.isLowLatencyMode
+            ? "[StitchVideo] Buffering in low latency mode"
+        end if
+    else if m.top.state = "error"
+        ? "[StitchVideo] Video error in "; m.latencyPreference; " latency mode"
+        m.bufferHealthTimer.control = "stop"
+
+        ' Could implement error recovery specific to low latency here
+        if m.isLowLatencyMode
+            ? "[StitchVideo] Error recovery for low latency stream"
+        end if
     else
         m.controlButton.uri = "pkg:/images/play.png"
+        m.bufferHealthTimer.control = "stop"
     end if
 end sub
 
@@ -143,6 +286,11 @@ function hideOverlay()
     m.currentProgressBarState = 0
     m.thumbnailImage.visible = false
     m.progressBar.visible = false
+
+    ' Keep latency indicator visible but dimmed
+    if m.lowLatencyIndicator <> invalid
+        m.lowLatencyIndicator.opacity = 0.5
+    end if
 end function
 
 function showOverlay()
@@ -150,6 +298,11 @@ function showOverlay()
     m.thumbnailImage.visible = true
     m.progressBar.visible = true
     m.currentProgressBarState = 1
+
+    ' Make latency indicator fully visible
+    if m.lowLatencyIndicator <> invalid
+        m.lowLatencyIndicator.opacity = 1.0
+    end if
 end function
 
 sub onFadeAway()
@@ -337,16 +490,6 @@ function saveVideoBookmark() as void
     end if
 end function
 
-' function getTimeTravelTime()
-'     hour0 = Int(Val(m.timeTravelTimeSlot[0].getChild(0).text)) * 36000
-'     hour1 = Int(Val(m.timeTravelTimeSlot[1].getChild(0).text)) * 3600
-'     minute0 = Int(Val(m.timeTravelTimeSlot[2].getChild(0).text)) * 600
-'     minute1 = Int(Val(m.timeTravelTimeSlot[3].getChild(0).text)) * 60
-'     second0 = Int(Val(m.timeTravelTimeSlot[4].getChild(0).text)) * 10
-'     second1 = Int(Val(m.timeTravelTimeSlot[5].getChild(0).text))
-'     return hour0 + hour1 + minute0 + minute1 + second0 + second1
-' end function
-
 function resetButtonState()
     m.messagesButton.blendColor = "0xFFFFFFFF"
     m.qualitySelectButton.blendColor = "0xFFFFFFFF"
@@ -395,9 +538,8 @@ function togglePlayPause()
     end if
 end function
 
-
 function onKeyEvent(key, press) as boolean
-    ? "[StichVideo] KeyEvent: "; key press
+    ? "[StichVideo] KeyEvent: "; key; " "; press
     if press
         if key <> "back"
             if m.progressBar.visible = false
@@ -437,6 +579,12 @@ function onKeyEvent(key, press) as boolean
         else if key = "OK"
             selectButton()
         else if key = "fastforward"
+            ' Disable fast forward for live low latency streams
+            if m.top.video_type = "LIVE" and m.isLowLatencyMode
+                ? "[StitchVideo] Fast forward disabled for low latency live streams"
+                return true
+            end if
+
             focusButton(m.controlButton)
             m.currentProgressBarState = 2
             if m.currentPositionUpdated = false
@@ -470,6 +618,12 @@ function onKeyEvent(key, press) as boolean
             m.buttonHeld = "right"
             m.buttonHoldTimer.control = "start"
         else if key = "rewind"
+            ' Disable rewind for live low latency streams
+            if m.top.video_type = "LIVE" and m.isLowLatencyMode
+                ? "[StitchVideo] Rewind disabled for low latency live streams"
+                return true
+            end if
+
             m.progressBar.visible = true
             focusButton(m.controlButton)
             m.currentProgressBarState = 2
