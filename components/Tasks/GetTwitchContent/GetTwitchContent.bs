@@ -81,9 +81,8 @@ sub main()
             ' Build base URL with appropriate latency parameters
             usherUrl = "https://usher.ttvnw.net/api/channel/hls/" + rsp.data.user.login + ".m3u8"
             usherUrl += "?allow_source=true"
-            usherUrl += "&token=" + rsp.data.user.stream.playbackaccesstoken.value.EncodeUriComponent()
-            usherUrl += "&sig=" + rsp.data.user.stream.playbackaccesstoken.signature.EncodeUriComponent()
-
+            usherUrl += "&token=" + rsp.data.user.stream.playbackAccessToken.value.EncodeUriComponent()
+            usherUrl += "&sig=" + rsp.data.user.stream.playbackAccessToken.signature.EncodeUriComponent()
             ' Add parameters based on latency preference
             if lowLatencyEnabled
                 ' Request low latency streams specifically
