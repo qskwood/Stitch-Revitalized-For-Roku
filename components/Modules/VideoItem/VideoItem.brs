@@ -78,7 +78,7 @@ sub LiveSettings()
 
     ' Show low latency indicator for live streams if user has low latency enabled
     if m.lowLatencyIcon <> invalid and m.lowLatencyBg <> invalid
-        latencyPreference = get_user_setting("preferred.latency", "low")
+        latencyPreference = LCase(get_user_setting("preferred.latency", "low"))
         if latencyPreference = "low"
             m.lowLatencyIcon.visible = true
             m.lowLatencyBg.visible = true
