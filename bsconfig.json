@@ -29,7 +29,7 @@
                 1011,
                 1013,
                 1045
-            ] //ignore these specific codes from vendor libraries
+            ]
         }
     ]
 }

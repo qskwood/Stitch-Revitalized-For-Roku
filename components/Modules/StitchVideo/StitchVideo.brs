@@ -187,7 +187,7 @@ sub onBufferHealthCheck()
 
             ' Track buffer stability
             if bufferPercent = m.lastBufferPercentage
-                m.bufferStableCount++
+                m.bufferStableCount = m.bufferStableCount + 1
             else
                 m.bufferStableCount = 0
                 m.lastBufferPercentage = bufferPercent
