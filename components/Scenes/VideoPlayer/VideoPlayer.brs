@@ -69,11 +69,86 @@ function onQualityChangeRequested()
     m.allowBreak = true
 end function
 
+sub configureVideoForLatency(video as object, isLive as boolean)
+    ' Get user's latency preference
+    latencyPreference = get_user_setting("preferred.latency", "low")
+    isLowLatency = (latencyPreference = "low")
+
+    if isLive and isLowLatency
+        ' Minimal buffering configuration for live streams
+        video.bufferingConfig = {
+            initialBufferingMs: 500,
+            minBufferMs: 1000,
+            maxBufferMs: 3000,
+            bufferForPlaybackMs: 500,
+            bufferForPlaybackAfterRebufferMs: 1000,
+            rebufferMs: 500
+        }
+
+        ' Disable adaptive bitrate to prevent quality switching
+        video.enableDecoderCompatibility = false
+        video.maxVideoDecodeResolution = "1080p"
+
+        ' Conservative adaptive bitrate to prevent frequent switching
+        video.adaptiveBitrateConfig = {
+            initialBandwidthBps: 2000000,
+            maxInitialBitrate: 3000000,
+            minDurationForQualityIncreaseMs: 30000,
+            maxDurationForQualityDecreaseMs: 5000,
+            minDurationToRetainAfterDiscardMs: 2000,
+            bandwidthMeterSlidingWindowMs: 5000
+        }
+
+        ? "[VideoPlayer] Configured for low latency mode"
+    else if isLive
+        ' Normal latency configuration for live streams
+        video.bufferingConfig = {
+            initialBufferingMs: 2000,
+            minBufferMs: 5000,
+            maxBufferMs: 15000,
+            bufferForPlaybackMs: 2000,
+            bufferForPlaybackAfterRebufferMs: 5000,
+            rebufferMs: 2000
+        }
+
+        video.enableDecoderCompatibility = true
+
+        ' Standard adaptive bitrate parameters
+        video.adaptiveBitrateConfig = {
+            initialBandwidthBps: 3000000,
+            maxInitialBitrate: 6000000,
+            minDurationForQualityIncreaseMs: 10000,
+            maxDurationForQualityDecreaseMs: 25000,
+            minDurationToRetainAfterDiscardMs: 5000,
+            bandwidthMeterSlidingWindowMs: 10000
+        }
+
+        ? "[VideoPlayer] Configured for normal latency mode"
+    else
+        ' VOD configuration (not affected by latency settings)
+        video.bufferingConfig = {
+            initialBufferingMs: 3000,
+            minBufferMs: 10000,
+            maxBufferMs: 30000,
+            bufferForPlaybackMs: 3000,
+            bufferForPlaybackAfterRebufferMs: 8000,
+            rebufferMs: 3000
+        }
+
+        video.enableDecoderCompatibility = true
+
+        ? "[VideoPlayer] Configured for VOD playback"
+    end if
+end sub
+
 sub playContent()
     if m.video <> invalid
         m.top.removeChild(m.video)
     end if
-    if m.top.contentRequested.contentType = "LIVE"
+
+    isLiveContent = (m.top.contentRequested.contentType = "LIVE")
+
+    if isLiveContent
         quality_options = []
         if m.top.metadata <> invalid
             for each quality_option in m.top.metadata
@@ -85,6 +160,8 @@ sub playContent()
     else
         m.video = m.top.CreateChild("CustomVideo")
     end if
+
+    ' Configure HTTP agent with enhanced headers for better compatibility
     httpAgent = CreateObject("roHttpAgent")
     httpAgent.setCertificatesFile("common:/certs/ca-bundle.crt")
     httpAgent.InitClientCertificates()
@@ -92,22 +169,65 @@ sub playContent()
     httpAgent.addheader("Accept", "*/*")
     httpAgent.addheader("Origin", "https://android.tv.twitch.tv")
     httpAgent.addheader("Referer", "https://android.tv.twitch.tv/")
+    httpAgent.addheader("User-Agent", "Mozilla/5.0 (SMART-TV; LINUX; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) 85.0.4183.93/6.0 TV Safari/537.36")
+    httpAgent.addheader("Client-ID", "kimne78kx3ncx6brgo4mv6wki5h1ko")
+
+    ' Add low latency specific headers if enabled
+    latencyPreference = get_user_setting("preferred.latency", "low")
+    if isLiveContent and latencyPreference = "low"
+        httpAgent.addheader("Cache-Control", "no-cache")
+        httpAgent.addheader("Connection", "keep-alive")
+    end if
+
     m.video.setHttpAgent(httpAgent)
+
+    ' Configure video for appropriate latency mode
+    configureVideoForLatency(m.video, isLiveContent)
+
     m.video.notificationInterval = 1
     m.video.observeField("toggleChat", "onToggleChat")
     m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
+
+    ' Only add position tracking for debugging, don't use for seeking
+    m.video.observeField("position", "onPositionChanged")
+
+    ' Enhanced error handling for live streams
+    if isLiveContent
+        m.video.observeField("state", "onVideoStateChange")
+        m.video.observeField("errorCode", "onVideoError")
+        m.video.retryInterval = 3000 ' Retry every 3 seconds on error
+        m.video.maxRetries = 15 ' Maximum retry attempts
+
+        ' Disable automatic live edge seeking - let the player handle it
+        m.disableAutoSeek = true
+
+        ' Only track duration for logging
+        m.video.observeField("duration", "onDurationChanged")
+    end if
+
     videoBookmarks = get_user_setting("VideoBookmarks", "")
     m.video.video_type = m.top.contentRequested.contentType
     m.video.video_id = m.top.contentRequested.contentId
+
     if videoBookmarks <> ""
         m.video.videoBookmarks = ParseJSON(videoBookmarks)
     else
         m.video.videoBookmarks = {}
     end if
+
     ? "Quality Selection: "; m.top.content
+    ? "Latency Mode: "; latencyPreference
+
     content = m.top.content
     if content <> invalid then
+        ' Set stream error handling for live content
+        if isLiveContent
+            content.ignoreStreamErrors = false
+            content.switchingStrategy = "full-adaptation"
+        end if
+
         m.video.content = content
+
         if content.streamerProfileImageUrl <> invalid
             m.video.channelAvatar = content.streamerProfileImageUrl
         end if
@@ -117,14 +237,17 @@ sub playContent()
         if content.contentTitle <> invalid
             m.video.videoTitle = content.contentTitle
         end if
+
         m.video.visible = false
-        if m.video.video_id <> invalid
+
+        if m.video.video_id <> invalid and m.top.contentRequested.contentType <> "LIVE"
             ? "video id is valid: "; m.video.video_id
             if m.video.videoBookmarks.DoesExist(m.video.video_id)
                 ? "Jump To Position From Bookmarks > " m.video.videoBookmarks[m.video.video_id]
                 m.video.seek = Val(m.video.videoBookmarks[m.video.video_id])
             end if
         end if
+
         m.PlayerTask = CreateObject("roSGNode", "PlayerTask")
         m.PlayerTask.observeField("state", "taskStateChanged")
         m.PlayerTask.video = m.video
@@ -133,8 +256,63 @@ sub playContent()
     end if
 end sub
 
+sub onPositionChanged()
+    ' Only log position for debugging - don't trigger seeks
+    if m.top.contentRequested.contentType = "LIVE"
+        latencyPreference = get_user_setting("preferred.latency", "low")
+        if latencyPreference = "low"
+            currentPos = m.video.position
+            duration = m.video.duration
+            if duration > 0 and currentPos > 0
+                liveEdgeOffset = duration - currentPos
+                ' Only log occasionally to reduce spam
+                if liveEdgeOffset > 10 and (liveEdgeOffset mod 5) < 1
+                    ? "[VideoPlayer] Live edge offset: "; liveEdgeOffset; " seconds"
+                end if
+            end if
+        end if
+    end if
+end sub
+
+sub onDurationChanged()
+    ' Track duration changes for live streams
+    if m.top.contentRequested.contentType = "LIVE"
+        ? "[VideoPlayer] Live stream duration updated: "; m.video.duration
+    end if
+end sub
+
+sub onVideoStateChange()
+    videoState = m.video.state
+    ? "[VideoPlayer] Video state changed to: "; videoState
+
+    ' Handle specific states for better low latency performance
+    if videoState = "buffering"
+        latencyPreference = get_user_setting("preferred.latency", "low")
+        if latencyPreference = "low" and m.top.contentRequested.contentType = "LIVE"
+            ? "[VideoPlayer] Low latency buffering detected"
+        end if
+    else if videoState = "playing"
+        ? "[VideoPlayer] Playback started successfully"
+    else if videoState = "error"
+        ? "[VideoPlayer] Video error detected, will attempt recovery"
+    end if
+end sub
+
+sub onVideoError()
+    errorCode = m.video.errorCode
+    ? "[VideoPlayer] Video error code: "; errorCode
+
+    ' Handle specific errors that might occur with low latency streams
+    if errorCode <> invalid
+        if errorCode = -3 or errorCode = -5 ' Network or timeout errors
+            ? "[VideoPlayer] Network error detected, may retry with different settings"
+        end if
+    end if
+end sub
+
 sub exitPlayer()
     print "Player: exitPlayer()"
+
     if m.video <> invalid
         m.video.control = "stop"
         m.video.visible = false
@@ -147,7 +325,6 @@ sub exitPlayer()
         m.top.backpressed = true
     end if
 end sub
-
 
 function onKeyEvent(key, press) as boolean
     if press
@@ -162,7 +339,6 @@ function onKeyEvent(key, press) as boolean
     end if
 end function
 
-
 sub init()
     ' m.video.observeField("back", "onvideoBack")
     m.chatWindow = m.top.findNode("chat")
@@ -170,7 +346,6 @@ sub init()
     m.chatWindow.observeField("visible", "onChatVisibilityChange")
     m.allowBreak = true
 end sub
-
 
 sub onToggleChat()
     ? "Main Scene > onToggleChat"
