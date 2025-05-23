@@ -3,11 +3,11 @@
 [![forks - Stitch-Revitalized-For-Roku](https://img.shields.io/github/forks/Narehood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/Narehood/Stitch-Revitalized-For-Roku)
 [![GitHub release](https://img.shields.io/github/release/Narehood/Stitch-Revitalized-For-Roku?include_prereleases=&sort=semver&color=blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/)
 [![License](https://img.shields.io/badge/License-Unlicense-blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/blob/main/LICENSE)
-[![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/Narehood/Stitch-Revitalized-For-Roku)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Narehood/Stitch-Revitalized-For-Roku?utm_source=oss&utm_medium=github&utm_campaign=Narehood%2FStitch-Revitalized-For-Roku&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 ![Roku](https://img.shields.io/badge/roku-6f1ab1?style=for-the-badge&logo=roku&logoColor=white)
 ![Twitch](https://img.shields.io/badge/Twitch-9347FF?style=for-the-badge&logo=twitch&logoColor=white)
+[![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/Narehood/Stitch-Revitalized-For-Roku)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues)
 
 # Stitch Revitalized (for Roku)
 
