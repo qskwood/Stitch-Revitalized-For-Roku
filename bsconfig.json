@@ -1,0 +1,35 @@
+{ //This file controls the vscode BrighterScript extension including Debug Capabilities
+    "rootDir": "./",
+    "host": "0.0.0.0",
+    "username": "rokudev",
+    "password": "0000",
+    "deploy": true,
+    "stagingDir": "./out/.debugStaging",
+    "sourceMap": false,
+    "retainStagingDir": true,
+    "files": [
+        "source/**/*",
+        "components/**/*",
+        "images/**/*",
+        "fonts/**/*",
+        "vendor/**/*",
+        "lib/**/*",
+        "modules/**/*",
+        "locale/**/*",
+        "settings/**/*",
+        "source/**/*",
+        "manifest",
+        "env"
+    ],
+    "diagnosticFilters": [
+        {
+            "src": "vendor/**/*",
+            "codes": [
+                1000,
+                1011,
+                1013,
+                1045
+            ] //ignore these specific codes from vendor libraries
+        }
+    ]
+}
