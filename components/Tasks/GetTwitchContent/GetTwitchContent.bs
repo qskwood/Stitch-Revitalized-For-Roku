@@ -81,9 +81,8 @@ sub main()
             ' Build base URL with appropriate latency parameters
             usherUrl = "https://usher.ttvnw.net/api/channel/hls/" + rsp.data.user.login + ".m3u8"
             usherUrl += "?allow_source=true"
-            usherUrl += "&token=" + rsp.data.user.stream.playbackaccesstoken.value.EncodeUriComponent()
-            usherUrl += "&sig=" + rsp.data.user.stream.playbackaccesstoken.signature.EncodeUriComponent()
-
+            usherUrl += "&token=" + rsp.data.user.stream.playbackAccessToken.value.EncodeUriComponent()
+            usherUrl += "&sig=" + rsp.data.user.stream.playbackAccessToken.signature.EncodeUriComponent()
             ' Add parameters based on latency preference
             if lowLatencyEnabled
                 ' Request low latency streams specifically
@@ -150,7 +149,7 @@ sub main()
                 end for
 
                 ' Get the URL from the next line
-                if line + 1 < list.Count() and list[line + 1].InStr("#") <> 0
+                if line + 1 < list.Count() and Left(list[line + 1], 1) <> "#"
                     streamobject["URL"] = list[line + 1]
                     stream_objects.push(streamobject)
                 end if
