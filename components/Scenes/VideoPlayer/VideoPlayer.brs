@@ -75,7 +75,7 @@ sub configureVideoForLatency(video as object, isLive as boolean)
     isLowLatency = (latencyPreference = "low")
 
     if isLive and isLowLatency
-        ' Low latency configuration for live streams
+        ' Minimal buffering configuration for live streams
         video.bufferingConfig = {
             initialBufferingMs: 500,
             minBufferMs: 1000,
@@ -85,18 +85,18 @@ sub configureVideoForLatency(video as object, isLive as boolean)
             rebufferMs: 500
         }
 
-        ' Additional low latency settings
+        ' Disable adaptive bitrate to prevent quality switching
         video.enableDecoderCompatibility = false
         video.maxVideoDecodeResolution = "1080p"
 
-        ' Set adaptive bitrate parameters for low latency
+        ' Conservative adaptive bitrate to prevent frequent switching
         video.adaptiveBitrateConfig = {
-            initialBandwidthBps: 5000000,
-            maxInitialBitrate: 8000000,
-            minDurationForQualityIncreaseMs: 2000,
+            initialBandwidthBps: 2000000,
+            maxInitialBitrate: 3000000,
+            minDurationForQualityIncreaseMs: 30000,
             maxDurationForQualityDecreaseMs: 5000,
-            minDurationToRetainAfterDiscardMs: 1000,
-            bandwidthMeterSlidingWindowMs: 2000
+            minDurationToRetainAfterDiscardMs: 2000,
+            bandwidthMeterSlidingWindowMs: 5000
         }
 
         ? "[VideoPlayer] Configured for low latency mode"
@@ -188,12 +188,21 @@ sub playContent()
     m.video.observeField("toggleChat", "onToggleChat")
     m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
 
+    ' Only add position tracking for debugging, don't use for seeking
+    m.video.observeField("position", "onPositionChanged")
+
     ' Enhanced error handling for live streams
     if isLiveContent
         m.video.observeField("state", "onVideoStateChange")
         m.video.observeField("errorCode", "onVideoError")
-        m.video.retryInterval = 5000 ' Retry every 5 seconds on error
-        m.video.maxRetries = 10 ' Maximum retry attempts
+        m.video.retryInterval = 3000 ' Retry every 3 seconds on error
+        m.video.maxRetries = 15 ' Maximum retry attempts
+
+        ' Disable automatic live edge seeking - let the player handle it
+        m.disableAutoSeek = true
+
+        ' Only track duration for logging
+        m.video.observeField("duration", "onDurationChanged")
     end if
 
     videoBookmarks = get_user_setting("VideoBookmarks", "")
@@ -231,7 +240,7 @@ sub playContent()
 
         m.video.visible = false
 
-        if m.video.video_id <> invalid
+        if m.video.video_id <> invalid and m.top.contentRequested.contentType <> "LIVE"
             ? "video id is valid: "; m.video.video_id
             if m.video.videoBookmarks.DoesExist(m.video.video_id)
                 ? "Jump To Position From Bookmarks > " m.video.videoBookmarks[m.video.video_id]
@@ -247,6 +256,31 @@ sub playContent()
     end if
 end sub
 
+sub onPositionChanged()
+    ' Only log position for debugging - don't trigger seeks
+    if m.top.contentRequested.contentType = "LIVE"
+        latencyPreference = get_user_setting("preferred.latency", "low")
+        if latencyPreference = "low"
+            currentPos = m.video.position
+            duration = m.video.duration
+            if duration > 0 and currentPos > 0
+                liveEdgeOffset = duration - currentPos
+                ' Only log occasionally to reduce spam
+                if liveEdgeOffset > 10 and (liveEdgeOffset mod 5) < 1
+                    ? "[VideoPlayer] Live edge offset: "; liveEdgeOffset; " seconds"
+                end if
+            end if
+        end if
+    end if
+end sub
+
+sub onDurationChanged()
+    ' Track duration changes for live streams
+    if m.top.contentRequested.contentType = "LIVE"
+        ? "[VideoPlayer] Live stream duration updated: "; m.video.duration
+    end if
+end sub
+
 sub onVideoStateChange()
     videoState = m.video.state
     ? "[VideoPlayer] Video state changed to: "; videoState
@@ -256,8 +290,9 @@ sub onVideoStateChange()
         latencyPreference = get_user_setting("preferred.latency", "low")
         if latencyPreference = "low" and m.top.contentRequested.contentType = "LIVE"
             ? "[VideoPlayer] Low latency buffering detected"
-            ' Could implement additional low latency optimizations here
         end if
+    else if videoState = "playing"
+        ? "[VideoPlayer] Playback started successfully"
     else if videoState = "error"
         ? "[VideoPlayer] Video error detected, will attempt recovery"
     end if
@@ -277,6 +312,7 @@ end sub
 
 sub exitPlayer()
     print "Player: exitPlayer()"
+
     if m.video <> invalid
         m.video.control = "stop"
         m.video.visible = false

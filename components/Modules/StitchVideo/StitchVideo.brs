@@ -48,11 +48,24 @@ function init()
     m.lastQualityChange = 0
     m.streamStartTime = createObject("roDateTime").AsSeconds()
 
+    ' Live edge tracking for progress bar accuracy
+    m.liveEdgeOffset = 0
+    m.lastLiveEdgeUpdate = 0
+    m.progressUpdateTimer = createObject("roSGNode", "Timer")
+    m.progressUpdateTimer.observeField("fire", "onProgressUpdate")
+    m.progressUpdateTimer.repeat = true
+    m.progressUpdateTimer.duration = "0.5" ' Update twice per second for smooth progress
+
+    ' Buffer status tracking
+    m.lastBufferPercentage = 0
+    m.bufferStableCount = 0
+
     m.top.observeField("position", "watcher")
     m.top.observeField("state", "onvideoStateChange")
     m.top.observeField("chatIsVisible", "onChatVisibilityChange")
     m.top.observeField("bufferingStatus", "onBufferingStatusChange")
     m.top.observeField("streamInfo", "onStreamInfoChange")
+    m.top.observeField("duration", "onDurationChange")
 
     m.uiResolution = createObject("roDeviceInfo").GetUIResolution()
     m.uiResolutionWidth = m.uiResolution.width
@@ -102,6 +115,67 @@ sub updateLatencyIndicator()
     end if
 end sub
 
+sub onDurationChange()
+    ' Track live edge changes for better progress bar accuracy
+    if m.top.video_type = "LIVE" and m.isLowLatencyMode
+        currentTime = createObject("roDateTime").AsSeconds()
+        if (currentTime - m.lastLiveEdgeUpdate) > 1
+            m.lastLiveEdgeUpdate = currentTime
+            if m.top.duration > 0 and m.top.position > 0
+                m.liveEdgeOffset = m.top.duration - m.top.position
+                ? "[StitchVideo] Live edge offset updated: "; m.liveEdgeOffset; " seconds"
+            end if
+        end if
+    end if
+end sub
+
+sub onProgressUpdate()
+    ' Update progress bar more frequently for live streams
+    if m.top.video_type = "LIVE" and m.top.state = "playing"
+        updateProgressBarDisplay()
+    end if
+end sub
+
+sub updateProgressBarDisplay()
+    ' Enhanced progress bar update for live streams
+    if m.top.duration > 0
+        currentPos = m.top.position
+        duration = m.top.duration
+
+        ' For live streams, adjust display to show relative position
+        if m.top.video_type = "LIVE" and m.isLowLatencyMode
+            ' Show progress relative to live edge
+            if m.liveEdgeOffset > 0
+                adjustedDuration = duration
+                adjustedPosition = currentPos
+
+                ' Update progress bar to reflect live position
+                progressRatio = adjustedPosition / adjustedDuration
+                m.progressBarProgress.width = m.progressBarBase.width * progressRatio
+                m.progressDot.translation = [m.progressBarBase.width * progressRatio + 33, 77]
+
+                ' Update time displays
+                m.timeProgress.text = convertToReadableTimeFormat(adjustedPosition)
+                m.timeDuration.text = "LIVE"
+            else
+                ' Standard progress bar update
+                progressRatio = currentPos / duration
+                m.progressBarProgress.width = m.progressBarBase.width * progressRatio
+                m.progressDot.translation = [m.progressBarBase.width * progressRatio + 33, 77]
+                m.timeProgress.text = convertToReadableTimeFormat(currentPos)
+                m.timeDuration.text = convertToReadableTimeFormat(duration)
+            end if
+        else
+            ' Standard progress bar for VOD or normal latency
+            progressRatio = currentPos / duration
+            m.progressBarProgress.width = m.progressBarBase.width * progressRatio
+            m.progressDot.translation = [m.progressBarBase.width * progressRatio + 33, 77]
+            m.timeProgress.text = convertToReadableTimeFormat(currentPos)
+            m.timeDuration.text = convertToReadableTimeFormat(duration)
+        end if
+    end if
+end sub
+
 sub onBufferHealthCheck()
     ' Monitor buffer health for low latency streams
     if m.isLowLatencyMode and m.top.state = "playing"
@@ -110,12 +184,21 @@ sub onBufferHealthCheck()
         ' Check if we're experiencing frequent buffering
         if m.top.bufferingStatus <> invalid
             bufferPercent = m.top.bufferingStatus.percentage
+
+            ' Track buffer stability
+            if bufferPercent = m.lastBufferPercentage
+                m.bufferStableCount++
+            else
+                m.bufferStableCount = 0
+                m.lastBufferPercentage = bufferPercent
+            end if
+
             if bufferPercent < 20 and (currentTime - m.lastBufferCheck) > 5
                 ? "[StitchVideo] Low buffer detected in low latency mode: "; bufferPercent; "%"
                 m.lastBufferCheck = currentTime
 
-                ' Could implement adaptive quality reduction here if needed
-                if m.qualityChangeCount < 3
+                ' Adaptive response to low buffer
+                if m.qualityChangeCount < 3 and m.bufferStableCount < 5
                     ? "[StitchVideo] Consider quality adaptation for better low latency performance"
                 end if
             end if
@@ -127,7 +210,11 @@ sub onBufferingStatusChange()
     if m.top.bufferingStatus <> invalid
         bufferInfo = m.top.bufferingStatus
         if m.isLowLatencyMode
-            ? "[StitchVideo] Low Latency Buffer Status - Percentage: "; bufferInfo.percentage; "%, Target: "; bufferInfo.targetMs; "ms"
+            targetText = "invalid"
+            if bufferInfo.targetMs <> invalid
+                targetText = bufferInfo.targetMs.toStr()
+            end if
+            ? "[StitchVideo] Low Latency Buffer Status - Percentage: "; bufferInfo.percentage; "%, Target: "; targetText; "ms"
 
             ' Show buffer status in low latency mode for debugging
             if bufferInfo.percentage < 10
@@ -140,7 +227,17 @@ end sub
 sub onStreamInfoChange()
     if m.top.streamInfo <> invalid
         streamInfo = m.top.streamInfo
-        ? "[StitchVideo] Stream Info Updated - Bitrate: "; streamInfo.bitrate; ", Resolution: "; streamInfo.resolution
+        bitrateText = "invalid"
+        resolutionText = "invalid"
+
+        if streamInfo.bitrate <> invalid
+            bitrateText = streamInfo.bitrate.toStr()
+        end if
+        if streamInfo.resolution <> invalid
+            resolutionText = streamInfo.resolution.toStr()
+        end if
+
+        ? "[StitchVideo] Stream Info Updated - Bitrate: "; bitrateText; ", Resolution: "; resolutionText
 
         ' Track quality changes for low latency optimization
         currentTime = createObject("roDateTime").AsSeconds()
@@ -156,12 +253,19 @@ sub onStreamInfoChange()
 end sub
 
 function watcher()
-    m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
-    m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
     m.currentPositionSeconds = m.top.position
-    if m.top.duration <> 0
-        m.progressBarProgress.width = m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration)
-        m.progressDot.translation = [m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration) + 33, 77]
+
+    ' Use enhanced progress bar update for live streams
+    if m.top.video_type = "LIVE"
+        updateProgressBarDisplay()
+    else
+        ' Standard update for VOD
+        m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
+        m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+        if m.top.duration <> 0
+            m.progressBarProgress.width = m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration)
+            m.progressDot.translation = [m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration) + 33, 77]
+        end if
     end if
 
     checker = m.top.position mod 20
@@ -170,8 +274,13 @@ function watcher()
     end if
 
     ' Start buffer monitoring for live streams
-    if m.top.video_type = "LIVE" and not m.bufferHealthTimer.control = "start"
+    if m.top.video_type = "LIVE" and m.bufferHealthTimer.control <> "start"
         m.bufferHealthTimer.control = "start"
+    end if
+
+    ' Start progress update timer for live streams
+    if m.top.video_type = "LIVE" and m.progressUpdateTimer.control <> "start"
+        m.progressUpdateTimer.control = "start"
     end if
 end function
 
@@ -255,12 +364,14 @@ sub onVideoStateChange()
         ' Start monitoring for live streams
         if m.top.video_type = "LIVE"
             m.bufferHealthTimer.control = "start"
+            m.progressUpdateTimer.control = "start"
         end if
 
         ? "[StitchVideo] Playback started in "; m.latencyPreference; " latency mode"
     else if m.top.state = "paused"
         m.controlButton.uri = "pkg:/images/play.png"
         m.bufferHealthTimer.control = "stop"
+        m.progressUpdateTimer.control = "stop"
     else if m.top.state = "buffering"
         if m.isLowLatencyMode
             ? "[StitchVideo] Buffering in low latency mode"
@@ -268,6 +379,7 @@ sub onVideoStateChange()
     else if m.top.state = "error"
         ? "[StitchVideo] Video error in "; m.latencyPreference; " latency mode"
         m.bufferHealthTimer.control = "stop"
+        m.progressUpdateTimer.control = "stop"
 
         ' Could implement error recovery specific to low latency here
         if m.isLowLatencyMode
@@ -276,6 +388,7 @@ sub onVideoStateChange()
     else
         m.controlButton.uri = "pkg:/images/play.png"
         m.bufferHealthTimer.control = "stop"
+        m.progressUpdateTimer.control = "stop"
     end if
 end sub
 
@@ -359,7 +472,14 @@ sub onButtonHold()
         end if
     end if
     m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
-    m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+
+    ' Show "LIVE" for live streams instead of duration
+    if m.top.video_type = "LIVE"
+        m.timeDuration.text = "LIVE"
+    else
+        m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+    end if
+
     m.scrollInterval += 10
 end sub
 
@@ -392,12 +512,7 @@ function convertToReadableTimeFormat(time) as string
 end function
 
 sub onVideoPositionChange()
-    if m.top.duration > 0
-        m.progressBarProgress.width = m.progressBarBase.width * (m.top.position / m.top.duration)
-        m.progressDot.translation = [m.progressBarBase.width * (m.top.position / m.top.duration) + 33, 77]
-        m.timeProgress.text = convertToReadableTimeFormat(m.top.position)
-        m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
-    end if
+    updateProgressBarDisplay()
 end sub
 
 sub showThumbnail()
@@ -539,7 +654,7 @@ function togglePlayPause()
 end function
 
 function onKeyEvent(key, press) as boolean
-    ? "[StichVideo] KeyEvent: "; key; " "; press
+    ? "[StitchVideo] KeyEvent: "; key; " "; press
     if press
         if key <> "back"
             if m.progressBar.visible = false
@@ -610,7 +725,11 @@ function onKeyEvent(key, press) as boolean
                 end if
 
                 m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
-                m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+                if m.top.video_type = "LIVE"
+                    m.timeDuration.text = "LIVE"
+                else
+                    m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+                end if
                 if m.top.thumbnailInfo.width <> invalid
                     showThumbnail()
                 end if
@@ -650,7 +769,11 @@ function onKeyEvent(key, press) as boolean
                 m.progressBarProgress.width = m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration)
                 m.progressDot.translation = [m.progressBarBase.width * (m.currentPositionSeconds / m.top.duration) + 33, 77]
                 m.timeProgress.text = convertToReadableTimeFormat(m.currentPositionSeconds)
-                m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+                if m.top.video_type = "LIVE"
+                    m.timeDuration.text = "LIVE"
+                else
+                    m.timeDuration.text = convertToReadableTimeFormat(m.top.duration)
+                end if
                 if m.top.thumbnailInfo.width <> invalid
                     showThumbnail()
                 end if
