@@ -149,7 +149,7 @@ sub main()
                 end for
 
                 ' Get the URL from the next line
-                if line + 1 < list.Count() and list[line + 1].InStr("#") <> 0
+                if line + 1 < list.Count() and Left(list[line + 1], 1) <> "#"
                     streamobject["URL"] = list[line + 1]
                     stream_objects.push(streamobject)
                 end if
