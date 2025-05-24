@@ -83,6 +83,13 @@ function init()
     m.fadeAwayTimer.duration = "8"
     m.fadeAwayTimer.control = "stop"
 
+    ' Latency indicator fade timer
+    m.latencyIndicatorTimer = createObject("roSGNode", "Timer")
+    m.latencyIndicatorTimer.observeField("fire", "onLatencyIndicatorFade")
+    m.latencyIndicatorTimer.repeat = false
+    m.latencyIndicatorTimer.duration = "3" ' Hide after 3 seconds
+    m.latencyIndicatorTimer.control = "stop"
+
     m.buttonHoldTimer = createObject("roSGNode", "Timer")
     m.buttonHoldTimer.observeField("fire", "onButtonHold")
     m.buttonHoldTimer.repeat = true
@@ -103,15 +110,31 @@ end function
 
 sub updateLatencyIndicator()
     if m.lowLatencyIndicator <> invalid and m.latencyModeLabel <> invalid
+        ' Show both background and text
+        m.lowLatencyIndicator.visible = true
+        m.latencyModeLabel.visible = true
+
         if m.isLowLatencyMode
-            m.lowLatencyIndicator.visible = true
             m.latencyModeLabel.text = "Low Latency"
             m.latencyModeLabel.color = "0xFFFFFF"
         else
-            m.lowLatencyIndicator.visible = true
             m.latencyModeLabel.text = "Normal"
             m.latencyModeLabel.color = "0xFFFFFF"
         end if
+
+        ' Start the timer to hide the indicator after 3 seconds
+        m.latencyIndicatorTimer.control = "stop"
+        m.latencyIndicatorTimer.control = "start"
+    end if
+end sub
+
+sub onLatencyIndicatorFade()
+    ' Hide both the latency indicator background and text after the timer fires
+    if m.lowLatencyIndicator <> invalid
+        m.lowLatencyIndicator.visible = false
+    end if
+    if m.latencyModeLabel <> invalid
+        m.latencyModeLabel.visible = false
     end if
 end sub
 
@@ -306,6 +329,9 @@ sub onQualityButtonSelect()
     if m.isLowLatencyMode
         ? "[StitchVideo] Manual quality change in low latency mode to: "; m.QualityDialog.buttonSelected
     end if
+
+    ' Show latency indicator briefly when quality changes
+    updateLatencyIndicator()
 end sub
 
 sub onQualitySelectButtonPressed()
@@ -399,11 +425,6 @@ function hideOverlay()
     m.currentProgressBarState = 0
     m.thumbnailImage.visible = false
     m.progressBar.visible = false
-
-    ' Keep latency indicator visible but dimmed
-    if m.lowLatencyIndicator <> invalid
-        m.lowLatencyIndicator.opacity = 0.5
-    end if
 end function
 
 function showOverlay()
@@ -412,9 +433,12 @@ function showOverlay()
     m.progressBar.visible = true
     m.currentProgressBarState = 1
 
-    ' Make latency indicator fully visible
-    if m.lowLatencyIndicator <> invalid
-        m.lowLatencyIndicator.opacity = 1.0
+    ' Show both latency indicator elements briefly when overlay is shown
+    if m.lowLatencyIndicator <> invalid and m.latencyModeLabel <> invalid
+        m.lowLatencyIndicator.visible = true
+        m.latencyModeLabel.visible = true
+        m.latencyIndicatorTimer.control = "stop"
+        m.latencyIndicatorTimer.control = "start"
     end if
 end function
 
