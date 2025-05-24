@@ -106,7 +106,7 @@ sub updateLatencyIndicator()
         if m.isLowLatencyMode
             m.lowLatencyIndicator.visible = true
             m.latencyModeLabel.text = "Low Latency"
-            m.latencyModeLabel.color = "0x00FF00"
+            m.latencyModeLabel.color = "0xFFFFFF"
         else
             m.lowLatencyIndicator.visible = true
             m.latencyModeLabel.text = "Normal"

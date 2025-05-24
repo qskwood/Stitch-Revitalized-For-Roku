@@ -36,7 +36,7 @@
             visible="false" />
         <Label
             id="latencyModeLabel"
-            text="Low Latency"
+            text="Low Latency Mode"
             color="0xFFFFFF"
             translation="[1185, 12]"
             width="80"
