@@ -2,7 +2,7 @@ sub init()
     m.top.observeField("focusedChild", "onGetfocus")
     ? "init"; TimeStamp()
     ' m.top.observeField("itemFocused", "onGetFocus")
-    m.rowlist = m.top.findNode("exampleRowList")
+    m.rowlist = m.top.findNode("homeRowList")
     ' m.allChannels = m.top.findNode("allChannels")
     ' m.allChannels.observeField("itemSelected", "handleItemSelected")
     m.rowlist.ObserveField("itemSelected", "handleItemSelected")
@@ -297,7 +297,7 @@ end sub
 sub onGetFocus()
     if m.rowlist.focusedChild = invalid
         m.rowlist.setFocus(true)
-    else if m.rowlist.focusedchild.id = "exampleRowList"
+    else if m.rowlist.focusedchild.id = "homeRowList"
         m.rowlist.focusedChild.setFocus(true)
     end if
 end sub

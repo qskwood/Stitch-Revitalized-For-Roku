@@ -1,8 +1,8 @@
 { //This file controls the vscode BrighterScript extension including Debug Capabilities
     "rootDir": "./",
-    "host": "0.0.0.0",
+    "host": "10.0.1.81",
     "username": "rokudev",
-    "password": "0000",
+    "password": "193611",
     "deploy": true,
     "stagingDir": "./out/.debugStaging",
     "sourceMap": false,

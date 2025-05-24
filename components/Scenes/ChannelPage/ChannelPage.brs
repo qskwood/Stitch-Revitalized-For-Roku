@@ -2,7 +2,7 @@ sub init()
     m.top.backgroundColor = m.global.constants.colors.hinted.grey1
     m.top.observeField("focusedChild", "onGetfocus")
     ' m.top.observeField("itemFocused", "onGetFocus")
-    m.rowlist = m.top.findNode("exampleRowList")
+    m.rowlist = m.top.findNode("homeRowList")
     m.rowlist.ObserveField("itemSelected", "handleItemSelected")
     m.username = m.top.findNode("username")
     m.followers = m.top.findNode("followers")
@@ -187,7 +187,7 @@ end function
 sub FocusRowlist()
     if m.rowlist.focusedChild = invalid
         m.rowlist.setFocus(true)
-    else if m.rowlist.focusedchild.id = "exampleRowList"
+    else if m.rowlist.focusedchild.id = "homeRowList"
         m.rowlist.focusedChild.setFocus(true)
     end if
 end sub
