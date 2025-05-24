@@ -53,7 +53,7 @@
                 maxWidth="24"
                 translation="[300,160]" /> -->
             <RowList
-                id="exampleRowList"
+                id="homeRowList"
                 rowLabelOffset="[[0,5]]"
                 rowLabelFont="font:LargeBoldSystemFont"
                 translation="[ 30,350 ]"

@@ -9,7 +9,7 @@ sub init()
     m.kb.textEditBox.hintText = tr("Enter Search Query")
     m.kb.textEditBox.voiceEnabled = true
     m.kb.observefield("text", "handleTextInput")
-    m.rowlist = m.top.findNode("exampleRowList")
+    m.rowlist = m.top.findNode("homeRowList")
     m.rowlist.ObserveField("itemSelected", "handleItemSelected")
     updateRecents()
 end sub
@@ -232,13 +232,13 @@ end sub
 
 sub onGetFocus()
     if m.rowlist.focusedchild <> invalid
-        if m.rowlist.focusedChild.id = "exampleRowList"
+        if m.rowlist.focusedChild.id = "homeRowList"
             m.rowlist.focusedChild.setFocus(true)
         end if
     else if m.top.focusedChild <> invalid
         if m.top.focusedChild.id = "Search"
             m.kb.setFocus(true)
-        else if m.top.focusedChild.id = "exampleRowList"
+        else if m.top.focusedChild.id = "homeRowList"
             m.rowlist.setfocus(true)
         end if
     else
@@ -257,7 +257,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
             end if
         end if
         if key = "left"
-            if m.top.focusedChild.id = "exampleRowList"
+            if m.top.focusedChild.id = "homeRowList"
                 m.rowlist.setfocus(false)
                 m.kb.setfocus(true)
                 return true
