@@ -142,8 +142,18 @@ sub configureVideoForLatency(video as object, isLive as boolean)
 end sub
 
 sub playContent()
+    ' Clean up existing video node and its observers
     if m.video <> invalid
+        ' Remove all observers before removing the video node
+        m.video.unobserveField("toggleChat")
+        m.video.unobserveField("QualityChangeRequestFlag")
+        m.video.unobserveField("position")
+        m.video.unobserveField("state")
+        m.video.unobserveField("errorCode")
+        m.video.unobserveField("duration")
+
         m.top.removeChild(m.video)
+        m.video = invalid
     end if
 
     isLiveContent = (m.top.contentRequested.contentType = "LIVE")
@@ -221,6 +231,8 @@ sub playContent()
     configureVideoForLatency(m.video, isLiveContent)
 
     m.video.notificationInterval = 1
+
+    ' Add observers to the new video node
     m.video.observeField("toggleChat", "onToggleChat")
     m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
 
@@ -312,77 +324,27 @@ sub playContent()
     end if
 end sub
 
-sub onPositionChanged()
-    ' Only log position for debugging - don't trigger seeks
-    if m.top.contentRequested.contentType = "LIVE"
-        latencyPreference = get_user_setting("preferred.latency", "low")
-        if latencyPreference = "low"
-            currentPos = m.video.position
-            duration = m.video.duration
-            if duration > 0 and currentPos > 0
-                liveEdgeOffset = duration - currentPos
-                ' Only log occasionally to reduce spam
-                if liveEdgeOffset > 10 and (liveEdgeOffset mod 5) < 1
-                    ? "[VideoPlayer] Live edge offset: "; liveEdgeOffset; " seconds"
-                end if
-            end if
-        end if
-    end if
-end sub
-
-sub onDurationChanged()
-    ' Track duration changes for live streams
-    if m.top.contentRequested.contentType = "LIVE"
-        ? "[VideoPlayer] Live stream duration updated: "; m.video.duration
-    end if
-end sub
-
-sub onVideoStateChange()
-    videoState = m.video.state
-    ? "[VideoPlayer] Video state changed to: "; videoState
-
-    ' Handle specific states for better low latency performance
-    if videoState = "buffering"
-        latencyPreference = get_user_setting("preferred.latency", "low")
-        if latencyPreference = "low" and m.top.contentRequested.contentType = "LIVE"
-            ? "[VideoPlayer] Low latency buffering detected"
-        end if
-    else if videoState = "playing"
-        ? "[VideoPlayer] Playback started successfully"
-    else if videoState = "error"
-        ? "[VideoPlayer] Video error detected, will attempt recovery"
-
-        ' Special handling for clip authentication errors
-        if m.top.contentRequested.contentType = "CLIP"
-            ? "[VideoPlayer] Clip playback error - may need different URL or auth"
-        end if
-    end if
-end sub
-
-sub onVideoError()
-    errorCode = m.video.errorCode
-    ? "[VideoPlayer] Video error code: "; errorCode
-
-    ' Handle specific errors that might occur with clips and low latency streams
-    if errorCode <> invalid
-        if errorCode = -3 or errorCode = -5 ' Network or timeout errors
-            ? "[VideoPlayer] Network error detected, may retry with different settings"
-        else if errorCode = -1 ' Authentication error
-            if m.top.contentRequested.contentType = "CLIP"
-                ? "[VideoPlayer] Clip authentication error - URL may be expired or require different auth"
-            end if
-        end if
-    end if
-end sub
-
 sub exitPlayer()
     print "Player: exitPlayer()"
 
     if m.video <> invalid
+        ' Clean up observers before stopping video
+        m.video.unobserveField("toggleChat")
+        m.video.unobserveField("QualityChangeRequestFlag")
+        m.video.unobserveField("position")
+        m.video.unobserveField("state")
+        m.video.unobserveField("errorCode")
+        m.video.unobserveField("duration")
+
         m.video.control = "stop"
         m.video.visible = false
     end if
-    m.PlayerTask = invalid
+
+    if m.PlayerTask <> invalid
+        m.PlayerTask.unobserveField("state")
+        m.PlayerTask = invalid
+    end if
+
     'signal upwards that we are done
     ? "Allow Break?: "; m.allowBreak
     if m.allowBreak
