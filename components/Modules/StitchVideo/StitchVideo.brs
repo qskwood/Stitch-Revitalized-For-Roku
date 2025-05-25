@@ -43,7 +43,6 @@ function init()
     m.isOverlayVisible = false
     m.currentPositionSeconds = 0
     m.isLiveStream = true ' StitchVideo is always for live streams
-    m.hasQualityObserver = false ' Guard flag for quality dialog observer
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
@@ -155,7 +154,7 @@ end sub
 
 sub setupQualityDialog()
     if m.top.qualityOptions <> invalid and m.top.qualityOptions.count() > 0
-        m.qualityDialog.title = "Select Quality"
+        m.qualityDialog.title = "Please Choose Your Video Quality"
         m.qualityDialog.message = "Choose video quality:"
 
         buttons = []
@@ -165,28 +164,46 @@ sub setupQualityDialog()
         buttons.push("Cancel")
 
         m.qualityDialog.buttons = buttons
-
-        ' Remove existing observer if present, then add new one
-        if m.hasQualityObserver
-            m.qualityDialog.unobserveField("buttonSelected")
-        end if
-
-        m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
-        m.hasQualityObserver = true
     end if
 end sub
 
-sub onQualitySelected()
+sub onQualityButtonSelect()
+    ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
+
     selectedIndex = m.qualityDialog.buttonSelected
-    if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
-        m.top.selectedQuality = m.top.qualityOptions[selectedIndex]
+    totalButtons = m.qualityDialog.buttons.count()
+
+    ' Hide dialog first
+    m.qualityDialog.visible = false
+    m.qualityDialog.setFocus(false)
+
+    ' Check if Cancel was selected (last button)
+    if selectedIndex = totalButtons - 1
+        ? "[StitchVideo] Cancel selected, no quality change"
+    else if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
+        ' Valid quality option selected
+        selectedQuality = m.top.qualityOptions[selectedIndex]
+        ? "[StitchVideo] Quality selected: "; selectedQuality
+
+        m.top.selectedQuality = selectedQuality
         m.top.QualityChangeRequest = selectedIndex
         m.top.QualityChangeRequestFlag = true
 
         ' Update latency indicator
         updateLatencyIndicator()
+    else
+        ? "[StitchVideo] Invalid selection index: "; selectedIndex
     end if
-    m.qualityDialog.visible = false
+
+    ' Restore focus to video component
+    m.top.setFocus(true)
+
+    ' If overlay is visible, restart fade timer
+    if m.isOverlayVisible
+        focusButton(m.currentFocusedButton)
+        m.fadeAwayTimer.control = "stop"
+        m.fadeAwayTimer.control = "start"
+    end if
 end sub
 
 sub updateProgressBar()
@@ -215,7 +232,10 @@ sub hideOverlay()
 end sub
 
 sub onFadeAway()
-    hideOverlay()
+    ' Only hide overlay if quality dialog is not visible
+    if not m.qualityDialog.visible
+        hideOverlay()
+    end if
 end sub
 
 sub focusButton(buttonIndex)
@@ -258,7 +278,15 @@ end sub
 
 sub showQualityDialog()
     if m.top.qualityOptions <> invalid and m.top.qualityOptions.count() > 0
+        ' Stop the fade timer when showing dialog
+        m.fadeAwayTimer.control = "stop"
+
+        ' Set up the observer (following original pattern)
+        m.qualityDialog.observeFieldScoped("buttonSelected", "onQualityButtonSelect")
+
+        ' Show dialog and give it focus
         m.qualityDialog.visible = true
+        m.qualityDialog.setFocus(true)
     else
         ? "[StitchVideo] No quality options available"
     end if
@@ -300,10 +328,32 @@ function onKeyEvent(key, press) as boolean
     ? "[StitchVideo] KeyEvent: "; key; " "; press
 
     if press
-        ' Reset fade timer on any key press
-        if m.isOverlayVisible
-            m.fadeAwayTimer.control = "stop"
-            m.fadeAwayTimer.control = "start"
+        ' If quality dialog is visible, only handle back to close it
+        if m.qualityDialog.visible
+            if key = "back" or key = "down"
+                m.qualityDialog.visible = false
+                m.qualityDialog.setFocus(false)
+                m.top.setFocus(true)
+
+                ' Restart fade timer if overlay is visible
+                if m.isOverlayVisible
+                    focusButton(m.currentFocusedButton)
+                    m.fadeAwayTimer.control = "stop"
+                    m.fadeAwayTimer.control = "start"
+                end if
+                return true
+            end if
+            ' Let dialog handle all other keys
+            return false
+        end if
+
+        ' Normal key handling when dialog is not visible
+        ' Reset fade timer on any key press (except back when overlay is hidden)
+        if key <> "back" or m.isOverlayVisible
+            if m.isOverlayVisible
+                m.fadeAwayTimer.control = "stop"
+                m.fadeAwayTimer.control = "start"
+            end if
         end if
 
         return handleMainKeys(key)
@@ -341,13 +391,8 @@ function handleMainKeys(key) as boolean
         end if
         return true
     else if key = "down" or key = "back"
-        if m.qualityDialog.visible
-            m.qualityDialog.visible = false
-            return true
-        else
-            hideOverlay()
-            return true
-        end if
+        hideOverlay()
+        return true
     else if key = "OK"
         executeButtonAction()
         return true
