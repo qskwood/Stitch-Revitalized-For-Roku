@@ -166,11 +166,13 @@ sub setupQualityDialog()
 
         m.qualityDialog.buttons = buttons
 
-        ' Only add observer if it hasn't been added before
-        if not m.hasQualityObserver
-            m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
-            m.hasQualityObserver = true
+        ' Remove existing observer if present, then add new one
+        if m.hasQualityObserver
+            m.qualityDialog.unobserveField("buttonSelected")
         end if
+
+        m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
+        m.hasQualityObserver = true
     end if
 end sub
 

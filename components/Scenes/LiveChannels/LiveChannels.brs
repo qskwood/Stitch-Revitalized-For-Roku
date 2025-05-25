@@ -2,6 +2,13 @@ sub init()
     m.top.observeField("focusedChild", "onGetfocus")
     ' m.top.observeField("itemFocused", "onGetFocus")
     m.rowlist = m.top.findNode("homeRowList")
+
+    ' Guard check for missing node
+    if m.rowlist = invalid
+        ? "[LiveChannels] ERROR: homeRowList node not found in XML - component initialization failed"
+        return
+    end if
+
     m.rowlist.ObserveField("itemSelected", "handleItemSelected")
     m.rowlist.observeField("itemHasFocus", "handleItemFocus")
     m.GetContentTask = CreateObject("roSGNode", "TwitchApiTask") ' create task for feed retrieving
@@ -146,7 +153,7 @@ end sub
 sub onGetFocus()
     if m.rowlist.focusedChild = invalid
         m.rowlist.setFocus(true)
-    else if m.rowlist.focusedchild.id = "homeRowList"
+    else if m.top.focusedChild.id = "homeRowList"
         m.rowlist.focusedChild.setFocus(true)
         if m.rowlist.rowItemFocused[0] <> invalid
             if m.rowlist.content.getChildCount() > 0
