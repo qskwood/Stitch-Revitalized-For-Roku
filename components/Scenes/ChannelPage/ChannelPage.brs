@@ -187,7 +187,7 @@ end function
 sub FocusRowlist()
     if m.rowlist.focusedChild = invalid
         m.rowlist.setFocus(true)
-    else if m.rowlist.focusedchild.id = "homeRowList"
+    else if m.rowlist.focusedChild.id = "homeRowList"
         m.rowlist.focusedChild.setFocus(true)
     end if
 end sub

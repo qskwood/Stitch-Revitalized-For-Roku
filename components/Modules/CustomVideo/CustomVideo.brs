@@ -182,6 +182,18 @@ sub onChatVisibilityChange()
         m.progressBarBase.width = 1160
         m.controlOverlay.translation = [0, 580]
     end if
+
+    ' Update all progress bar elements to match new width
+    updateProgressBar()
+
+    ' Update buffer bar if buffering status is available
+    if m.top.bufferingStatus <> invalid
+        bufferPercent = m.top.bufferingStatus.percentage
+        if bufferPercent <> invalid and m.top.duration > 0
+            bufferWidth = m.progressBarBase.width * (bufferPercent / 100)
+            m.progressBarBuffer.width = bufferWidth
+        end if
+    end if
 end sub
 
 sub onDurationChange()

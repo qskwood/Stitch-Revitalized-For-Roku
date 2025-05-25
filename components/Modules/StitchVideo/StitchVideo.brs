@@ -1,7 +1,7 @@
 function init()
     ' Initialize UI elements
-    m.top.enableUI = "false"
-    m.top.enableTrickPlay = "false"
+    m.top.enableUI = false
+    m.top.enableTrickPlay = false
 
     ' Control overlay elements
     m.controlOverlay = m.top.findNode("controlOverlay")
@@ -43,12 +43,13 @@ function init()
     m.isOverlayVisible = false
     m.currentPositionSeconds = 0
     m.isLiveStream = true ' StitchVideo is always for live streams
+    m.hasQualityObserver = false ' Guard flag for quality dialog observer
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
     m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
-    m.fadeAwayTimer.duration = "5"
+    m.fadeAwayTimer.duration = 5
     m.fadeAwayTimer.control = "stop"
 
     ' Observers
@@ -164,7 +165,12 @@ sub setupQualityDialog()
         buttons.push("Cancel")
 
         m.qualityDialog.buttons = buttons
-        m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
+
+        ' Only add observer if it hasn't been added before
+        if not m.hasQualityObserver
+            m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
+            m.hasQualityObserver = true
+        end if
     end if
 end sub
 

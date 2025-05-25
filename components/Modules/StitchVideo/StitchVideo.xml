@@ -44,7 +44,7 @@
             <!-- Control Buttons (Live Stream Layout) -->
             <Group translation="[0,85]">
                 <!-- Play/Pause Button (center) -->
-                <Group id="playPauseGroup" translation="[540,0]">
+                <Group id="playPauseGroup" translation="[540,0]" focusable="true">
                     <Rectangle id="playPauseBg" color="0x404040AA" width="60" height="40" cornerRadius="20" />
                     <Rectangle id="playPauseFocus" color="0x9146FFFF" width="60" height="40" cornerRadius="20" visible="false" />
                     <Poster id="controlButton" uri="pkg:/images/pause.png" width="20" height="20" translation="[20,10]" />
