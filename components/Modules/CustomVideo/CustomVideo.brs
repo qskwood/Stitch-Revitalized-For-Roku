@@ -1,7 +1,7 @@
 function init()
     ' Initialize UI elements
-    m.top.enableUI = "false"
-    m.top.enableTrickPlay = "false"
+    m.top.enableUI = false
+    m.top.enableTrickPlay = false
 
     ' Control overlay elements
     m.controlOverlay = m.top.findNode("controlOverlay")
@@ -86,13 +86,13 @@ function init()
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
     m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
-    m.fadeAwayTimer.duration = "5"
+    m.fadeAwayTimer.duration = 5 ' seconds
     m.fadeAwayTimer.control = "stop"
 
     m.buttonHoldTimer = createObject("roSGNode", "Timer")
     m.buttonHoldTimer.observeField("fire", "onButtonHold")
     m.buttonHoldTimer.repeat = true
-    m.buttonHoldTimer.duration = "0.1"
+    m.buttonHoldTimer.duration = 0.1 ' seconds
     m.buttonHoldTimer.control = "stop"
 
     ' Observers
@@ -144,7 +144,7 @@ sub onPositionChange()
 
     ' Auto-save bookmark every 20 seconds (not for live streams)
     if not m.isLiveStream
-        checker = m.top.position mod 20
+        checker = Int(m.top.position) mod 20
         if checker = 0
             saveVideoBookmark()
         end if
