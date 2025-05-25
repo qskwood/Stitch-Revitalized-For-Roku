@@ -234,7 +234,7 @@ sub playContent()
 
     ' Add observers to the new video node
     m.video.observeField("toggleChat", "onToggleChat")
-    m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
+    m.video.observeField("qualityChangeRequest", "onQualityChangeRequested")
 
     ' Only add position tracking for debugging, don't use for seeking
     m.video.observeField("position", "onPositionChanged")
