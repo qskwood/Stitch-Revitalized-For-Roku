@@ -84,12 +84,14 @@ function init()
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
+    m.top.appendChild(m.fadeAwayTimer)
     m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
     m.fadeAwayTimer.duration = 5 ' seconds
     m.fadeAwayTimer.control = "stop"
 
     m.buttonHoldTimer = createObject("roSGNode", "Timer")
+    m.top.appendChild(m.buttonHoldTimer)
     m.buttonHoldTimer.observeField("fire", "onButtonHold")
     m.buttonHoldTimer.repeat = true
     m.buttonHoldTimer.duration = 0.1 ' seconds
