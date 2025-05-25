@@ -12,23 +12,24 @@ function init()
     m.progressBarProgress = m.top.findNode("progressBarProgress")
 
     ' Control buttons
-    m.playPauseGroup = m.top.findNode("playPauseGroup")
+    m.backGroup = m.top.findNode("backGroup")
     m.chatGroup = m.top.findNode("chatGroup")
+    m.playPauseGroup = m.top.findNode("playPauseGroup")
     m.qualityGroup = m.top.findNode("qualityGroup")
     m.controlButton = m.top.findNode("controlButton")
     m.messagesButton = m.top.findNode("messagesButton")
     m.qualitySelectButton = m.top.findNode("qualitySelectButton")
 
     ' Focus backgrounds
-    m.playPauseFocus = m.top.findNode("playPauseFocus")
+    m.backFocus = m.top.findNode("backFocus")
     m.chatFocus = m.top.findNode("chatFocus")
+    m.playPauseFocus = m.top.findNode("playPauseFocus")
     m.qualityFocus = m.top.findNode("qualityFocus")
 
     ' Other elements
     m.liveIndicator = m.top.findNode("liveIndicator")
     m.lowLatencyIndicator = m.top.findNode("lowLatencyIndicator")
     m.normalLatencyIndicator = m.top.findNode("normalLatencyIndicator")
-    m.latencyModeLabel = m.top.findNode("latencyModeLabel")
 
     ' Video info
     m.videoTitle = m.top.findNode("videoTitle")
@@ -37,9 +38,11 @@ function init()
 
     ' Quality dialog
     m.qualityDialog = m.top.findNode("QualityDialog")
+    ' Set up quality dialog observer once during initialization
+    m.qualityDialog.observeFieldScoped("buttonSelected", "onQualityButtonSelect")
 
     ' State variables
-    m.currentFocusedButton = 1 ' 1=play/pause, 2=chat, 3=quality
+    m.currentFocusedButton = 2 ' 0=back, 1=chat, 2=play/pause, 3=quality
     m.isOverlayVisible = false
     m.currentPositionSeconds = 0
     m.isLiveStream = true ' StitchVideo is always for live streams
@@ -242,27 +245,38 @@ sub focusButton(buttonIndex)
     clearAllButtonFocus()
     m.currentFocusedButton = buttonIndex
 
-    if buttonIndex = 1 ' Play/Pause
-        m.playPauseFocus.visible = true
-    else if buttonIndex = 2 ' Chat
+    if buttonIndex = 0 ' Back
+        m.backFocus.visible = true
+    else if buttonIndex = 1 ' Chat
         m.chatFocus.visible = true
+    else if buttonIndex = 2 ' Play/Pause
+        m.playPauseFocus.visible = true
     else if buttonIndex = 3 ' Quality
         m.qualityFocus.visible = true
     end if
 end sub
 
 sub clearAllButtonFocus()
-    m.playPauseFocus.visible = false
+    m.backFocus.visible = false
     m.chatFocus.visible = false
+    m.playPauseFocus.visible = false
     m.qualityFocus.visible = false
 end sub
 
 sub executeButtonAction()
-    if m.currentFocusedButton = 1 ' Play/Pause
-        togglePlayPause()
-    else if m.currentFocusedButton = 2 ' Chat
+    if m.currentFocusedButton = 0 ' Back
+        ? "[StitchVideo] Back button pressed - attempting to exit"
+        m.top.back = true
+        if m.top.getParent() <> invalid
+            m.top.getParent().back = true
+        end if
+        hideOverlay()
+        m.top.control = "stop"
+    else if m.currentFocusedButton = 1 ' Chat
         m.top.toggleChat = true
         m.top.streamLayoutMode = (m.top.streamLayoutMode + 1) mod 3
+    else if m.currentFocusedButton = 2 ' Play/Pause
+        togglePlayPause()
     else if m.currentFocusedButton = 3 ' Quality
         showQualityDialog()
     end if
@@ -281,10 +295,8 @@ sub showQualityDialog()
         ' Stop the fade timer when showing dialog
         m.fadeAwayTimer.control = "stop"
 
-        ' Set up the observer (following original pattern)
-        m.qualityDialog.observeFieldScoped("buttonSelected", "onQualityButtonSelect")
-
         ' Show dialog and give it focus
+        ' (Observer is already set up in init() function)
         m.qualityDialog.visible = true
         m.qualityDialog.setFocus(true)
     else
@@ -375,19 +387,19 @@ function handleMainKeys(key) as boolean
     end if
 
     if key = "left"
-        ' Live stream navigation: play/pause(1) -> chat(2) -> quality(3)
-        if m.currentFocusedButton > 1
+        ' Live stream navigation: back(0) -> chat(1) -> play/pause(2) -> quality(3)
+        if m.currentFocusedButton > 0
             focusButton(m.currentFocusedButton - 1)
         else
             focusButton(3) ' Wrap to quality
         end if
         return true
     else if key = "right"
-        ' Live stream navigation: play/pause(1) -> chat(2) -> quality(3)
+        ' Live stream navigation: back(0) -> chat(1) -> play/pause(2) -> quality(3)
         if m.currentFocusedButton < 3
             focusButton(m.currentFocusedButton + 1)
         else
-            focusButton(1) ' Wrap to play/pause
+            focusButton(0) ' Wrap to back
         end if
         return true
     else if key = "down" or key = "back"

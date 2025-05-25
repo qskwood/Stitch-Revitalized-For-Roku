@@ -43,18 +43,25 @@
             
             <!-- Control Buttons (Live Stream Layout) -->
             <Group translation="[0,85]">
-                <!-- Play/Pause Button (center) -->
-                <Group id="playPauseGroup" translation="[540,0]" focusable="true">
-                    <Rectangle id="playPauseBg" color="0x404040AA" width="60" height="40" cornerRadius="20" />
-                    <Rectangle id="playPauseFocus" color="0x9146FFFF" width="60" height="40" cornerRadius="20" visible="false" />
-                    <Poster id="controlButton" uri="pkg:/images/pause.png" width="20" height="20" translation="[20,10]" />
+                <!-- Back Button (far left) -->
+                <Group id="backGroup" translation="[200,0]">
+                    <Rectangle id="backBg" color="0x404040AA" width="50" height="40" cornerRadius="8" />
+                    <Rectangle id="backFocus" color="0x9146FFFF" width="50" height="40" cornerRadius="8" visible="false" />
+                    <SimpleLabel translation="[18,12]" text="←" color="0xFFFFFFFF" fontSize="18" fontUri="pkg:/fonts/Archivo-Bold.otf" />
                 </Group>
                 
                 <!-- Chat Toggle Button -->
-                <Group id="chatGroup" translation="[620,0]">
+                <Group id="chatGroup" translation="[540,0]">
                     <Rectangle id="chatBg" color="0x404040AA" width="50" height="40" cornerRadius="8" />
                     <Rectangle id="chatFocus" color="0x9146FFFF" width="50" height="40" cornerRadius="8" visible="false" />
                     <Poster id="messagesButton" uri="pkg:/images/messages.png" width="20" height="20" translation="[15,10]" />
+                </Group>
+                
+                <!-- Play/Pause Button (center between chat and quality) -->
+                <Group id="playPauseGroup" translation="[610,0]" focusable="true">
+                    <Rectangle id="playPauseBg" color="0x404040AA" width="60" height="40" cornerRadius="20" />
+                    <Rectangle id="playPauseFocus" color="0x9146FFFF" width="60" height="40" cornerRadius="20" visible="false" />
+                    <Poster id="controlButton" uri="pkg:/images/pause.png" width="20" height="20" translation="[20,10]" />
                 </Group>
                 
                 <!-- Quality Button -->
