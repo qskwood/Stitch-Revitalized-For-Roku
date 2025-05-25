@@ -127,6 +127,7 @@ sub updateUIForVideoType()
         if m.currentFocusedButton = 1 or m.currentFocusedButton = 2 or m.currentFocusedButton = 4
             m.currentFocusedButton = 1 ' Focus play/pause for live
         end if
+        focusButton(m.currentFocusedButton) ' <-- keep focus visuals in sync
     else
         ' Show all controls for VOD/clips
         m.rewindGroup.visible = true
@@ -389,17 +390,26 @@ sub showThumbnailPreview()
         m.thumbnailPreview.visible = true
         m.thumbnailTime.text = convertToReadableTimeFormat(m.currentPositionSeconds)
 
-        ' Calculate thumbnail position
-        thumbnailsPerPart = Int(m.top.thumbnailInfo.count / m.top.thumbnailInfo.thumbnail_parts.Count())
-        thumbnailPosOverall = Int(m.currentPositionSeconds / m.top.thumbnailInfo.interval)
-        thumbnailPosCurrent = thumbnailPosOverall mod thumbnailsPerPart
-        thumbnailRow = Int(thumbnailPosCurrent / m.top.thumbnailInfo.cols)
-        thumbnailCol = Int(thumbnailPosCurrent mod m.top.thumbnailInfo.cols)
+        ' Guard against divide-by-zero and invalid thumbnail_parts
+        if m.top.thumbnailInfo.thumbnail_parts <> invalid and m.top.thumbnailInfo.thumbnail_parts.Count() > 0
+            ' Calculate thumbnail position
+            thumbnailsPerPart = Int(m.top.thumbnailInfo.count / m.top.thumbnailInfo.thumbnail_parts.Count())
 
-        m.thumbnailImage.translation = [-thumbnailCol * m.top.thumbnailInfo.width, -thumbnailRow * m.top.thumbnailInfo.height]
+            ' Additional guard to ensure thumbnailsPerPart is valid
+            if thumbnailsPerPart > 0
+                thumbnailPosOverall = Int(m.currentPositionSeconds / m.top.thumbnailInfo.interval)
+                thumbnailPosCurrent = thumbnailPosOverall mod thumbnailsPerPart
+                thumbnailRow = Int(thumbnailPosCurrent / m.top.thumbnailInfo.cols)
+                thumbnailCol = Int(thumbnailPosCurrent mod m.top.thumbnailInfo.cols)
 
-        if m.top.thumbnailInfo.info_url <> invalid and m.top.thumbnailInfo.thumbnail_parts[Int(thumbnailPosOverall / thumbnailsPerPart)] <> invalid
-            m.thumbnailImage.uri = m.top.thumbnailInfo.info_url + m.top.thumbnailInfo.thumbnail_parts[Int(thumbnailPosOverall / thumbnailsPerPart)]
+                m.thumbnailImage.translation = [-thumbnailCol * m.top.thumbnailInfo.width, -thumbnailRow * m.top.thumbnailInfo.height]
+
+                ' Check bounds before accessing thumbnail_parts array
+                partIndex = Int(thumbnailPosOverall / thumbnailsPerPart)
+                if m.top.thumbnailInfo.info_url <> invalid and partIndex < m.top.thumbnailInfo.thumbnail_parts.Count() and m.top.thumbnailInfo.thumbnail_parts[partIndex] <> invalid
+                    m.thumbnailImage.uri = m.top.thumbnailInfo.info_url + m.top.thumbnailInfo.thumbnail_parts[partIndex]
+                end if
+            end if
         end if
 
         ' Position thumbnail preview near progress bar
