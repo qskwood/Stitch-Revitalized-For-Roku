@@ -266,9 +266,9 @@ end sub
 sub executeButtonAction()
     if m.currentFocusedButton = 0 ' Back
         ? "[StitchVideo] Back button pressed - attempting to exit"
-        m.top.back = true
+        m.top.backPressed = true
         if m.top.getParent() <> invalid
-            m.top.getParent().back = true
+            m.top.getParent().backPressed = true
         end if
         hideOverlay()
         m.top.control = "stop"
