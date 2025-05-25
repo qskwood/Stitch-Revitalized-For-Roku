@@ -2,7 +2,7 @@ sub init()
     ? "init: "; TimeStamp()
     m.top.observeField("focusedChild", "onGetfocus")
     ' m.top.observeField("itemFocused", "onGetFocus")
-    m.rowlist = m.top.findNode("exampleRowList")
+    m.rowlist = m.top.findNode("homeRowList")
     m.rowlist.ObserveField("itemSelected", "handleItemSelected")
     m.GetContentTask = CreateObject("roSGNode", "TwitchApiTask") ' create task for feed retrieving
     ' observe content so we can know when feed content will be parsed
@@ -197,7 +197,7 @@ end sub
 sub onGetFocus()
     if m.rowlist.focusedChild = invalid
         m.rowlist.setFocus(true)
-    else if m.rowlist.focusedchild.id = "exampleRowList"
+    else if m.rowlist.focusedChild.id = "homeRowList"
         m.rowlist.focusedChild.setFocus(true)
     end if
 end sub

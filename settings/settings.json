@@ -4,7 +4,7 @@
         "description": "Determines the default behavior of video quality selection when starting a stream.",
         "settingName": "playback.video.quality",
         "type": "radio",
-        "default": "highest",
+        "default": "auto",
         "options": [
             {
                 "title": "Automatic (Adjust based on network conditions)",
@@ -13,22 +13,26 @@
             {
                 "title": "Highest (Choose highest possible option)",
                 "id": "highest"
+            },
+            {
+                "title": "Lowest (Minimal latency for live streams)",
+                "id": "lowest"
             }
         ]
     },
     {
         "title": "Stream Latency",
-        "description": "Configures the latency mode for live streams.",
+        "description": "Configures the latency mode for live streams. Low latency reduces delay but may increase buffering.",
         "settingName": "preferred.latency",
         "type": "radio",
         "default": "low",
         "options": [
             {
-                "title": "Low Latency",
+                "title": "Low Latency (Minimal delay, may buffer more)",
                 "id": "low"
             },
             {
-                "title": "Normal Latency",
+                "title": "Normal Latency (Stable playback)",
                 "id": "normal"
             }
         ]
