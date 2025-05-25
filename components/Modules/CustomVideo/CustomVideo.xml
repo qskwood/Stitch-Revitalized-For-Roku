@@ -52,76 +52,117 @@
                 fontSize="16"
                 fontUri="pkg:/fonts/Archivo-Regular.otf" />
             
-            <!-- Time Input Section -->
-            <Group translation="[30,120]">
-                <SimpleLabel
-                    translation="[0,0]"
-                    text="Hours"
-                    color="0xB3B3B3FF"
-                    fontSize="14"
-                    fontUri="pkg:/fonts/Archivo-Regular.otf" />
-                <SimpleLabel
-                    translation="[150,0]"
-                    text="Minutes"
-                    color="0xB3B3B3FF"
-                    fontSize="14"
-                    fontUri="pkg:/fonts/Archivo-Regular.otf" />
-                <SimpleLabel
-                    translation="[300,0]"
-                    text="Seconds"
-                    color="0xB3B3B3FF"
-                    fontSize="14"
-                    fontUri="pkg:/fonts/Archivo-Regular.otf" />
+            <!-- Time Input Container -->
+            <Group id="timeInputContainer" translation="[30,120]">
+                <!-- Hours Section -->
+                <Group id="hoursSection" translation="[0,0]">
+                    <SimpleLabel
+                        id="hoursLabel"
+                        translation="[0,0]"
+                        text="Hours"
+                        color="0xB3B3B3FF"
+                        fontSize="14"
+                        fontUri="pkg:/fonts/Archivo-Regular.otf" />
+                    
+                    <!-- Hours Input Group -->
+                    <Group id="hoursInputGroup" translation="[0,30]">
+                        <Group id="hour0Group" translation="[0,0]">
+                            <Rectangle id="hour0Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="hour0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="hour0Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                        
+                        <Group id="hour1Group" translation="[60,0]">
+                            <Rectangle id="hour1Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="hour1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="hour1Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                    </Group>
+                </Group>
                 
-                <!-- Time Input Fields -->
-                <Group translation="[0,30]">
-                    <Rectangle id="hour0Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
-                    <Rectangle id="hour0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
-                    <SimpleLabel id="hour0Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                <!-- Hours-Minutes Separator -->
+                <SimpleLabel id="hourMinuteSeparator" translation="[125,48]" text=":" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                
+                <!-- Minutes Section -->
+                <Group id="minutesSection" translation="[150,0]">
+                    <SimpleLabel
+                        id="minutesLabel"
+                        translation="[0,0]"
+                        text="Minutes"
+                        color="0xB3B3B3FF"
+                        fontSize="14"
+                        fontUri="pkg:/fonts/Archivo-Regular.otf" />
                     
-                    <Rectangle color="0x404040FF" width="50" height="60" cornerRadius="8" translation="[60,0]" />
-                    <Rectangle id="hour1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" translation="[60,0]" visible="false" />
-                    <SimpleLabel id="hour1Text" translation="[80,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                    <!-- Minutes Input Group -->
+                    <Group id="minutesInputGroup" translation="[0,30]">
+                        <Group id="minute0Group" translation="[0,0]">
+                            <Rectangle id="minute0Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="minute0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="minute0Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                        
+                        <Group id="minute1Group" translation="[60,0]">
+                            <Rectangle id="minute1Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="minute1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="minute1Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                    </Group>
+                </Group>
+                
+                <!-- Minutes-Seconds Separator -->
+                <SimpleLabel id="minuteSecondSeparator" translation="[275,48]" text=":" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                
+                <!-- Seconds Section -->
+                <Group id="secondsSection" translation="[300,0]">
+                    <SimpleLabel
+                        id="secondsLabel"
+                        translation="[0,0]"
+                        text="Seconds"
+                        color="0xB3B3B3FF"
+                        fontSize="14"
+                        fontUri="pkg:/fonts/Archivo-Regular.otf" />
                     
-                    <SimpleLabel translation="[125,18]" text=":" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
-                    
-                    <Rectangle color="0x404040FF" width="50" height="60" cornerRadius="8" translation="[150,0]" />
-                    <Rectangle id="minute0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" translation="[150,0]" visible="false" />
-                    <SimpleLabel id="minute0Text" translation="[170,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
-                    
-                    <Rectangle color="0x404040FF" width="50" height="60" cornerRadius="8" translation="[210,0]" />
-                    <Rectangle id="minute1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" translation="[210,0]" visible="false" />
-                    <SimpleLabel id="minute1Text" translation="[230,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
-                    
-                    <SimpleLabel translation="[275,18]" text=":" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
-                    
-                    <Rectangle color="0x404040FF" width="50" height="60" cornerRadius="8" translation="[300,0]" />
-                    <Rectangle id="second0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" translation="[300,0]" visible="false" />
-                    <SimpleLabel id="second0Text" translation="[320,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
-                    
-                    <Rectangle color="0x404040FF" width="50" height="60" cornerRadius="8" translation="[360,0]" />
-                    <Rectangle id="second1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" translation="[360,0]" visible="false" />
-                    <SimpleLabel id="second1Text" translation="[380,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                    <!-- Seconds Input Group -->
+                    <Group id="secondsInputGroup" translation="[0,30]">
+                        <Group id="second0Group" translation="[0,0]">
+                            <Rectangle id="second0Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="second0" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="second0Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                        
+                        <Group id="second1Group" translation="[60,0]">
+                            <Rectangle id="second1Bg" color="0x404040FF" width="50" height="60" cornerRadius="8" />
+                            <Rectangle id="second1" color="0x9146FFFF" width="50" height="60" cornerRadius="8" visible="false" />
+                            <SimpleLabel id="second1Text" translation="[20,18]" text="0" color="0xFFFFFFFF" fontSize="24" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                        </Group>
+                    </Group>
                 </Group>
             </Group>
             
             <!-- Instructions -->
             <SimpleLabel
+                id="instructionsLabel"
                 translation="[30,230]"
                 text="Use ← → to navigate between fields, ↑ ↓ to change values"
                 color="0x808080FF"
                 fontSize="14"
                 fontUri="pkg:/fonts/Archivo-Regular.otf" />
             
-            <!-- Action Buttons -->
-            <Group translation="[30,280]">
-                <Rectangle id="cancelButton" color="0x404040FF" width="120" height="50" cornerRadius="8" />
-                <Rectangle id="cancelButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" visible="false" />
-                <SimpleLabel translation="[35,18]" text="Cancel" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Regular.otf" />
+            <!-- Action Buttons Container -->
+            <Group id="actionButtonsContainer" translation="[30,280]">
+                <Group id="cancelButtonGroup" translation="[0,0]">
+                    <Rectangle id="cancelButtonBg" color="0x404040FF" width="120" height="50" cornerRadius="8" />
+                    <Rectangle id="cancelButton" color="0x404040FF" width="120" height="50" cornerRadius="8" />
+                    <Rectangle id="cancelButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" visible="false" />
+                    <SimpleLabel id="cancelButtonLabel" translation="[35,18]" text="Cancel" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Regular.otf" />
+                </Group>
                 
-                <Rectangle id="acceptButton" color="0x404040FF" width="120" height="50" cornerRadius="8" translation="[140,0]" />
-                <Rectangle id="acceptButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" translation="[140,0]" visible="false" />
-                <SimpleLabel translation="[185,18]" text="Jump" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                <Group id="acceptButtonGroup" translation="[140,0]">
+                    <Rectangle id="acceptButtonBg" color="0x404040FF" width="120" height="50" cornerRadius="8" />
+                    <Rectangle id="acceptButton" color="0x404040FF" width="120" height="50" cornerRadius="8" />
+                    <Rectangle id="acceptButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" visible="false" />
+                    <SimpleLabel id="acceptButtonLabel" translation="[25,18]" text="Jump" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Bold.otf" />
+                </Group>
             </Group>
         </Group>
 
