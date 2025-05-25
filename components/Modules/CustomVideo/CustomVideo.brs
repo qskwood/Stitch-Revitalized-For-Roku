@@ -487,6 +487,8 @@ sub changeTimeTravelValue(direction)
     if m.timeTravelFocusedField >= 0 and m.timeTravelFocusedField <= 5
         currentValue = Int(Val(m.timeTexts[m.timeTravelFocusedField].text))
 
+        ' Store old value for rollback if needed
+        oldValue = currentValue
         if direction > 0
             currentValue += 1
         else
@@ -503,6 +505,12 @@ sub changeTimeTravelValue(direction)
         end if
 
         m.timeTexts[m.timeTravelFocusedField].text = currentValue.toStr()
+        ' Validate total time doesn't exceed video duration
+        totalTime = getTimeTravelTime()
+        if totalTime > m.top.duration and m.top.duration > 0
+            ' Rollback to old value if exceeded
+            m.timeTexts[m.timeTravelFocusedField].text = oldValue.toStr()
+        end if
     end if
 end sub
 
