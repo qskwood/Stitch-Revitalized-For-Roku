@@ -224,7 +224,13 @@ sub updateProgressBar()
         ' Update progress bar for VOD/clips
         progressRatio = m.currentPositionSeconds / m.top.duration
         m.progressBarProgress.width = m.progressBarBase.width * progressRatio
-        m.progressDot.translation = [m.progressBarBase.width * progressRatio - 8, 59]
+
+        ' Clamp the progress dot position within bounds
+        dotX = m.progressBarBase.width * progressRatio - 8
+        if dotX < 0 then dotX = 0
+        if dotX > m.progressBarBase.width then dotX = m.progressBarBase.width
+
+        m.progressDot.translation = [dotX, 59]
         m.progressDot.visible = true
 
         ' Update time displays
