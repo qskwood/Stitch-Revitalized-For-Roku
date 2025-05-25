@@ -119,7 +119,6 @@
                 <Rectangle id="cancelButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" visible="false" />
                 <SimpleLabel translation="[35,18]" text="Cancel" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Regular.otf" />
                 
-                <Rectangle color="0x404040FF" width="120" height="50" cornerRadius="8" translation="[140,0]" />
                 <Rectangle id="acceptButton" color="0x404040FF" width="120" height="50" cornerRadius="8" translation="[140,0]" />
                 <Rectangle id="acceptButtonFocus" color="0x9146FFFF" width="120" height="50" cornerRadius="8" translation="[140,0]" visible="false" />
                 <SimpleLabel translation="[185,18]" text="Jump" color="0xFFFFFFFF" fontSize="16" fontUri="pkg:/fonts/Archivo-Bold.otf" />
