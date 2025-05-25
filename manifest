@@ -9,7 +9,7 @@ mm_icon_focus_sd=pkg:/images/channel-poster_sd.png
 splash_screen_hd=pkg:/images/splash-screen_HD.png
 splash_screen_sd=pkg:/images/splash-screen_sd.png
 splash_screen_fhd=pkg:/images/splash-screen_FHD.png
-splash_screen_4k=pkg:/images/splash_screen_4k.png
+splash_screen_4k=pkg:/images/splash-screen_4k.png
 
 supports_input_launch=1
 
