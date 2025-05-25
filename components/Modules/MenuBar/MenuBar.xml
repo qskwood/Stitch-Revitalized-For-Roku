@@ -21,7 +21,7 @@
       id="logo"
       translation="[22, 16]"
       uri="pkg:/images/logo.png"
-      width="48px"
+      width="48"
       height="56"
     />
     <ButtonGroupHoriz id="MenuOptions" layoutDirection="horiz" horizAlignment="left" />
