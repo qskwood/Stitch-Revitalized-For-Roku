@@ -15,7 +15,8 @@ sub main()
         if workingUrl <> invalid and workingUrl <> ""
             content.url = workingUrl
             content.StreamUrls = [workingUrl]
-            content.streamQualities = ["HD"]
+            ' Use boolean to stay consistent with the live/VOD metadata schema
+            content.streamQualities.push(true)
             content.streamContentIds = ["Original"]
             ? "[GetTwitchContent] Using verified clip URL: "; workingUrl
         else
