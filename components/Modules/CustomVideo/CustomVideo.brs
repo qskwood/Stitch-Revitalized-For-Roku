@@ -356,6 +356,8 @@ sub togglePlayPause()
         m.top.seek = m.currentPositionSeconds
         m.isSeekMode = false
         m.currentPositionUpdated = false
+        ' Hide thumbnail preview after seeking
+        m.thumbnailPreview.visible = false
     else
         ' Toggle play/pause
         if m.top.state = "paused"
@@ -486,7 +488,23 @@ sub executeTimeTravelAction()
     else if m.timeTravelFocusedField = 7
         ' Accept - jump to time
         jumpToTime = getTimeTravelTime()
+
+        ' Ensure we're not in seek mode when applying time travel
+        m.isSeekMode = false
+        m.currentPositionUpdated = false
+
+        ' Apply the seek immediately
         m.top.seek = jumpToTime
+
+        ' Update our internal position tracking
+        m.currentPositionSeconds = jumpToTime
+
+        ' Update the progress bar to reflect the new position
+        updateProgressBar()
+
+        ' Hide thumbnail preview if it was visible
+        m.thumbnailPreview.visible = false
+
         closeTimeTravelDialog()
     end if
 end sub
