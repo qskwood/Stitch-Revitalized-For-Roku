@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component name="Following" extends="SceneManagerGroup" initialFocus="exampleRowList">
+<component name="Following" extends="SceneManagerGroup" initialFocus="homeRowList">
     <interface>
         <field id="doOffline" type="bool" value="false" />
     </interface>
@@ -8,7 +8,7 @@
     <script type="text/brightscript" uri="pkg:/source/utils/config.brs" />
     <children>
         <RowList
-            id="exampleRowList"
+            id="homeRowList"
             rowLabelOffset="[[0,10]]"
             rowLabelFont="font:LargeBoldSystemFont"
             translation="[ 130, 120 ]"

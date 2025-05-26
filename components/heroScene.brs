@@ -6,7 +6,7 @@ sub init()
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' Anything important needs to run before this sleep.
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    sleep(10000)
+    sleep(2000)
     VersionJobs()
     m.top.backgroundUri = ""
     m.top.backgroundColor = m.global.constants.colors.hinted.grey1
@@ -280,4 +280,3 @@ function onKeyEvent(key, press) as boolean
     if not press return false
     ? "KEY EVENT: "; key press
 end function
-

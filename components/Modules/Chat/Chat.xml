@@ -44,7 +44,7 @@
             text=""
             color="0xEFEFF1FF"
             fontSize="12"
-            fontUri="pkg:/fonts/KlokanTechNotoSansCJK-Regular.otf" /> -->
+            fontUri="pkg:/fonts/Archivo-Regular.otf" /> -->
         <ChatJob
             id="ChatJob"
             control="stop"

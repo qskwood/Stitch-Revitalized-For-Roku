@@ -16,7 +16,7 @@ sub setConstants()
     end for
     ' Set Global Constants
     m.global.addFields({
-        appID: "StitchForRoku"
+        appID: "StitchRevitalizedForRoku"
         appInfo: {
             ID: appInfo.GetID()
             IsDev: appInfo.IsDev()

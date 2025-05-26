@@ -137,7 +137,7 @@ sub updateFollowBar()
                     __typename
                 }
                 login
-                profileImageURL(width: 300)
+                profileImageURL(width: 200)
             }
 
             fragment FocusableStreamCard_stream on Stream {
@@ -398,7 +398,7 @@ sub updateFollowBar()
                         rowItem = createObject("RoSGNode", "TwitchContentNode")
                         rowItem.contentId = stream.node.stream.Id
                         rowItem.contentType = "LIVE"
-                        rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.stream.broadcaster.login, "320", "180")
+                        rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.stream.broadcaster.login, "1280", "720")
                         rowItem.contentTitle = stream.node.stream.broadcaster.broadcastSettings.title
                         rowItem.viewersCount = stream.node.stream.viewersCount
                         rowItem.streamerDisplayName = stream.node.displayName
