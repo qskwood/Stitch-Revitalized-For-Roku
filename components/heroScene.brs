@@ -280,4 +280,3 @@ function onKeyEvent(key, press) as boolean
     if not press return false
     ? "KEY EVENT: "; key press
 end function
-
