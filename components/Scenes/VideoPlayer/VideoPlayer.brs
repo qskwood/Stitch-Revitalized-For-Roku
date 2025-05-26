@@ -26,7 +26,7 @@ function onResponse()
 end function
 
 sub taskStateChanged(event as object)
-    print "Player: taskStateChanged(), id = "; event.getNode(); ", "; event.getField(); " = "; event.getData()
+    ' print "Player: taskStateChanged(), id = "; event.getNode(); ", "; event.getField(); " = "; event.getData()
     state = event.GetData()
     if state = "done" or state = "stop"
         exitPlayer()
@@ -58,7 +58,7 @@ sub initChat()
 end sub
 
 function onQualityChangeRequested()
-    ? "[Video Wrapper] - Quality Change Requested: "; m.video.qualityChangeRequest
+    ' ? "[Video Wrapper] - Quality Change Requested: "; m.video.qualityChangeRequest
     new_content = CreateObject("roSGNode", "TwitchContentNode")
     new_content.setFields(m.top.contentRequested.getFields()) ' Preserve original request fields
     new_content.setFields(m.top.metadata[m.video.qualityChangeRequest]) ' Apply new quality fields
@@ -73,15 +73,15 @@ sub configureVideoForLatency(video as object, isLive as boolean)
     latencyPreference = get_user_setting("preferred.latency", "low")
     isLowLatency = (latencyPreference = "low")
 
-    ? "[VideoPlayer] ===== BUFFERING CONFIGURATION ====="
-    ? "[VideoPlayer] Latency preference: "; latencyPreference
-    ? "[VideoPlayer] Is low latency: "; isLowLatency
-    ? "[VideoPlayer] Is live content: "; isLive
-    ? "[VideoPlayer] Video component type: "; video.subtype()
+    ' ? "[VideoPlayer] ===== BUFFERING CONFIGURATION ====="
+    ' ? "[VideoPlayer] Latency preference: "; latencyPreference
+    ' ? "[VideoPlayer] Is low latency: "; isLowLatency
+    ' ? "[VideoPlayer] Is live content: "; isLive
+    ' ? "[VideoPlayer] Video component type: "; video.subtype()
 
     if video.subtype() = "StitchVideo"
-        ? "[VideoPlayer] StitchVideo handles its own low-latency configuration"
-        ? "[VideoPlayer] ========================================="
+        ' ? "[VideoPlayer] StitchVideo handles its own low-latency configuration"
+        ' ? "[VideoPlayer] ========================================="
         return
     end if
 
@@ -94,9 +94,9 @@ sub configureVideoForLatency(video as object, isLive as boolean)
             video.enablePartialSegments = true
             video.enablePreloadHints = true
             video.enableBlockingPlaylistReload = true
-            ? "[VideoPlayer] ✓ Regular Video LL-HLS settings applied"
+            ' ? "[VideoPlayer] ✓ Regular Video LL-HLS settings applied"
         catch e
-            ? "[VideoPlayer] ⚠️ LL-HLS not fully supported on this device"
+            ' ? "[VideoPlayer] ⚠️ LL-HLS not fully supported on this device"
         end try
 
         video.bufferingConfig = {
@@ -120,7 +120,7 @@ sub configureVideoForLatency(video as object, isLive as boolean)
             bandwidthMeterSlidingWindowMs: 3000
         }
 
-        ? "[VideoPlayer] ✓ Regular Video configured for LL-HLS"
+        ' ? "[VideoPlayer] ✓ Regular Video configured for LL-HLS"
     else if isLive
         ' Normal latency configuration for live streams
         video.bufferingConfig = {
@@ -143,7 +143,7 @@ sub configureVideoForLatency(video as object, isLive as boolean)
             bandwidthMeterSlidingWindowMs: 10000
         }
 
-        ? "[VideoPlayer] Regular Video configured for NORMAL LATENCY mode"
+        ' ? "[VideoPlayer] Regular Video configured for NORMAL LATENCY mode"
     else
         ' VOD configuration
         video.bufferingConfig = {
@@ -156,9 +156,9 @@ sub configureVideoForLatency(video as object, isLive as boolean)
         }
 
         video.enableDecoderCompatibility = true
-        ? "[VideoPlayer] Regular Video configured for VOD playback"
+        ' ? "[VideoPlayer] Regular Video configured for VOD playback"
     end if
-    ? "[VideoPlayer] ========================================="
+    ' ? "[VideoPlayer] ========================================="
 end sub
 
 sub measureStreamDelay()
@@ -172,10 +172,10 @@ sub measureStreamDelay()
             m.delayTrackingStartPosition = videoPosition
             m.lastRealTime = currentTime
             m.lastVideoPosition = videoPosition
-            ? "[VideoPlayer] ===== INITIAL DELAY MEASUREMENT ====="
-            ? "[VideoPlayer] Starting delay tracking..."
-            ? "[VideoPlayer] Initial position: "; videoPosition; " seconds"
-            ? "[VideoPlayer] ==========================================="
+            ' ? "[VideoPlayer] ===== INITIAL DELAY MEASUREMENT ====="
+            ' ? "[VideoPlayer] Starting delay tracking..."
+            ' ? "[VideoPlayer] Initial position: "; videoPosition; " seconds"
+            ' ? "[VideoPlayer] ==========================================="
             return
         end if
 
@@ -206,31 +206,31 @@ sub measureStreamDelay()
             if m.estimatedLiveDelay < 5 then m.estimatedLiveDelay = 5
             if m.estimatedLiveDelay > 120 then m.estimatedLiveDelay = 120
 
-            ? "[VideoPlayer] ===== STREAM DELAY MEASUREMENT ====="
-            ? "[VideoPlayer] Real time elapsed: "; realTimeElapsed; " seconds"
-            ? "[VideoPlayer] Video time elapsed: "; videoTimeElapsed; " seconds"
-            ? "[VideoPlayer] Progression rate: "; Int(progressionRate * 100); "%"
-            ? "[VideoPlayer] ESTIMATED LIVE DELAY: "; Int(m.estimatedLiveDelay); " seconds"
+            ' ? "[VideoPlayer] ===== STREAM DELAY MEASUREMENT ====="
+            ' ? "[VideoPlayer] Real time elapsed: "; realTimeElapsed; " seconds"
+            ' ? "[VideoPlayer] Video time elapsed: "; videoTimeElapsed; " seconds"
+            ' ? "[VideoPlayer] Progression rate: "; Int(progressionRate * 100); "%"
+            ' ? "[VideoPlayer] ESTIMATED LIVE DELAY: "; Int(m.estimatedLiveDelay); " seconds"
 
             ' Convert to minutes:seconds for readability
             delayMinutes = Int(m.estimatedLiveDelay / 60)
             delaySeconds = Int(m.estimatedLiveDelay mod 60)
-            ? "[VideoPlayer] Delay: "; delayMinutes; ":"; FormatSeconds(delaySeconds)
+            ' ? "[VideoPlayer] Delay: "; delayMinutes; ":"; FormatSeconds(delaySeconds)
 
             ' Additional context
-            if progressionRate < 0.95
-                ? "[VideoPlayer] ⚠️  Falling behind live stream"
-            else if progressionRate > 1.05
-                ? "[VideoPlayer] ✓ Catching up to live stream"
-            else
-                ? "[VideoPlayer] ✓ Keeping pace with live stream"
-            end if
+            ' if progressionRate < 0.95
+            '     ? "[VideoPlayer] ⚠️  Falling behind live stream"
+            ' else if progressionRate > 1.05
+            '     ? "[VideoPlayer] ✓ Catching up to live stream"
+            ' else
+            '     ? "[VideoPlayer] ✓ Keeping pace with live stream"
+            ' end if
 
-            if m.video.bufferingStatus <> invalid
-                ? "[VideoPlayer] Buffering status: "; m.video.bufferingStatus
-            end if
+            ' if m.video.bufferingStatus <> invalid
+            '     ? "[VideoPlayer] Buffering status: "; m.video.bufferingStatus
+            ' end if
 
-            ? "[VideoPlayer] ==========================================="
+            ' ? "[VideoPlayer] ==========================================="
         end if
 
         ' Update tracking values
@@ -266,10 +266,10 @@ sub playContent()
     isLiveContent = (m.top.contentRequested.contentType = "LIVE")
     isClipContent = (m.top.contentRequested.contentType = "CLIP")
 
-    ? "[VideoPlayer] ===== PLAYBACK INITIALIZATION ====="
-    ? "[VideoPlayer] Content type: "; m.top.contentRequested.contentType
-    ? "[VideoPlayer] Is live: "; isLiveContent
-    ? "[VideoPlayer] Is clip: "; isClipContent
+    ' ? "[VideoPlayer] ===== PLAYBACK INITIALIZATION ====="
+    ' ? "[VideoPlayer] Content type: "; m.top.contentRequested.contentType
+    ' ? "[VideoPlayer] Is live: "; isLiveContent
+    ' ? "[VideoPlayer] Is clip: "; isClipContent
 
     if isLiveContent
         quality_options = []
@@ -280,11 +280,11 @@ sub playContent()
         end if
         m.video = m.top.CreateChild("StitchVideo")
         m.video.qualityOptions = quality_options
-        ? "[VideoPlayer] Created StitchVideo component for live stream"
+        ' ? "[VideoPlayer] Created StitchVideo component for live stream"
         ' StitchVideo will observe its own selectedQuality field
     else
         m.video = m.top.CreateChild("CustomVideo")
-        ? "[VideoPlayer] Created CustomVideo component for VOD/clip"
+        ' ? "[VideoPlayer] Created CustomVideo component for VOD/clip"
     end if
 
     httpAgent = CreateObject("roHttpAgent")
@@ -315,7 +315,7 @@ sub playContent()
         if authToken <> ""
             httpAgent.addheader("Authorization", "Bearer " + authToken)
         end if
-        ? "[VideoPlayer] Configured HTTP agent for clip with enhanced headers"
+        ' ? "[VideoPlayer] Configured HTTP agent for clip with enhanced headers"
     else ' Live/VOD
         httpAgent.addheader("Accept", "*/*")
         httpAgent.addheader("Origin", "https://android.tv.twitch.tv")
@@ -327,7 +327,7 @@ sub playContent()
             httpAgent.addheader("Cache-Control", "no-cache")
             httpAgent.addheader("Connection", "keep-alive")
             httpAgent.addheader("X-Low-Latency", "1")
-            ? "[VideoPlayer] Added low-latency headers to HTTP agent"
+            ' ? "[VideoPlayer] Added low-latency headers to HTTP agent"
         end if
     end if
     m.video.setHttpAgent(httpAgent)
@@ -361,8 +361,8 @@ sub playContent()
 
     contentNodeToPlay = m.top.content ' This is the TwitchContentNode
     if contentNodeToPlay <> invalid then
-        ? "[VideoPlayer] Preparing to play content. QualityID: "; contentNodeToPlay.QualityID
-        ? "[VideoPlayer] Latency Preference: "; get_user_setting("preferred.latency", "low")
+        ' ? "[VideoPlayer] Preparing to play content. QualityID: "; contentNodeToPlay.QualityID
+        ' ? "[VideoPlayer] Latency Preference: "; get_user_setting("preferred.latency", "low")
 
         if isLiveContent
             contentNodeToPlay.ignoreStreamErrors = false ' Important for HLS error reporting
@@ -375,30 +375,30 @@ sub playContent()
 
             if isLowLatencyMode and not isAutomaticQuality and currentQualityID <> ""
                 contentNodeToPlay.switchingStrategy = "no-adaptation"
-                ? "[VideoPlayer] Low latency with specific quality ('";currentQualityID;"'): ABR disabled (no-adaptation)."
+                ' ? "[VideoPlayer] Low latency with specific quality ('";currentQualityID;"'): ABR disabled (no-adaptation)."
             else
                 contentNodeToPlay.switchingStrategy = "full-adaptation"
-                if isLowLatencyMode and isAutomaticQuality
-                    ? "[VideoPlayer] Low latency with 'Automatic' quality ('";currentQualityID;"'): ABR enabled (full-adaptation, conservative config)."
-                else if isLiveContent ' Normal latency live
-                    ? "[VideoPlayer] Normal latency live ('";currentQualityID;"'): ABR enabled (full-adaptation, standard config)."
-                end if
+                ' if isLowLatencyMode and isAutomaticQuality
+                '     ? "[VideoPlayer] Low latency with 'Automatic' quality ('";currentQualityID;"'): ABR enabled (full-adaptation, conservative config)."
+                ' else if isLiveContent ' Normal latency live
+                '     ? "[VideoPlayer] Normal latency live ('";currentQualityID;"'): ABR enabled (full-adaptation, standard config)."
+                ' end if
             end if
 
             ' Log if we have low-latency streams available
-            if contentNodeToPlay.lowLatencyStreamsAvailable <> invalid
-                ? "[VideoPlayer] Low latency streams available: "; contentNodeToPlay.lowLatencyStreamsAvailable
-            end if
+            ' if contentNodeToPlay.lowLatencyStreamsAvailable <> invalid
+            '     ? "[VideoPlayer] Low latency streams available: "; contentNodeToPlay.lowLatencyStreamsAvailable
+            ' end if
         else if isClipContent
             contentNodeToPlay.ignoreStreamErrors = true
             contentNodeToPlay.switchingStrategy = "no-adaptation"
             contentNodeToPlay.streamFormat = "mp4"
             contentNodeToPlay.enableTrickPlay = false
-            ? "[VideoPlayer] Configured content for clip playback ('";contentNodeToPlay.QualityID;"')"
+            ' ? "[VideoPlayer] Configured content for clip playback ('";contentNodeToPlay.QualityID;"')"
         else ' VOD
             contentNodeToPlay.ignoreStreamErrors = true ' Or false, depending on desired strictness
             contentNodeToPlay.switchingStrategy = "full-adaptation" ' Typically ABR for VODs
-            ? "[VideoPlayer] Configured content for VOD playback ('";contentNodeToPlay.QualityID;"')"
+            ' ? "[VideoPlayer] Configured content for VOD playback ('";contentNodeToPlay.QualityID;"')"
         end if
 
         m.video.content = contentNodeToPlay
@@ -416,9 +416,9 @@ sub playContent()
         m.video.visible = false ' Make visible after PlayerTask starts if needed
 
         if m.video.video_id <> invalid and m.top.contentRequested.contentType <> "LIVE"
-            ? "[VideoPlayer] VOD/Clip ID is valid: "; m.video.video_id
+            ' ? "[VideoPlayer] VOD/Clip ID is valid: "; m.video.video_id
             if m.video.videoBookmarks.DoesExist(m.video.video_id)
-                ? "[VideoPlayer] Jump To Position From Bookmarks > "; m.video.videoBookmarks[m.video.video_id]
+                ' ? "[VideoPlayer] Jump To Position From Bookmarks > "; m.video.videoBookmarks[m.video.video_id]
                 m.video.seek = Val(m.video.videoBookmarks[m.video.video_id])
             end if
         end if
@@ -438,14 +438,14 @@ sub playContent()
             m.delayMeasureTimer.control = "start"
         end if
 
-        ? "[VideoPlayer] ==========================================="
+        ' ? "[VideoPlayer] ==========================================="
     else
-        ? "[VideoPlayer] Error: contentNodeToPlay is invalid. Cannot start playback."
+        ' ? "[VideoPlayer] Error: contentNodeToPlay is invalid. Cannot start playback."
     end if
 end sub
 
 sub exitPlayer()
-    print "[VideoPlayer] exitPlayer()"
+    ' print "[VideoPlayer] exitPlayer()"
 
     if m.delayMeasureTimer <> invalid
         m.delayMeasureTimer.control = "stop"
@@ -474,7 +474,7 @@ sub exitPlayer()
         m.PlayerTask = invalid
     end if
 
-    ? "[VideoPlayer] Allow Break?: "; m.allowBreak
+    ' ? "[VideoPlayer] Allow Break?: "; m.allowBreak
     if m.allowBreak
         m.top.state = "done"
         m.top.backpressed = true ' Ensure this signals back correctly
@@ -483,7 +483,7 @@ end sub
 
 function onKeyEvent(key, press) as boolean
     if press
-        ? "[VideoPlayer] Key Event: "; key
+        ' ? "[VideoPlayer] Key Event: "; key
         if key = "back" then
             if m.chatWindow <> invalid and m.chatWindow.visible = true
                 m.chatWindow.callFunc("stopJobs") ' Stop chat jobs if chat is open
@@ -518,7 +518,7 @@ sub init()
 end sub
 
 sub onToggleChat()
-    ? "[VideoPlayer] onToggleChat received from video component"
+    ' ? "[VideoPlayer] onToggleChat received from video component"
     if m.video.toggleChat = true ' Check the field on the video component
         if m.chatWindow <> invalid
             m.chatWindow.visible = not m.chatWindow.visible
@@ -546,7 +546,7 @@ sub onChatVisibilityChange()
             m.video.translation = [0, 0]
             m.video.chatIsVisible = false
         end if
-        ? "[VideoPlayer] Chat visibility changed. Chat visible: "; m.chatWindow.visible; ", Video width: "; m.video.width
+        ' ? "[VideoPlayer] Chat visibility changed. Chat visible: "; m.chatWindow.visible; ", Video width: "; m.video.width
     end if
 end sub
 
@@ -569,18 +569,18 @@ end sub
 sub onVideoStateChange()
     ' This is observed on m.video.
     ' StitchVideo/CustomVideo have their own onVideoStateChange for UI.
-    ? "[VideoPlayer] Global onVideoStateChange: "; m.video.state
+    ' ? "[VideoPlayer] Global onVideoStateChange: "; m.video.state
     if m.video.state = "finished" and m.allowBreak
-        ? "[VideoPlayer] Video finished, exiting player."
+        ' ? "[VideoPlayer] Video finished, exiting player."
         exitPlayer()
     else if m.video.state = "error"
-        ? "[VideoPlayer] Video error state. Code: "; m.video.errorCode; ", Message: "; m.video.errorMessage
+        ' ? "[VideoPlayer] Video error state. Code: "; m.video.errorCode; ", Message: "; m.video.errorMessage
         ' Potentially show a global error message or attempt recovery if not handled by child
     end if
 end sub
 
 sub onVideoError()
-    ? "[VideoPlayer] Global onVideoError. Code: "; m.video.errorCode; ", Message: "; m.video.errorMessage
+    ' ? "[VideoPlayer] Global onVideoError. Code: "; m.video.errorCode; ", Message: "; m.video.errorMessage
     ' This can be used for more detailed global error logging or recovery.
 end sub
 
@@ -592,7 +592,7 @@ end sub
 
 sub onVideoBack()
     ' Called when CustomVideo's back field is true
-    ? "[VideoPlayer] Back key propagated from CustomVideo"
+    ' ? "[VideoPlayer] Back key propagated from CustomVideo"
     if m.chatWindow <> invalid and m.chatWindow.visible = true
         m.chatWindow.callFunc("stopJobs")
     end if
