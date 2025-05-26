@@ -282,13 +282,13 @@ sub main()
                 end if
 
                 if m.global?.supportedgraphicsresolution <> invalid
-                    if res.ToInt() > m.global.supportedgraphicsresolution
+                    if Val(res) > m.global.supportedgraphicsresolution
                         ' ? "Res Skip: "; res
                         continue for
                     end if
                 end if
 
-                if res.ToInt() >= 720
+                if Val(res) >= 720
                     stream_qualities.push(true)
                     stream_quality = true
                 else
@@ -414,7 +414,7 @@ sub main()
 
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
-            content.streamFormat = "hls"
+            content.streamFormat = isLowLatencyStream ? "lhls" : "hls"
             content.live = true
         end if
 

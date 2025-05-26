@@ -79,7 +79,7 @@ sub configureVideoForLatency(video as object, isLive as boolean)
     ' ? "[VideoPlayer] Is live content: "; isLive
     ' ? "[VideoPlayer] Video component type: "; video.subtype()
 
-    if video.subtype() = "StitchVideo"
+    if video.isSubtype("StitchVideo")
         ' ? "[VideoPlayer] StitchVideo handles its own low-latency configuration"
         ' ? "[VideoPlayer] ========================================="
         return
