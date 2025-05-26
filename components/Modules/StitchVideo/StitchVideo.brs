@@ -12,23 +12,24 @@ function init()
     m.progressBarProgress = m.top.findNode("progressBarProgress")
 
     ' Control buttons
-    m.playPauseGroup = m.top.findNode("playPauseGroup")
+    m.backGroup = m.top.findNode("backGroup")
     m.chatGroup = m.top.findNode("chatGroup")
+    m.playPauseGroup = m.top.findNode("playPauseGroup")
     m.qualityGroup = m.top.findNode("qualityGroup")
     m.controlButton = m.top.findNode("controlButton")
     m.messagesButton = m.top.findNode("messagesButton")
     m.qualitySelectButton = m.top.findNode("qualitySelectButton")
 
     ' Focus backgrounds
-    m.playPauseFocus = m.top.findNode("playPauseFocus")
+    m.backFocus = m.top.findNode("backFocus")
     m.chatFocus = m.top.findNode("chatFocus")
+    m.playPauseFocus = m.top.findNode("playPauseFocus")
     m.qualityFocus = m.top.findNode("qualityFocus")
 
     ' Other elements
     m.liveIndicator = m.top.findNode("liveIndicator")
     m.lowLatencyIndicator = m.top.findNode("lowLatencyIndicator")
     m.normalLatencyIndicator = m.top.findNode("normalLatencyIndicator")
-    m.latencyModeLabel = m.top.findNode("latencyModeLabel")
 
     ' Video info
     m.videoTitle = m.top.findNode("videoTitle")
@@ -37,13 +38,14 @@ function init()
 
     ' Quality dialog
     m.qualityDialog = m.top.findNode("QualityDialog")
+    ' Set up quality dialog observer once during initialization
+    m.qualityDialog.observeFieldScoped("buttonSelected", "onQualityButtonSelect")
 
     ' State variables
-    m.currentFocusedButton = 1 ' 1=play/pause, 2=chat, 3=quality
+    m.currentFocusedButton = 2 ' 0=back, 1=chat, 2=play/pause, 3=quality
     m.isOverlayVisible = false
     m.currentPositionSeconds = 0
     m.isLiveStream = true ' StitchVideo is always for live streams
-    m.hasQualityObserver = false ' Guard flag for quality dialog observer
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
@@ -66,7 +68,7 @@ function init()
     setupLiveUI()
     updateLatencyIndicator()
 
-    ? "[StitchVideo] Initialized for live stream"
+    ' ? "[StitchVideo] Initialized for live stream"
 end function
 
 sub setupLiveUI()
@@ -87,11 +89,11 @@ sub updateLatencyIndicator()
         if isLowLatency
             m.lowLatencyIndicator.visible = true
             m.normalLatencyIndicator.visible = false
-            ? "[StitchVideo] Low latency mode enabled (user setting)"
+            ' ? "[StitchVideo] Low latency mode enabled (user setting)"
         else
             m.lowLatencyIndicator.visible = false
             m.normalLatencyIndicator.visible = true
-            ? "[StitchVideo] Normal latency mode (user setting)"
+            ' ? "[StitchVideo] Normal latency mode (user setting)"
         end if
     else
         ' Hide both when overlay is not visible
@@ -112,9 +114,9 @@ sub onVideoStateChange()
         m.controlButton.uri = "pkg:/images/play.png"
     else if m.top.state = "buffering"
         ' Could add loading spinner here
-        ? "[StitchVideo] Buffering..."
+        ' ? "[StitchVideo] Buffering..."
     else if m.top.state = "error"
-        ? "[StitchVideo] Video error occurred"
+        ' ? "[StitchVideo] Video error occurred"
     end if
 end sub
 
@@ -140,7 +142,7 @@ end sub
 
 sub onBufferingStatusChange()
     ' Live streams handle buffering differently
-    ? "[StitchVideo] Buffering status changed"
+    ' ? "[StitchVideo] Buffering status changed"
 end sub
 
 sub onQualityOptionsChange()
@@ -150,12 +152,12 @@ end sub
 sub onSelectedQualityChange()
     setupLiveUI()
     updateLatencyIndicator()
-    ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
+    ' ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
 end sub
 
 sub setupQualityDialog()
     if m.top.qualityOptions <> invalid and m.top.qualityOptions.count() > 0
-        m.qualityDialog.title = "Select Quality"
+        m.qualityDialog.title = "Please Choose Your Video Quality"
         m.qualityDialog.message = "Choose video quality:"
 
         buttons = []
@@ -165,28 +167,46 @@ sub setupQualityDialog()
         buttons.push("Cancel")
 
         m.qualityDialog.buttons = buttons
-
-        ' Remove existing observer if present, then add new one
-        if m.hasQualityObserver
-            m.qualityDialog.unobserveField("buttonSelected")
-        end if
-
-        m.qualityDialog.observeField("buttonSelected", "onQualitySelected")
-        m.hasQualityObserver = true
     end if
 end sub
 
-sub onQualitySelected()
+sub onQualityButtonSelect()
+    ' ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
+
     selectedIndex = m.qualityDialog.buttonSelected
-    if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
-        m.top.selectedQuality = m.top.qualityOptions[selectedIndex]
+    totalButtons = m.qualityDialog.buttons.count()
+
+    ' Hide dialog first
+    m.qualityDialog.visible = false
+    m.qualityDialog.setFocus(false)
+
+    ' Check if Cancel was selected (last button)
+    if selectedIndex = totalButtons - 1
+        ' ? "[StitchVideo] Cancel selected, no quality change"
+    else if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
+        ' Valid quality option selected
+        selectedQuality = m.top.qualityOptions[selectedIndex]
+        ' ? "[StitchVideo] Quality selected: "; selectedQuality
+
+        m.top.selectedQuality = selectedQuality
         m.top.QualityChangeRequest = selectedIndex
         m.top.QualityChangeRequestFlag = true
 
         ' Update latency indicator
         updateLatencyIndicator()
+    else
+        ' ? "[StitchVideo] Invalid selection index: "; selectedIndex
     end if
-    m.qualityDialog.visible = false
+
+    ' Restore focus to video component
+    m.top.setFocus(true)
+
+    ' If overlay is visible, restart fade timer
+    if m.isOverlayVisible
+        focusButton(m.currentFocusedButton)
+        m.fadeAwayTimer.control = "stop"
+        m.fadeAwayTimer.control = "start"
+    end if
 end sub
 
 sub updateProgressBar()
@@ -215,34 +235,48 @@ sub hideOverlay()
 end sub
 
 sub onFadeAway()
-    hideOverlay()
+    ' Only hide overlay if quality dialog is not visible
+    if not m.qualityDialog.visible
+        hideOverlay()
+    end if
 end sub
 
 sub focusButton(buttonIndex)
     clearAllButtonFocus()
     m.currentFocusedButton = buttonIndex
 
-    if buttonIndex = 1 ' Play/Pause
-        m.playPauseFocus.visible = true
-    else if buttonIndex = 2 ' Chat
+    if buttonIndex = 0 ' Back
+        m.backFocus.visible = true
+    else if buttonIndex = 1 ' Chat
         m.chatFocus.visible = true
+    else if buttonIndex = 2 ' Play/Pause
+        m.playPauseFocus.visible = true
     else if buttonIndex = 3 ' Quality
         m.qualityFocus.visible = true
     end if
 end sub
 
 sub clearAllButtonFocus()
-    m.playPauseFocus.visible = false
+    m.backFocus.visible = false
     m.chatFocus.visible = false
+    m.playPauseFocus.visible = false
     m.qualityFocus.visible = false
 end sub
 
 sub executeButtonAction()
-    if m.currentFocusedButton = 1 ' Play/Pause
-        togglePlayPause()
-    else if m.currentFocusedButton = 2 ' Chat
+    if m.currentFocusedButton = 0 ' Back
+        ' ? "[StitchVideo] Back button pressed - attempting to exit"
+        m.top.backPressed = true
+        if m.top.getParent() <> invalid
+            m.top.getParent().backPressed = true
+        end if
+        hideOverlay()
+        m.top.control = "stop"
+    else if m.currentFocusedButton = 1 ' Chat
         m.top.toggleChat = true
         m.top.streamLayoutMode = (m.top.streamLayoutMode + 1) mod 3
+    else if m.currentFocusedButton = 2 ' Play/Pause
+        togglePlayPause()
     else if m.currentFocusedButton = 3 ' Quality
         showQualityDialog()
     end if
@@ -258,9 +292,15 @@ end sub
 
 sub showQualityDialog()
     if m.top.qualityOptions <> invalid and m.top.qualityOptions.count() > 0
+        ' Stop the fade timer when showing dialog
+        m.fadeAwayTimer.control = "stop"
+
+        ' Show dialog and give it focus
+        ' (Observer is already set up in init() function)
         m.qualityDialog.visible = true
+        m.qualityDialog.setFocus(true)
     else
-        ? "[StitchVideo] No quality options available"
+        ' ? "[StitchVideo] No quality options available"
     end if
 end sub
 
@@ -297,13 +337,35 @@ function convertToReadableTimeFormat(time) as string
 end function
 
 function onKeyEvent(key, press) as boolean
-    ? "[StitchVideo] KeyEvent: "; key; " "; press
+    ' ? "[StitchVideo] KeyEvent: "; key; " "; press
 
     if press
-        ' Reset fade timer on any key press
-        if m.isOverlayVisible
-            m.fadeAwayTimer.control = "stop"
-            m.fadeAwayTimer.control = "start"
+        ' If quality dialog is visible, only handle back to close it
+        if m.qualityDialog.visible
+            if key = "back" or key = "down"
+                m.qualityDialog.visible = false
+                m.qualityDialog.setFocus(false)
+                m.top.setFocus(true)
+
+                ' Restart fade timer if overlay is visible
+                if m.isOverlayVisible
+                    focusButton(m.currentFocusedButton)
+                    m.fadeAwayTimer.control = "stop"
+                    m.fadeAwayTimer.control = "start"
+                end if
+                return true
+            end if
+            ' Let dialog handle all other keys
+            return false
+        end if
+
+        ' Normal key handling when dialog is not visible
+        ' Reset fade timer on any key press (except back when overlay is hidden)
+        if key <> "back" or m.isOverlayVisible
+            if m.isOverlayVisible
+                m.fadeAwayTimer.control = "stop"
+                m.fadeAwayTimer.control = "start"
+            end if
         end if
 
         return handleMainKeys(key)
@@ -325,29 +387,24 @@ function handleMainKeys(key) as boolean
     end if
 
     if key = "left"
-        ' Live stream navigation: play/pause(1) -> chat(2) -> quality(3)
-        if m.currentFocusedButton > 1
+        ' Live stream navigation: back(0) -> chat(1) -> play/pause(2) -> quality(3)
+        if m.currentFocusedButton > 0
             focusButton(m.currentFocusedButton - 1)
         else
             focusButton(3) ' Wrap to quality
         end if
         return true
     else if key = "right"
-        ' Live stream navigation: play/pause(1) -> chat(2) -> quality(3)
+        ' Live stream navigation: back(0) -> chat(1) -> play/pause(2) -> quality(3)
         if m.currentFocusedButton < 3
             focusButton(m.currentFocusedButton + 1)
         else
-            focusButton(1) ' Wrap to play/pause
+            focusButton(0) ' Wrap to back
         end if
         return true
     else if key = "down" or key = "back"
-        if m.qualityDialog.visible
-            m.qualityDialog.visible = false
-            return true
-        else
-            hideOverlay()
-            return true
-        end if
+        hideOverlay()
+        return true
     else if key = "OK"
         executeButtonAction()
         return true
