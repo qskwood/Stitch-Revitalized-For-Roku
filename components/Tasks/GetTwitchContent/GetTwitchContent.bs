@@ -105,29 +105,37 @@ sub main()
 
             ' Add parameters based on latency preference
             if lowLatencyEnabled
-                ' Enhanced low-latency parameters for Twitch
+                ' Critical low-latency parameters for Twitch LL-HLS
                 usherUrl += "&low_latency=true"
-                usherUrl += "&playlist_include_framerate=true"
                 usherUrl += "&supported_codecs=avc1"
                 usherUrl += "&p=" + CreateObject("roDeviceInfo").GetRandomUUID()
                 usherUrl += "&player_backend=mediaplayer"
                 usherUrl += "&reassignments_supported=true"
-                usherUrl += "&cdm=wv"
-                usherUrl += "&player_version=1.0.0"
+                usherUrl += "&playlist_include_framerate=true"
+
+                ' Key parameters for actual low-latency streams
                 usherUrl += "&fast_bread=true"
+                usherUrl += "&force_fast=true"
+                usherUrl += "&segment_preference=2" ' Request 2-second segments
+                usherUrl += "&transcode_type=fast" ' Fast transcoding
+
+                ' Request specific low-latency variants
                 usherUrl += "&allow_audio_only=false"
                 usherUrl += "&allow_spectre=false"
                 usherUrl += "&player_type=roku_tv"
-                ' Critical low-latency parameters
-                usherUrl += "&segment_preference=2"
-                usherUrl += "&transcode_type=fast"
-                usherUrl += "&force_fast=true"
+
+                ' Force LL-HLS if available
+                usherUrl += "&enable_low_latency=true"
+                usherUrl += "&low_latency_variant=true"
+                usherUrl += "&target_latency_ms=2000" ' Target 2 second latency
+
                 ? "[GetTwitchContent] LOW LATENCY MODE ENABLED"
-                ? "[GetTwitchContent] Enhanced low-latency parameters added to usher URL"
+                ? "[GetTwitchContent] Requesting LL-HLS streams with 2-second target latency"
             else
                 ' Normal latency parameters
                 usherUrl += "&playlist_include_framerate=true"
                 usherUrl += "&player_backend=mediaplayer"
+                usherUrl += "&segment_preference=4" ' Normal 4-second segments
                 ? "[GetTwitchContent] NORMAL LATENCY MODE"
             end if
         end if
@@ -202,33 +210,46 @@ sub main()
             if stream_item["RESOLUTION"] <> invalid and stream_item["URL"] <> invalid
                 res = stream_item["RESOLUTION"].split("x")[1]
 
-                ' Enhanced low-latency detection for Twitch streams
+                ' Enhanced low-latency detection for Twitch LL-HLS
                 isLowLatencyStream = false
                 streamUrl = stream_item["URL"]
 
-                ' Check for various low-latency indicators
-                llIndicators = ["llhls", "low_latency", "fast", "_fast", "ll-", "lowlatency"]
+                ' Enhanced low-latency detection for Twitch LL-HLS
+                llIndicators = ["llhls", "ll-hls", "low_latency", "fast", "_fast", "ll-", "lowlatency", "_2s", "fast_", "ll_"]
                 for each indicator in llIndicators
                     if streamUrl.InStr(indicator) > -1
                         isLowLatencyStream = true
+                        ? "[GetTwitchContent] ✓ DETECTED LL INDICATOR ("; indicator; "): "; res; "p"
                         exit for
                     end if
                 end for
 
-                ' Additional checks: if we requested low latency and got short segments
+                ' Check for segment duration indicators in URL
                 if not isLowLatencyStream and lowLatencyEnabled
-                    ' Check if this looks like a low-latency stream based on segment duration
-                    ' Low-latency streams typically have shorter segments
-                    if streamUrl.InStr("_2") > -1 or streamUrl.InStr("_1") > -1
+                    ' Look for segment duration patterns that indicate low latency
+                    segmentIndicators = ["_2", "_1", "2s", "1s", "fast", "ll"]
+                    for each segIndicator in segmentIndicators
+                        if streamUrl.InStr(segIndicator) > -1
+                            isLowLatencyStream = true
+                            ? "[GetTwitchContent] ✓ DETECTED LL SEGMENT PATTERN ("; segIndicator; "): "; res; "p"
+                            exit for
+                        end if
+                    end for
+                end if
+
+                ' Check manifest content type for LL-HLS
+                if not isLowLatencyStream and lowLatencyEnabled
+                    ' Check if URL contains patterns typical of LL-HLS manifests
+                    if streamUrl.InStr("low") > -1 or streamUrl.InStr("fast") > -1
                         isLowLatencyStream = true
-                        ? "[GetTwitchContent] ✓ DETECTED POTENTIAL LL STREAM (short segments): "; res; "p"
+                        ? "[GetTwitchContent] ✓ DETECTED LL MANIFEST PATTERN: "; res; "p"
                     end if
                 end if
 
-                ' If we requested low latency, assume all streams are optimized for LL
+                ' Only assume LL if we haven't found explicit indicators
                 if lowLatencyEnabled and not isLowLatencyStream
                     isLowLatencyStream = true
-                    ? "[GetTwitchContent] ✓ ASSUMING LL STREAM (LL mode enabled): "; res; "p"
+                    ? "[GetTwitchContent] ✓ ASSUMING LL STREAM (requested but no explicit indicators): "; res; "p"
                 end if
 
                 if isLowLatencyStream
@@ -259,8 +280,6 @@ sub main()
                         value = value + " LL*"
                     end if
                 end if
-
-                ' Continue with rest of your existing stream processing...
 
                 if m.global?.supportedgraphicsresolution <> invalid
                     if res.ToInt() > m.global.supportedgraphicsresolution
@@ -306,6 +325,16 @@ sub main()
                 })
 
                 ? "[GetTwitchContent] Added stream: "; value; " | Bitrate: "; Int(Val(stream_item["BANDWIDTH"])) / 1000; "kbps | LL: "; isLowLatencyStream
+
+                ' Debug: Log actual stream URL for analysis
+                if lowLatencyEnabled
+                    ? "[GetTwitchContent] Stream URL analysis for "; value; ":"
+                    ? "[GetTwitchContent] URL: "; Left(streamUrl, 100); "..."
+                    if streamUrl.InStr("fast") > -1 then ? "[GetTwitchContent] ✓ Contains 'fast'"
+                    if streamUrl.InStr("low") > -1 then ? "[GetTwitchContent] ✓ Contains 'low'"
+                    if streamUrl.InStr("_2") > -1 then ? "[GetTwitchContent] ✓ Contains '_2'"
+                    if streamUrl.InStr("ll") > -1 then ? "[GetTwitchContent] ✓ Contains 'll'"
+                end if
             end if
         end for
 
@@ -382,6 +411,12 @@ sub main()
         responseObj = []
         content = CreateObject("roSGNode", "TwitchContentNode")
         content.setFields(m.top.contentRequested)
+
+        ' Set live stream properties
+        if m.top.contentRequested.contentType = "LIVE"
+            content.streamFormat = "hls"
+            content.live = true
+        end if
 
         userQualityPreference = get_user_setting("playback.video.quality", "auto")
 

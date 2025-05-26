@@ -21,11 +21,25 @@
         <field id="video_type" type="string" />
         <field id="qualityOptions" type="array" />
         <field id="selectedQuality" type="string" value="" />
+        
+        <!-- Low-Latency HLS Properties -->
+        <field id="enableLowLatencyHLS" type="bool" value="false" />
+        <field id="hlsOptimization" type="string" value="" />
+        <field id="enablePartialSegments" type="bool" value="false" />
+        <field id="enablePreloadHints" type="bool" value="false" />
+        <field id="enableBlockingPlaylistReload" type="bool" value="false" />
+        <field id="bufferingConfig" type="assocarray" />
+        <field id="adaptiveBitrateConfig" type="assocarray" />
+        <field id="enableDecoderCompatibility" type="bool" value="true" />
+        <field id="maxVideoDecodeResolution" type="string" value="" />
     </interface>
+    
+    <!-- rest of your XML stays the same -->
     <script type="text/brightscript" uri="StitchVideo.brs" />
     <script type="text/brightscript" uri="pkg:/source/utils/config.brs" />
     <script type="text/brightscript" uri="pkg:/source/utils/misc.brs" />
     <children>
+        <!-- your existing children stay the same -->
         <!-- Modern Control Overlay for Live Streams -->
         <Group id="controlOverlay" translation="[0,580]">
             <!-- Background Gradient -->

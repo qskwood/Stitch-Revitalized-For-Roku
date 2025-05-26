@@ -70,7 +70,6 @@ function onQualityChangeRequested()
 end function
 
 sub configureVideoForLatency(video as object, isLive as boolean)
-    ' Get user's latency preference
     latencyPreference = get_user_setting("preferred.latency", "low")
     isLowLatency = (latencyPreference = "low")
 
@@ -80,86 +79,84 @@ sub configureVideoForLatency(video as object, isLive as boolean)
     ? "[VideoPlayer] Is live content: "; isLive
     ? "[VideoPlayer] Video component type: "; video.subtype()
 
-    ' Check if this is a StitchVideo component (which wraps a Video node)
     if video.subtype() = "StitchVideo"
-        ? "[VideoPlayer] Configuring StitchVideo component"
-        ' StitchVideo components handle their own configuration internally
-        ' We'll rely on the low-latency parameters in the stream URLs and HTTP headers
-        if isLive and isLowLatency
-            ? "[VideoPlayer] StitchVideo will use LOW LATENCY streams and headers"
-        else
-            ? "[VideoPlayer] StitchVideo will use STANDARD configuration"
-        end if
+        ? "[VideoPlayer] StitchVideo handles its own low-latency configuration"
+        ? "[VideoPlayer] ========================================="
+        return
+    end if
+
+    ' Original configuration for regular Video components only
+    if isLive and isLowLatency
+        ' Enable LL-HLS for regular Video components
+        try
+            video.enableLowLatencyHLS = true
+            video.hlsOptimization = "lowLatency"
+            video.enablePartialSegments = true
+            video.enablePreloadHints = true
+            video.enableBlockingPlaylistReload = true
+            ? "[VideoPlayer] ✓ Regular Video LL-HLS settings applied"
+        catch e
+            ? "[VideoPlayer] ⚠️ LL-HLS not fully supported on this device"
+        end try
+
+        video.bufferingConfig = {
+            initialBufferingMs: 200,
+            minBufferMs: 500,
+            maxBufferMs: 1500,
+            bufferForPlaybackMs: 200,
+            bufferForPlaybackAfterRebufferMs: 500,
+            rebufferMs: 200
+        }
+
+        video.enableDecoderCompatibility = false
+        video.maxVideoDecodeResolution = "1080p"
+
+        video.adaptiveBitrateConfig = {
+            initialBandwidthBps: 5000000,
+            maxInitialBitrate: 8000000,
+            minDurationForQualityIncreaseMs: 60000,
+            maxDurationForQualityDecreaseMs: 2000,
+            minDurationToRetainAfterDiscardMs: 1000,
+            bandwidthMeterSlidingWindowMs: 3000
+        }
+
+        ? "[VideoPlayer] ✓ Regular Video configured for LL-HLS"
+    else if isLive
+        ' Normal latency configuration for live streams
+        video.bufferingConfig = {
+            initialBufferingMs: 2000,
+            minBufferMs: 5000,
+            maxBufferMs: 15000,
+            bufferForPlaybackMs: 2000,
+            bufferForPlaybackAfterRebufferMs: 5000,
+            rebufferMs: 2000
+        }
+
+        video.enableDecoderCompatibility = true
+
+        video.adaptiveBitrateConfig = {
+            initialBandwidthBps: 3000000,
+            maxInitialBitrate: 6000000,
+            minDurationForQualityIncreaseMs: 10000,
+            maxDurationForQualityDecreaseMs: 25000,
+            minDurationToRetainAfterDiscardMs: 5000,
+            bandwidthMeterSlidingWindowMs: 10000
+        }
+
+        ? "[VideoPlayer] Regular Video configured for NORMAL LATENCY mode"
     else
-        ' Original configuration for regular Video components
-        if isLive and isLowLatency
-            ' Ultra-aggressive buffering for true low latency
-            video.bufferingConfig = {
-                initialBufferingMs: 200,
-                minBufferMs: 500,
-                maxBufferMs: 1500,
-                bufferForPlaybackMs: 200,
-                bufferForPlaybackAfterRebufferMs: 500,
-                rebufferMs: 200
-            }
+        ' VOD configuration
+        video.bufferingConfig = {
+            initialBufferingMs: 3000,
+            minBufferMs: 10000,
+            maxBufferMs: 30000,
+            bufferForPlaybackMs: 3000,
+            bufferForPlaybackAfterRebufferMs: 8000,
+            rebufferMs: 3000
+        }
 
-            ' Force specific settings for low latency
-            video.enableDecoderCompatibility = false
-            video.maxVideoDecodeResolution = "1080p"
-
-            ' Disable adaptive bitrate for consistent low latency
-            video.adaptiveBitrateConfig = {
-                initialBandwidthBps: 5000000,
-                maxInitialBitrate: 8000000,
-                minDurationForQualityIncreaseMs: 60000,
-                maxDurationForQualityDecreaseMs: 2000,
-                minDurationToRetainAfterDiscardMs: 1000,
-                bandwidthMeterSlidingWindowMs: 3000
-            }
-
-            ? "[VideoPlayer] Regular Video configured for LOW LATENCY mode"
-            ? "[VideoPlayer] Buffer settings: init=200ms, min=500ms, max=1500ms"
-        else if isLive
-            ' Normal latency configuration for live streams
-            video.bufferingConfig = {
-                initialBufferingMs: 2000,
-                minBufferMs: 5000,
-                maxBufferMs: 15000,
-                bufferForPlaybackMs: 2000,
-                bufferForPlaybackAfterRebufferMs: 5000,
-                rebufferMs: 2000
-            }
-
-            video.enableDecoderCompatibility = true
-
-            ' Standard adaptive bitrate parameters
-            video.adaptiveBitrateConfig = {
-                initialBandwidthBps: 3000000,
-                maxInitialBitrate: 6000000,
-                minDurationForQualityIncreaseMs: 10000,
-                maxDurationForQualityDecreaseMs: 25000,
-                minDurationToRetainAfterDiscardMs: 5000,
-                bandwidthMeterSlidingWindowMs: 10000
-            }
-
-            ? "[VideoPlayer] Regular Video configured for NORMAL LATENCY mode"
-            ? "[VideoPlayer] Buffer settings: init=2000ms, min=5000ms, max=15000ms"
-        else
-            ' VOD configuration (not affected by latency settings)
-            video.bufferingConfig = {
-                initialBufferingMs: 3000,
-                minBufferMs: 10000,
-                maxBufferMs: 30000,
-                bufferForPlaybackMs: 3000,
-                bufferForPlaybackAfterRebufferMs: 8000,
-                rebufferMs: 3000
-            }
-
-            video.enableDecoderCompatibility = true
-
-            ? "[VideoPlayer] Regular Video configured for VOD playback"
-            ? "[VideoPlayer] Buffer settings: init=3000ms, min=10000ms, max=30000ms"
-        end if
+        video.enableDecoderCompatibility = true
+        ? "[VideoPlayer] Regular Video configured for VOD playback"
     end if
     ? "[VideoPlayer] ========================================="
 end sub
@@ -329,6 +326,7 @@ sub playContent()
         if isLiveContent and latencyPreference = "low"
             httpAgent.addheader("Cache-Control", "no-cache")
             httpAgent.addheader("Connection", "keep-alive")
+            httpAgent.addheader("X-Low-Latency", "1")
             ? "[VideoPlayer] Added low-latency headers to HTTP agent"
         end if
     end if
