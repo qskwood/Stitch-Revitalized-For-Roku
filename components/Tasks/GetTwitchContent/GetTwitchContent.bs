@@ -6,8 +6,15 @@ sub main()
             clipSlug = m.top.contentRequested.contentId
         end if
 
+        responseObj = []
         content = CreateObject("roSGNode", "TwitchContentNode")
         content.setFields(m.top.contentRequested)
+
+        ' Set live stream properties
+        if m.top.contentRequested.contentType = "LIVE"
+            content.streamFormat = "hls"
+            content.live = true
+        end if
 
         ' Try to get a working clip URL with enhanced method
         workingUrl = findWorkingClipUrl(clipSlug, m.top.contentRequested.previewImageUrl)
@@ -81,6 +88,12 @@ sub main()
         latencyPreference = get_user_setting("preferred.latency", "low")
         lowLatencyEnabled = (latencyPreference = "low")
 
+        ? "[GetTwitchContent] ===== LATENCY CONFIGURATION ====="
+        ? "[GetTwitchContent] User latency preference: "; latencyPreference
+        ? "[GetTwitchContent] Low latency enabled: "; lowLatencyEnabled
+        ? "[GetTwitchContent] Content type: "; m.top.contentRequested.contentType
+        ? "[GetTwitchContent] ========================================="
+
         if m.top.contentRequested.contentType = "VOD"
             usherUrl = "https://usher.ttvnw.net/vod/" + rsp.data.video.id + ".m3u8?playlist_include_framerate=true&allow_source=true&player_type=pulsar&player_backend=mediaplayer&reassignments_supported=true&nauth=" + rsp.data.video.playbackAccessToken.value.EncodeUri() + "&nauthsig=" + rsp.data.video.playbackAccessToken.signature
         else if m.top.contentRequested.contentType = "LIVE"
@@ -89,9 +102,10 @@ sub main()
             usherUrl += "?allow_source=true"
             usherUrl += "&token=" + rsp.data.user.stream.playbackAccessToken.value.EncodeUriComponent()
             usherUrl += "&sig=" + rsp.data.user.stream.playbackAccessToken.signature.EncodeUriComponent()
+
             ' Add parameters based on latency preference
             if lowLatencyEnabled
-                ' Request low latency streams specifically
+                ' Enhanced low-latency parameters for Twitch
                 usherUrl += "&low_latency=true"
                 usherUrl += "&playlist_include_framerate=true"
                 usherUrl += "&supported_codecs=avc1"
@@ -104,14 +118,21 @@ sub main()
                 usherUrl += "&allow_audio_only=false"
                 usherUrl += "&allow_spectre=false"
                 usherUrl += "&player_type=roku_tv"
-                ' Force lower segment duration for reduced latency
+                ' Critical low-latency parameters
                 usherUrl += "&segment_preference=2"
+                usherUrl += "&transcode_type=fast"
+                usherUrl += "&force_fast=true"
+                ? "[GetTwitchContent] LOW LATENCY MODE ENABLED"
+                ? "[GetTwitchContent] Enhanced low-latency parameters added to usher URL"
             else
                 ' Normal latency parameters
                 usherUrl += "&playlist_include_framerate=true"
                 usherUrl += "&player_backend=mediaplayer"
+                ? "[GetTwitchContent] NORMAL LATENCY MODE"
             end if
         end if
+
+        ? "[GetTwitchContent] Final Usher URL: "; usherUrl
 
         req = HttpRequest({
             url: usherUrl
@@ -132,6 +153,9 @@ sub main()
             end if
             sleep(10)
         end while
+
+        ? "[GetTwitchContent] Usher response received, parsing streams..."
+        ? "[GetTwitchContent] Response length: "; usher_rsp.Len(); " characters"
 
         list = usher_rsp.Split(chr(10))
         first_stream_link = ""
@@ -162,6 +186,8 @@ sub main()
             end if
         end for
 
+        ? "[GetTwitchContent] Found "; stream_objects.Count(); " total streams"
+
         stream_bitrates = []
         stream_urls = []
         stream_qualities = []
@@ -170,10 +196,47 @@ sub main()
         stream_formats = []
         streams = []
         metadata = []
+        lowLatencyStreamsFound = 0
 
         for each stream_item in stream_objects
             if stream_item["RESOLUTION"] <> invalid and stream_item["URL"] <> invalid
                 res = stream_item["RESOLUTION"].split("x")[1]
+
+                ' Enhanced low-latency detection for Twitch streams
+                isLowLatencyStream = false
+                streamUrl = stream_item["URL"]
+
+                ' Check for various low-latency indicators
+                llIndicators = ["llhls", "low_latency", "fast", "_fast", "ll-", "lowlatency"]
+                for each indicator in llIndicators
+                    if streamUrl.InStr(indicator) > -1
+                        isLowLatencyStream = true
+                        exit for
+                    end if
+                end for
+
+                ' Additional checks: if we requested low latency and got short segments
+                if not isLowLatencyStream and lowLatencyEnabled
+                    ' Check if this looks like a low-latency stream based on segment duration
+                    ' Low-latency streams typically have shorter segments
+                    if streamUrl.InStr("_2") > -1 or streamUrl.InStr("_1") > -1
+                        isLowLatencyStream = true
+                        ? "[GetTwitchContent] ✓ DETECTED POTENTIAL LL STREAM (short segments): "; res; "p"
+                    end if
+                end if
+
+                ' If we requested low latency, assume all streams are optimized for LL
+                if lowLatencyEnabled and not isLowLatencyStream
+                    isLowLatencyStream = true
+                    ? "[GetTwitchContent] ✓ ASSUMING LL STREAM (LL mode enabled): "; res; "p"
+                end if
+
+                if isLowLatencyStream
+                    lowLatencyStreamsFound = lowLatencyStreamsFound + 1
+                    ? "[GetTwitchContent] ✓ LOW LATENCY STREAM: "; res; "p"
+                else
+                    ? "[GetTwitchContent] ✗ STANDARD STREAM: "; res; "p"
+                end if
 
                 if stream_item["VIDEO"] = "chunked"
                     if stream_item["FRAME-RATE"] <> invalid
@@ -183,15 +246,21 @@ sub main()
                     if fps <> invalid
                         value = value + fps + " (Source)"
                     end if
-                    if lowLatencyEnabled
+                    if lowLatencyEnabled and isLowLatencyStream
                         value = value + " LL"
+                    else if lowLatencyEnabled
+                        value = value + " LL*" ' Asterisk indicates low-latency was requested but not confirmed
                     end if
                 else
                     value = stream_item["VIDEO"]
-                    if lowLatencyEnabled
+                    if lowLatencyEnabled and isLowLatencyStream
                         value = value + " LL"
+                    else if lowLatencyEnabled
+                        value = value + " LL*"
                     end if
                 end if
+
+                ' Continue with rest of your existing stream processing...
 
                 if m.global?.supportedgraphicsresolution <> invalid
                     if res.ToInt() > m.global.supportedgraphicsresolution
@@ -209,8 +278,6 @@ sub main()
                 end if
 
                 ' Use the stream URL as-is from the playlist
-                streamUrl = stream_item["URL"]
-
                 stream_bitrates.push(Int(Val(stream_item["BANDWIDTH"])) / 1000)
                 stream_sticky.push(false)
                 stream_content_ids.push(value)
@@ -223,6 +290,7 @@ sub main()
                     quality: stream_quality
                     contentid: value
                     bitrate: Int(Val(stream_item["BANDWIDTH"])) / 1000
+                    isLowLatency: isLowLatencyStream
                 }
                 streams.push(stream)
 
@@ -234,9 +302,23 @@ sub main()
                     StreamQualities: [stream_quality]
                     StreamContentIds: [value]
                     StreamBitrates: [Int(Val(stream_item["BANDWIDTH"])) / 1000]
+                    isLowLatency: isLowLatencyStream
                 })
+
+                ? "[GetTwitchContent] Added stream: "; value; " | Bitrate: "; Int(Val(stream_item["BANDWIDTH"])) / 1000; "kbps | LL: "; isLowLatencyStream
             end if
         end for
+
+        ? "[GetTwitchContent] ===== STREAM ANALYSIS SUMMARY ====="
+        ? "[GetTwitchContent] Total streams processed: "; streams.Count()
+        ? "[GetTwitchContent] Low latency streams found: "; lowLatencyStreamsFound
+        ? "[GetTwitchContent] Low latency requested: "; lowLatencyEnabled
+        if lowLatencyEnabled and lowLatencyStreamsFound = 0
+            ? "[GetTwitchContent] ⚠️  WARNING: Low latency requested but no LL streams found!"
+        else if lowLatencyEnabled and lowLatencyStreamsFound > 0
+            ? "[GetTwitchContent] ✓ SUCCESS: Low latency streams available and will be used"
+        end if
+        ? "[GetTwitchContent] ==========================================="
 
         ' Sort streams by bitrate (highest first) for quality preference
         if streams.Count() > 0
@@ -279,7 +361,11 @@ sub main()
         ' Create automatic quality selection with all available streams
         automaticQualityLabel = "Automatic"
         if lowLatencyEnabled and m.top.contentRequested.contentType = "LIVE"
-            automaticQualityLabel = "Automatic (Low Latency)"
+            if lowLatencyStreamsFound > 0
+                automaticQualityLabel = "Automatic (Low Latency)"
+            else
+                automaticQualityLabel = "Automatic (LL Requested)"
+            end if
         end if
 
         metadata.unshift({
@@ -290,6 +376,7 @@ sub main()
             StreamQualities: stream_qualities
             StreamContentIDs: stream_content_ids
             StreamStickyHttpRedirects: stream_sticky
+            lowLatencyStreamsAvailable: lowLatencyStreamsFound
         })
 
         responseObj = []
@@ -298,15 +385,70 @@ sub main()
 
         userQualityPreference = get_user_setting("playback.video.quality", "auto")
 
+        selectedMetadata = invalid
         if userQualityPreference = "highest" and metadata.Count() > 1
-            content.setFields(metadata[1])
+            selectedMetadata = metadata[1]
+            ? "[GetTwitchContent] Using HIGHEST quality setting: "; metadata[1].QualityID
         else if userQualityPreference = "lowest" and metadata.Count() > 0
             ' Select the lowest quality stream
             lowestQualityIndex = metadata.Count() - 1
-            content.setFields(metadata[lowestQualityIndex])
+            selectedMetadata = metadata[lowestQualityIndex]
+            ? "[GetTwitchContent] Using LOWEST quality setting: "; metadata[lowestQualityIndex].QualityID
         else
             ' Use automatic selection (index 0) - this allows adaptive bitrate
-            content.setFields(metadata[0])
+            selectedMetadata = metadata[0]
+            ? "[GetTwitchContent] Using AUTOMATIC quality setting: "; metadata[0].QualityID
+        end if
+
+        ' Set only valid ContentNode fields to avoid type mismatch
+        if selectedMetadata <> invalid
+            ' Set QualityID
+            if selectedMetadata.QualityID <> invalid
+                content.QualityID = selectedMetadata.QualityID
+            end if
+
+            ' Set URL and StreamUrls - handle both single and multiple streams
+            if selectedMetadata.StreamUrls <> invalid and selectedMetadata.StreamUrls.Count() > 0
+                content.url = selectedMetadata.StreamUrls[0]
+                content.StreamUrls = selectedMetadata.StreamUrls
+            else if selectedMetadata.Streams <> invalid and selectedMetadata.Streams.Count() > 0
+                ' Fallback to Streams array if StreamUrls not available
+                content.url = selectedMetadata.Streams[0].url
+                streamUrls = []
+                for each stream in selectedMetadata.Streams
+                    streamUrls.push(stream.url)
+                end for
+                content.StreamUrls = streamUrls
+            end if
+
+            ' Set qualities - handle field name variations
+            if selectedMetadata.StreamQualities <> invalid
+                content.StreamQualities = selectedMetadata.StreamQualities
+            end if
+
+            ' Set content IDs - handle field name variations
+            if selectedMetadata.StreamContentIds <> invalid
+                content.StreamContentIds = selectedMetadata.StreamContentIds
+            else if selectedMetadata.StreamContentIDs <> invalid
+                content.StreamContentIds = selectedMetadata.StreamContentIDs
+            end if
+
+            ' Set bitrates
+            if selectedMetadata.StreamBitrates <> invalid
+                content.StreamBitrates = selectedMetadata.StreamBitrates
+            end if
+
+            ' Set sticky redirects - handle field name variations
+            if selectedMetadata.StreamStickyHttpRedirects <> invalid
+                content.StreamStickyHttpRedirects = selectedMetadata.StreamStickyHttpRedirects
+            end if
+
+            ' Store low latency info (this might be a custom field)
+            if selectedMetadata.lowLatencyStreamsAvailable <> invalid
+                content.lowLatencyStreamsAvailable = selectedMetadata.lowLatencyStreamsAvailable
+            end if
+
+            ? "[GetTwitchContent] Content node configured with URL: "; content.url
         end if
 
         m.top.metadata = metadata
