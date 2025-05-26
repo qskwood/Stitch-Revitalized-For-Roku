@@ -12,7 +12,7 @@ sub main()
 
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
-            content.streamFormat = "hls"
+            content.streamFormat = isLowLatencyStream ? "lhls" : "hls"
             content.live = true
         end if
 
