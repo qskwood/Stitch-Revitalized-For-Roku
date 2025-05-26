@@ -25,7 +25,7 @@
         "description": "Configures the latency mode for live streams. Low latency reduces delay but may increase buffering.",
         "settingName": "preferred.latency",
         "type": "radio",
-        "default": "low",
+        "default": "normal",
         "options": [
             {
                 "title": "Low Latency (Minimal delay, may buffer more)",

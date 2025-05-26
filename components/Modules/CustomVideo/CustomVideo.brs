@@ -148,7 +148,8 @@ sub onPositionChange()
     ' Auto-save bookmark every 20 seconds (not for live streams)
     if not m.isLiveStream
         checker = Int(m.top.position) mod 20
-        if checker = 0
+        if checker = 0 and m._lastBookmarkSecond <> Int(m.top.position)
+            m._lastBookmarkSecond = Int(m.top.position)
             saveVideoBookmark()
         end if
     end if
