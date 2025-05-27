@@ -21,42 +21,27 @@ sub init()
     m.GetContentTask.control = "run"
 end sub
 
-function buildContentNodeFromShelves(streams)
-    contentCollection = createObject("RoSGNode", "ContentNode")
-    maxPerRow = 3
-    for i = 0 to (streams.count() - 1) step 1
-        if i mod maxPerRow = 0
-            row = createObject("RoSGNode", "ContentNode")
-        end if
-        row.title = ""
-        try
-            stream = streams[i]
-            rowItem = createObject("RoSGNode", "TwitchContentNode")
-            rowItem.contentId = stream.node.Id
-            rowItem.createdAt = stream.node.createdAt
-            rowItem.contentType = "LIVE"
-            rowItem.viewersCount = stream.node.viewersCount
-            rowItem.contentTitle = stream.node.title
-            rowItem.gameDisplayName = stream.node.game.displayName
-            rowItem.gameBoxArtUrl = Left(stream.node.game.boxArtUrl, Len(stream.node.game.boxArtUrl) - 20) + "188x250.jpg"
-            rowItem.gameId = stream.node.game.Id
-            rowItem.gameName = stream.node.game.name
-            rowItem.previewImageURL = Substitute("https://static-cdn.jtvnw.net/previews-ttv/live_user_{0}-{1}x{2}.jpg", stream.node.broadcaster.login, "320", "180")
-            rowItem.streamerDisplayName = stream.node.broadcaster.displayName
-            rowItem.streamerLogin = stream.node.broadcaster.login
-            rowItem.streamerId = stream.node.broadcaster.id
-            rowItem.streamerProfileImageUrl = stream.node.broadcaster.profileImageURL
-            row.appendChild(rowItem)
-            if row.getChildCount() = maxPerRow
-                contentCollection.appendChild(row)
+function buildContentNodeFromShelves(shelves as object) as object
+    content = CreateObject("roSGNode", "ContentNode")
+    if shelves <> invalid and type(shelves) = "roArray"
+        for each shelf in shelves
+            if shelf <> invalid and shelf.items <> invalid
+                row = content.CreateChild("ContentNode")
+                row.title = shelf.title
+                for each item in shelf.items
+                    if item <> invalid
+                        ' Create node for each item
+                        itemNode = row.CreateChild("ContentNode")
+                        if itemNode <> invalid
+                            itemNode.setFields(item)
+                        end if
+                    end if
+                next
             end if
-        catch e
-            ? "An error occured fetching live channel"
-        end try
-    end for
-    return contentCollection
+        next
+    end if
+    return content
 end function
-
 
 sub handleRecommendedSections()
     if m.GetContentTask?.response?.data?.streams <> invalid
@@ -132,17 +117,15 @@ function buildRowData(contentCollection)
     }
 end function
 
-function updateRowList(contentCollection)
-    rowData = buildRowData(contentCollection)
-    if m.rowlist.content <> invalid
-        for i = 0 to (rowData.content.getChildCount() - 1) step 1
-            m.rowlist.content.appendChild(rowData.content.getchild(i))
-        end for
-    else
-        m.rowlist.content = rowData.content
+sub updateRowList(content as object)
+    if content <> invalid and m.rowList <> invalid
+        m.rowList.content = content
+
+        if m.rowList.content <> invalid and m.rowList.content.getChildCount() > 0
+            m.rowList.visible = true
+        end if
     end if
-    m.rowlist.numRows = m.rowlist.content.getChildCount()
-end function
+end sub
 
 sub handleItemSelected()
     selectedRow = m.rowlist.content.getchild(m.rowlist.rowItemSelected[0])
