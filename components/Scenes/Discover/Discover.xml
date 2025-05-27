@@ -3,41 +3,11 @@
     <script type="text/brightscript" uri="Discover.brs" />
     <script type="text/brightscript" uri="pkg:/source/utils/misc.brs" />
     <children>
-        <!-- Hero Banner Group -->
-        <Group id="heroBanner" translation="[0,0]">
-            <Poster
-                id="heroImage"
-                width="1280"
-                height="360"
-                uri="pkg:/images/hero-default.jpg"
-                loadDisplayMode="scaleToFill"
-            />
-            <Rectangle
-                id="heroGradient"
-                width="1280"
-                height="360"
-                color="0x000000CC"
-                opacity="0.5"
-                translation="[0,0]"
-            />
-            <Label
-                id="heroTitle"
-                text="Featured Content"
-                color="0xFFFFFFFF"
-                translation="[60, 240]"
-                width="1160"
-                height="80"
-                horizAlign="left"
-                vertAlign="bottom">
-                <Font role="font" uri="pkg:/fonts/Archivo-Bold.otf" size="48" />
-            </Label>
-        </Group>
-        <!-- End Hero Banner Group -->
         <RowList
             id="homeRowList"
             rowLabelOffset="[[0,10]]"
             rowLabelFont="font:LargeBoldSystemFont"
-            translation="[ 130, 400 ]"
+            translation="[ 130, 120 ]"
             itemComponentName="VideoItem"
             numRows="4"
             rowItemSize="[[320,180]]"
