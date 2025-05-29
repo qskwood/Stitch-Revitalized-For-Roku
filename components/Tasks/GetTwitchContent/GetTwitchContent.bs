@@ -10,7 +10,7 @@ sub main()
         content.setFields(m.top.contentRequested)
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
-            if isLowLatencyStream then
+            if lowLatencyEnabled then
                 content.streamFormat = "lhls"
             else
                 content.streamFormat = "hls"
@@ -154,7 +154,7 @@ sub main()
         }
 
         if m.top.contentRequested.contentType = "LIVE" and get_user_setting("preferred.latency", "low") = "low"
-            headers.Append({
+            extra = {
                 "Cache-Control": "no-cache",
                 "Connection": "keep-alive",
                 "X-Low-Latency": "1",
@@ -162,7 +162,10 @@ sub main()
                 "X-LL-HLS": "1",
                 "X-LL-Target-Duration": "2",
                 "X-LL-Part-Hold-Back": "1"
-            })
+            }
+            for each k in extra
+                headers[k] = extra[k]
+            end for
             ? "[GetTwitchContent] Added low-latency headers to HTTP agent"
         end if
 
