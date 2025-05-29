@@ -1,7 +1,7 @@
 sub init()
     m.top.observeField("focusedChild", "onGetfocus")
     ' m.top.observeField("itemFocused", "onGetFocus")
-    m.rowlist = m.top.findNode("homeRowList")
+    m.rowList = m.top.findNode("homeRowList")
 
     ' Guard check for missing node
     if m.rowlist = invalid

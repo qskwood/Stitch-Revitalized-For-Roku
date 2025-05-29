@@ -424,7 +424,7 @@ sub main()
         content.setFields(m.top.contentRequested)
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
-            if isLowLatencyStream then
+            if selectedMetadata.lowLatencyStreamsAvailable > 0 then
                 content.streamFormat = "lhls"
             else
                 content.streamFormat = "hls"
