@@ -8,7 +8,7 @@ sub main()
 
         responseObj = []
         content = CreateObject("roSGNode", "TwitchContentNode")
-        content.setFields(m.top.contentRequested)
+        setTwitchContentFields(content, m.top.contentRequested)
 
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
@@ -410,7 +410,7 @@ sub main()
 
         responseObj = []
         content = CreateObject("roSGNode", "TwitchContentNode")
-        content.setFields(m.top.contentRequested)
+        setTwitchContentFields(content, m.top.contentRequested)
 
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
