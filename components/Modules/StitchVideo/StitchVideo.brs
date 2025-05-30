@@ -68,7 +68,7 @@ function init()
     setupLiveUI()
     updateLatencyIndicator()
 
-    ' ? "[StitchVideo] Initialized for live stream"
+    ? "[StitchVideo] Initialized for live stream"
 end function
 
 sub setupLiveUI()
@@ -89,11 +89,11 @@ sub updateLatencyIndicator()
         if isLowLatency
             m.lowLatencyIndicator.visible = true
             m.normalLatencyIndicator.visible = false
-            ' ? "[StitchVideo] Low latency mode enabled (user setting)"
+            ? "[StitchVideo] Low latency mode enabled (user setting)"
         else
             m.lowLatencyIndicator.visible = false
             m.normalLatencyIndicator.visible = true
-            ' ? "[StitchVideo] Normal latency mode (user setting)"
+            ? "[StitchVideo] Normal latency mode (user setting)"
         end if
     else
         ' Hide both when overlay is not visible
@@ -114,9 +114,9 @@ sub onVideoStateChange()
         m.controlButton.uri = "pkg:/images/play.png"
     else if m.top.state = "buffering"
         ' Could add loading spinner here
-        ' ? "[StitchVideo] Buffering..."
+        ? "[StitchVideo] Buffering..."
     else if m.top.state = "error"
-        ' ? "[StitchVideo] Video error occurred"
+        ? "[StitchVideo] Video error occurred"
     end if
 end sub
 
@@ -142,7 +142,7 @@ end sub
 
 sub onBufferingStatusChange()
     ' Live streams handle buffering differently
-    ' ? "[StitchVideo] Buffering status changed"
+    ? "[StitchVideo] Buffering status changed"
 end sub
 
 sub onQualityOptionsChange()
@@ -152,7 +152,7 @@ end sub
 sub onSelectedQualityChange()
     setupLiveUI()
     updateLatencyIndicator()
-    ' ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
+    ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
 end sub
 
 sub setupQualityDialog()
@@ -171,7 +171,7 @@ sub setupQualityDialog()
 end sub
 
 sub onQualityButtonSelect()
-    ' ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
+    ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
 
     selectedIndex = m.qualityDialog.buttonSelected
     totalButtons = m.qualityDialog.buttons.count()
@@ -182,11 +182,11 @@ sub onQualityButtonSelect()
 
     ' Check if Cancel was selected (last button)
     if selectedIndex = totalButtons - 1
-        ' ? "[StitchVideo] Cancel selected, no quality change"
+        ? "[StitchVideo] Cancel selected, no quality change"
     else if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
         ' Valid quality option selected
         selectedQuality = m.top.qualityOptions[selectedIndex]
-        ' ? "[StitchVideo] Quality selected: "; selectedQuality
+        ? "[StitchVideo] Quality selected: "; selectedQuality
 
         m.top.selectedQuality = selectedQuality
         m.top.QualityChangeRequest = selectedIndex
@@ -195,7 +195,7 @@ sub onQualityButtonSelect()
         ' Update latency indicator
         updateLatencyIndicator()
     else
-        ' ? "[StitchVideo] Invalid selection index: "; selectedIndex
+        ? "[StitchVideo] Invalid selection index: "; selectedIndex
     end if
 
     ' Restore focus to video component
@@ -265,7 +265,7 @@ end sub
 
 sub executeButtonAction()
     if m.currentFocusedButton = 0 ' Back
-        ' ? "[StitchVideo] Back button pressed - attempting to exit"
+        ? "[StitchVideo] Back button pressed - attempting to exit"
         m.top.backPressed = true
         if m.top.getParent() <> invalid
             m.top.getParent().backPressed = true
@@ -300,7 +300,7 @@ sub showQualityDialog()
         m.qualityDialog.visible = true
         m.qualityDialog.setFocus(true)
     else
-        ' ? "[StitchVideo] No quality options available"
+        ? "[StitchVideo] No quality options available"
     end if
 end sub
 
@@ -337,7 +337,7 @@ function convertToReadableTimeFormat(time) as string
 end function
 
 function onKeyEvent(key, press) as boolean
-    ' ? "[StitchVideo] KeyEvent: "; key; " "; press
+    ? "[StitchVideo] KeyEvent: "; key; " "; press
 
     if press
         ' If quality dialog is visible, only handle back to close it

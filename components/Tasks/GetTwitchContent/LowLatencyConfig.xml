@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LowLatencyConfig" extends="Task">
+    <script type="text/brightscript" uri="LowLatencyConfig.bs" />
+    <interface>
+        <function name="configureHttpAgentForLowLatency" />
+        <function name="getLowLatencyBufferConfig" />
+        <function name="getLowLatencyABRConfig" />
+    </interface>
+</component>
