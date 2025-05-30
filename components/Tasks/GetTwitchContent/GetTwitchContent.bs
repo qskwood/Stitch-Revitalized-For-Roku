@@ -320,7 +320,12 @@ sub main()
         ? "[LL-DEBUG] Low latency enabled: "; lowLatencyEnabled
         ? "[LL-DEBUG] Low latency streams found: "; lowLatencyStreamsFound
         if lowLatencyStreamsFound > 0
-            ? "[LL-DEBUG] First LL stream URL: "; stream_objects[0]["URL"]
+            for each s in stream_objects
+                if s["URL"] <> invalid and s["URL"].Instr("ll") > -1
+                    ? "[LL-DEBUG] First LL stream URL: "; s["URL"]
+                    exit for
+                end if
+            end for
         end if
 
         ' ? "[GetTwitchContent] ===== STREAM ANALYSIS SUMMARY ====="

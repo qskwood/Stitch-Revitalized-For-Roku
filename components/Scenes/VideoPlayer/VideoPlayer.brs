@@ -187,8 +187,7 @@ end function
 sub playContent()
     if m.video <> invalid
         m.video.unobserveField("toggleChat")
-        m.video.unobserveField("QualityChangeRequestFlag")
-        m.video.unobserveField("qualityChangeRequest")
+        m.video.unobserveField("qualityChangeRequest") ' Fixed to match observeField
         m.video.unobserveField("position")
         m.video.unobserveField("state")
         m.video.unobserveField("errorCode")
@@ -230,7 +229,7 @@ sub playContent()
         httpAgent.addheader("Origin", "https://www.twitch.tv")
         httpAgent.addheader("Pragma", "no-cache")
         httpAgent.addheader("Referer", "https://www.twitch.tv/")
-        httpAgent.addheader("Sec-Ch-Ua", chr(34) + "Not_A Brand" + chr(34) + ";v=" + chr(34) + "8" + chr(34) + ", " + chr(34) + "Chromium" + chr(34) + ";v=" + chr(34) + "120" + chr(34) + ", " + chr(34) + "Google Chrome" + chr(34) + ";v=" + chr(34) + "极120" + chr(34))
+        httpAgent.addheader("Sec-Ch-Ua", chr(34) + "Not_A Brand" + chr(34) + ";v=" + chr(34) + "8" + chr(34) + ", " + chr(34) + "Chromium" + chr(34) + ";v=" + chr(34) + "120" + chr(34) + ", " + chr(34) + "Google Chrome" + chr(34) + ";v=" + chr(34) + "120" + chr(34))
         httpAgent.addheader("Sec-Ch-Ua-Mobile", "?0")
         httpAgent.addheader("Sec-Ch-Ua-Platform", chr(34) + "Windows" + chr(34))
         httpAgent.addheader("Sec-Fetch-Dest", "video")
@@ -266,7 +265,8 @@ sub playContent()
 
     m.video.observeField("toggleChat", "onToggleChat")
     if isLiveContent
-        m.video.observeField("QualityChangeRequestFlag", "onQualityChangeRequested")
+        ' FIX: Changed to match unobserveField name
+        m.video.observeField("qualityChangeRequest", "onQualityChangeRequested")
     else
         m.video.observeField("back", "onVideoBack")
     end if
@@ -356,7 +356,8 @@ sub exitPlayer()
     if m.video <> invalid
         m.video.unobserveField("toggleChat")
         if m.video.isSubtype("StitchVideo")
-            m.video.unobserveField("QualityChangeRequestFlag")
+            ' FIX: This now matches the observeField name
+            m.video.unobserveField("qualityChangeRequest")
         else if m.video.isSubtype("CustomVideo")
             m.video.unobserveField("back")
         end if

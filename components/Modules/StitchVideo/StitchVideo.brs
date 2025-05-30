@@ -49,7 +49,8 @@ function init()
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
-    m.fadeAwayTimer.observeField("fire", "onF极Away")
+    ' Bind to the correct handler
+    m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
     m.fadeAwayTimer.duration = 5
     m.fadeAwayTimer.control = "stop"
