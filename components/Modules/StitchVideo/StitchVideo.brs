@@ -49,7 +49,7 @@ function init()
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
-    m.fadeAwayTimer.observeField("fire", "onFadeAway")
+    m.fadeAwayTimer.observeField("fire", "onF极Away")
     m.fadeAwayTimer.repeat = false
     m.fadeAwayTimer.duration = 5
     m.fadeAwayTimer.control = "stop"
@@ -83,6 +83,10 @@ sub updateLatencyIndicator()
     ' Get the user's preferred latency setting
     latencySetting = get_user_setting("preferred.latency", "low")
     isLowLatency = (latencySetting = "low")
+
+    ' Set text for indicators
+    m.lowLatencyIndicator.text = "LOW LATENCY"
+    m.normalLatencyIndicator.text = "STANDARD LATENCY"
 
     ' Only show latency indicators when overlay is visible
     if m.isOverlayVisible
@@ -134,6 +138,7 @@ sub onChatVisibilityChange()
         m.normalLatencyIndicator.translation = [0, 0]
     end if
     updateProgressBar()
+    updateLatencyIndicator() ' Update visibility after position change
 end sub
 
 sub onDurationChange()
