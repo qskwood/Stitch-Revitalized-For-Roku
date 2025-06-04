@@ -29,7 +29,13 @@ function init()
     ' Other elements
     m.liveIndicator = m.top.findNode("liveIndicator")
     m.lowLatencyIndicator = m.top.findNode("lowLatencyIndicator")
+    if m.lowLatencyIndicator <> invalid
+        m.lowLatencyIndicatorLabel = m.lowLatencyIndicator.findNode("lowLatencyIndicatorLabel")
+    end if
     m.normalLatencyIndicator = m.top.findNode("normalLatencyIndicator")
+    if m.normalLatencyIndicator <> invalid
+        m.normalLatencyIndicatorLabel = m.normalLatencyIndicator.findNode("normalLatencyIndicatorLabel") ' Though not changed in this iteration, good practice to have the reference
+    end if
 
     ' Video info
     m.videoTitle = m.top.findNode("videoTitle")
@@ -49,7 +55,6 @@ function init()
 
     ' Timers
     m.fadeAwayTimer = createObject("roSGNode", "Timer")
-    ' Bind to the correct handler
     m.fadeAwayTimer.observeField("fire", "onFadeAway")
     m.fadeAwayTimer.repeat = false
     m.fadeAwayTimer.duration = 5
@@ -69,7 +74,7 @@ function init()
     setupLiveUI()
     updateLatencyIndicator()
 
-    ? "[StitchVideo] Initialized for live stream"
+    ' ? "[StitchVideo] Initialized for live stream"
 end function
 
 sub setupLiveUI()
@@ -81,29 +86,30 @@ sub setupLiveUI()
 end sub
 
 sub updateLatencyIndicator()
-    ' Get the user's preferred latency setting
     latencySetting = get_user_setting("preferred.latency", "low")
-    isLowLatency = (latencySetting = "low")
+    userPrefersLowLatency = (latencySetting = "low")
+    isActuallyLowLatency = m.top.isActualLowLatency ' This field is set from VideoPlayer.brs
 
-    ' Set text for indicators
-    m.lowLatencyIndicator.text = "LOW LATENCY"
-    m.normalLatencyIndicator.text = "STANDARD LATENCY"
+    ' Hide both indicators initially
+    if m.lowLatencyIndicator <> invalid then m.lowLatencyIndicator.visible = false
+    if m.normalLatencyIndicator <> invalid then m.normalLatencyIndicator.visible = false
 
-    ' Only show latency indicators when overlay is visible
     if m.isOverlayVisible
-        if isLowLatency
-            m.lowLatencyIndicator.visible = true
-            m.normalLatencyIndicator.visible = false
-            ? "[StitchVideo] Low latency mode enabled (user setting)"
-        else
-            m.lowLatencyIndicator.visible = false
-            m.normalLatencyIndicator.visible = true
-            ? "[StitchVideo] Normal latency mode (user setting)"
+        if userPrefersLowLatency
+            if m.lowLatencyIndicator <> invalid and m.lowLatencyIndicatorLabel <> invalid
+                if isActuallyLowLatency
+                    m.lowLatencyIndicatorLabel.text = "Stream Mode: Low Latency"
+                else
+                    m.lowLatencyIndicatorLabel.text = "Stream Mode: Low Latency (Unavailable)"
+                end if
+                m.lowLatencyIndicator.visible = true
+            end if
+        else ' User prefers normal latency
+            if m.normalLatencyIndicator <> invalid and m.normalLatencyIndicatorLabel <> invalid
+                m.normalLatencyIndicatorLabel.text = "Stream Mode: Normal" ' Ensure text is set
+                m.normalLatencyIndicator.visible = true
+            end if
         end if
-    else
-        ' Hide both when overlay is not visible
-        m.lowLatencyIndicator.visible = false
-        m.normalLatencyIndicator.visible = false
     end if
 end sub
 
@@ -119,9 +125,9 @@ sub onVideoStateChange()
         m.controlButton.uri = "pkg:/images/play.png"
     else if m.top.state = "buffering"
         ' Could add loading spinner here
-        ? "[StitchVideo] Buffering..."
+        ' ? "[StitchVideo] Buffering..."
     else if m.top.state = "error"
-        ? "[StitchVideo] Video error occurred"
+        ' ? "[StitchVideo] Video error occurred"
     end if
 end sub
 
@@ -139,7 +145,6 @@ sub onChatVisibilityChange()
         m.normalLatencyIndicator.translation = [0, 0]
     end if
     updateProgressBar()
-    updateLatencyIndicator() ' Update visibility after position change
 end sub
 
 sub onDurationChange()
@@ -148,7 +153,7 @@ end sub
 
 sub onBufferingStatusChange()
     ' Live streams handle buffering differently
-    ? "[StitchVideo] Buffering status changed"
+    ' ? "[StitchVideo] Buffering status changed"
 end sub
 
 sub onQualityOptionsChange()
@@ -158,7 +163,7 @@ end sub
 sub onSelectedQualityChange()
     setupLiveUI()
     updateLatencyIndicator()
-    ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
+    ' ? "[StitchVideo] Quality changed to: "; m.top.selectedQuality
 end sub
 
 sub setupQualityDialog()
@@ -177,7 +182,7 @@ sub setupQualityDialog()
 end sub
 
 sub onQualityButtonSelect()
-    ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
+    ' ? "[StitchVideo] Quality dialog button selected: "; m.qualityDialog.buttonSelected
 
     selectedIndex = m.qualityDialog.buttonSelected
     totalButtons = m.qualityDialog.buttons.count()
@@ -188,11 +193,11 @@ sub onQualityButtonSelect()
 
     ' Check if Cancel was selected (last button)
     if selectedIndex = totalButtons - 1
-        ? "[StitchVideo] Cancel selected, no quality change"
+        ' ? "[StitchVideo] Cancel selected, no quality change"
     else if selectedIndex >= 0 and selectedIndex < m.top.qualityOptions.count()
         ' Valid quality option selected
         selectedQuality = m.top.qualityOptions[selectedIndex]
-        ? "[StitchVideo] Quality selected: "; selectedQuality
+        ' ? "[StitchVideo] Quality selected: "; selectedQuality
 
         m.top.selectedQuality = selectedQuality
         m.top.QualityChangeRequest = selectedIndex
@@ -201,7 +206,7 @@ sub onQualityButtonSelect()
         ' Update latency indicator
         updateLatencyIndicator()
     else
-        ? "[StitchVideo] Invalid selection index: "; selectedIndex
+        ' ? "[StitchVideo] Invalid selection index: "; selectedIndex
     end if
 
     ' Restore focus to video component
@@ -271,7 +276,7 @@ end sub
 
 sub executeButtonAction()
     if m.currentFocusedButton = 0 ' Back
-        ? "[StitchVideo] Back button pressed - attempting to exit"
+        ' ? "[StitchVideo] Back button pressed - attempting to exit"
         m.top.backPressed = true
         if m.top.getParent() <> invalid
             m.top.getParent().backPressed = true
@@ -306,7 +311,7 @@ sub showQualityDialog()
         m.qualityDialog.visible = true
         m.qualityDialog.setFocus(true)
     else
-        ? "[StitchVideo] No quality options available"
+        ' ? "[StitchVideo] No quality options available"
     end if
 end sub
 
@@ -343,7 +348,7 @@ function convertToReadableTimeFormat(time) as string
 end function
 
 function onKeyEvent(key, press) as boolean
-    ? "[StitchVideo] KeyEvent: "; key; " "; press
+    ' ? "[StitchVideo] KeyEvent: "; key; " "; press
 
     if press
         ' If quality dialog is visible, only handle back to close it

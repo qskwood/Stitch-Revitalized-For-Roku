@@ -67,10 +67,6 @@ sub configureVideoForLatency(video as object, isLive as boolean)
     latencyPreference = get_user_setting("preferred.latency", "low")
     isLowLatency = (latencyPreference = "low")
 
-    if video.isSubtype("StitchVideo")
-        return
-    end if
-
     if isLive and isLowLatency
         try
             video.enableLowLatencyHLS = true
@@ -85,16 +81,16 @@ sub configureVideoForLatency(video as object, isLive as boolean)
         end try
 
         video.bufferingConfig = {
-            initialBufferingMs: 200,
-            minBufferMs: 500,
-            maxBufferMs: 1500,
-            bufferForPlaybackMs: 200,
-            bufferForPlaybackAfterRebufferMs: 500,
-            rebufferMs: 200
+            initialBufferingMs: 1000,
+            minBufferMs: 1500,
+            maxBufferMs: 4000,
+            bufferForPlaybackMs: 1000,
+            bufferForPlaybackAfterRebufferMs: 1500,
+            rebufferMs: 1000
         }
 
         video.enableDecoderCompatibility = false
-        video.maxVideoDecodeResolution = "1080p"
+        video.maxVideoDecodeResolution = "1440p"
 
         video.adaptiveBitrateConfig = {
             initialBandwidthBps: 5000000,
@@ -260,6 +256,12 @@ sub playContent()
     m.video.setHttpAgent(httpAgent)
 
     configureVideoForLatency(m.video, isLiveContent)
+
+    if isLiveContent and m.top.content <> invalid and m.top.content.streamFormat <> invalid
+        m.video.isActualLowLatency = (m.top.content.streamFormat = "lhls")
+    else if isLiveContent ' Default to false if streamFormat is not available for some reason
+        m.video.isActualLowLatency = false
+    end if
 
     m.video.notificationInterval = 1
 

@@ -21,6 +21,7 @@
         <field id="video_type" type="string" />
         <field id="qualityOptions" type="array" />
         <field id="selectedQuality" type="string" value="" />
+        <field id="isActualLowLatency" type="bool" value="false" />
         
         <!-- Low-Latency HLS Properties -->
         <field id="enableLowLatencyHLS" type="bool" value="false" />
@@ -105,14 +106,14 @@
             <Group translation="[850,100]">
                 <!-- Low Latency Indicator -->
                 <Group id="lowLatencyIndicator" visible="false">
-                    <Rectangle color="0x9146FFFF" width="185" height="22" />
-                    <SimpleLabel text="Stream Mode: Low Latency" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
+                    <Rectangle color="0x9146FFFF" width="270" height="22" />
+                    <SimpleLabel id="lowLatencyIndicatorLabel" text="Stream Mode: Low Latency" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
                 </Group>
                 
                 <!-- Normal Latency Indicator -->
                 <Group id="normalLatencyIndicator" visible="false">
                     <Rectangle color="0x9146FFFF" width="155" height="22" />
-                    <SimpleLabel text="Stream Mode: Normal" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
+                    <SimpleLabel id="normalLatencyIndicatorLabel" text="Stream Mode: Normal" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
                 </Group>
             </Group>
         </Group>
