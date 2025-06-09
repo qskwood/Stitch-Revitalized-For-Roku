@@ -36,8 +36,6 @@
                     visible="false"
                     id="description"
                     width="600"
-                    fontSize="24"
-                    fontUri="pkg:/fonts/Archivo-Bold.otf"
                     translation="[20,0]" />
             </Group>
             <!-- <Button

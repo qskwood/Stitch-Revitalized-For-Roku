@@ -47,7 +47,7 @@ sub setConstants()
                 login: "pkg:/images/iconLogin.png"
             },
             menuOptions: [
-                "Home",
+                "Discover",
                 "Categories",
                 "Following",
                 "Vods",

@@ -29,7 +29,13 @@ function init()
     ' Other elements
     m.liveIndicator = m.top.findNode("liveIndicator")
     m.lowLatencyIndicator = m.top.findNode("lowLatencyIndicator")
+    if m.lowLatencyIndicator <> invalid
+        m.lowLatencyIndicatorLabel = m.lowLatencyIndicator.findNode("lowLatencyIndicatorLabel")
+    end if
     m.normalLatencyIndicator = m.top.findNode("normalLatencyIndicator")
+    if m.normalLatencyIndicator <> invalid
+        m.normalLatencyIndicatorLabel = m.normalLatencyIndicator.findNode("normalLatencyIndicatorLabel") ' Though not changed in this iteration, good practice to have the reference
+    end if
 
     ' Video info
     m.videoTitle = m.top.findNode("videoTitle")
@@ -80,25 +86,30 @@ sub setupLiveUI()
 end sub
 
 sub updateLatencyIndicator()
-    ' Get the user's preferred latency setting
     latencySetting = get_user_setting("preferred.latency", "low")
-    isLowLatency = (latencySetting = "low")
+    userPrefersLowLatency = (latencySetting = "low")
+    isActuallyLowLatency = m.top.isActualLowLatency ' This field is set from VideoPlayer.brs
 
-    ' Only show latency indicators when overlay is visible
+    ' Hide both indicators initially
+    if m.lowLatencyIndicator <> invalid then m.lowLatencyIndicator.visible = false
+    if m.normalLatencyIndicator <> invalid then m.normalLatencyIndicator.visible = false
+
     if m.isOverlayVisible
-        if isLowLatency
-            m.lowLatencyIndicator.visible = true
-            m.normalLatencyIndicator.visible = false
-            ' ? "[StitchVideo] Low latency mode enabled (user setting)"
-        else
-            m.lowLatencyIndicator.visible = false
-            m.normalLatencyIndicator.visible = true
-            ' ? "[StitchVideo] Normal latency mode (user setting)"
+        if userPrefersLowLatency
+            if m.lowLatencyIndicator <> invalid and m.lowLatencyIndicatorLabel <> invalid
+                if isActuallyLowLatency
+                    m.lowLatencyIndicatorLabel.text = "Stream Mode: Low Latency"
+                else
+                    m.lowLatencyIndicatorLabel.text = "Stream Mode: Low Latency (Unavailable)"
+                end if
+                m.lowLatencyIndicator.visible = true
+            end if
+        else ' User prefers normal latency
+            if m.normalLatencyIndicator <> invalid and m.normalLatencyIndicatorLabel <> invalid
+                m.normalLatencyIndicatorLabel.text = "Stream Mode: Normal" ' Ensure text is set
+                m.normalLatencyIndicator.visible = true
+            end if
         end if
-    else
-        ' Hide both when overlay is not visible
-        m.lowLatencyIndicator.visible = false
-        m.normalLatencyIndicator.visible = false
     end if
 end sub
 

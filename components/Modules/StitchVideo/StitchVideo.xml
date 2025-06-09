@@ -21,6 +21,7 @@
         <field id="video_type" type="string" />
         <field id="qualityOptions" type="array" />
         <field id="selectedQuality" type="string" value="" />
+        <field id="isActualLowLatency" type="bool" value="false" />
         
         <!-- Low-Latency HLS Properties -->
         <field id="enableLowLatencyHLS" type="bool" value="false" />
@@ -51,37 +52,37 @@
             <!-- Progress Bar Section -->
             <Group translation="[60,5]">
                 <!-- Progress Bar (Full Twitch Purple for Live) -->
-                <Rectangle id="progressBarBase" color="0x404040FF" width="1160" height="4" cornerRadius="2" translation="[0,65]" />
-                <Rectangle id="progressBarProgress" color="0x9146FFFF" width="1160" height="4" cornerRadius="2" translation="[0,65]" />
+                <Rectangle id="progressBarBase" color="0x404040FF" width="1160" height="4" translation="[0,65]" />
+                <Rectangle id="progressBarProgress" color="0x9146FFFF" width="1160" height="4" translation="[0,65]" />
             </Group>
             
             <!-- Control Buttons (Live Stream Layout) -->
             <Group translation="[0,85]">
                 <!-- Back Button (far left) -->
                 <Group id="backGroup" translation="[200,0]" focusable="true">
-                    <Rectangle id="backBg" color="0x404040AA" width="50" height="40" cornerRadius="8" />
-                    <Rectangle id="backFocus" color="0x9146FFFF" width="50" height="40" cornerRadius="8" visible="false" />
+                    <Rectangle id="backBg" color="0x404040AA" width="50" height="40" />
+                    <Rectangle id="backFocus" color="0x9146FFFF" width="50" height="40" visible="false" />
                     <SimpleLabel translation="[18,12]" text="←" color="0xFFFFFFFF" fontSize="18" fontUri="pkg:/fonts/Archivo-Bold.otf" />
                 </Group>
                 
                 <!-- Chat Toggle Button -->
                 <Group id="chatGroup" translation="[540,0]">
-                    <Rectangle id="chatBg" color="0x404040AA" width="50" height="40" cornerRadius="8" />
-                    <Rectangle id="chatFocus" color="0x9146FFFF" width="50" height="40" cornerRadius="8" visible="false" />
+                    <Rectangle id="chatBg" color="0x404040AA" width="50" height="40" />
+                    <Rectangle id="chatFocus" color="0x9146FFFF" width="50" height="40" visible="false" />
                     <Poster id="messagesButton" uri="pkg:/images/messages.png" width="20" height="20" translation="[15,10]" />
                 </Group>
                 
                 <!-- Play/Pause Button (center between chat and quality) -->
                 <Group id="playPauseGroup" translation="[610,0]" focusable="true">
-                    <Rectangle id="playPauseBg" color="0x404040AA" width="60" height="40" cornerRadius="20" />
-                    <Rectangle id="playPauseFocus" color="0x9146FFFF" width="60" height="40" cornerRadius="20" visible="false" />
+                    <Rectangle id="playPauseBg" color="0x404040AA" width="60" height="40" />
+                    <Rectangle id="playPauseFocus" color="0x9146FFFF" width="60" height="40" visible="false" />
                     <Poster id="controlButton" uri="pkg:/images/pause.png" width="20" height="20" translation="[20,10]" />
                 </Group>
                 
                 <!-- Quality Button -->
                 <Group id="qualityGroup" translation="[690,0]">
-                    <Rectangle id="qualityBg" color="0x404040AA" width="50" height="40" cornerRadius="8" />
-                    <Rectangle id="qualityFocus" color="0x9146FFFF" width="50" height="40" cornerRadius="8" visible="false" />
+                    <Rectangle id="qualityBg" color="0x404040AA" width="50" height="40" />
+                    <Rectangle id="qualityFocus" color="0x9146FFFF" width="50" height="40" visible="false" />
                     <Poster id="qualitySelectButton" uri="pkg:/images/icons/sliders.png" width="20" height="20" translation="[15,10]" />
                 </Group>
             </Group>
@@ -97,7 +98,7 @@
             
             <!-- Live Indicator (Bottom Left - only visible with overlay) -->
             <Group id="liveIndicator" translation="[60,100]">
-                <Rectangle color="0xFF0000FF" width="50" height="20" cornerRadius="10" />
+                <Rectangle color="0xFF0000FF" width="50" height="20" />
                 <SimpleLabel translation="[12,3]" text="LIVE" color="0xFFFFFFFF" fontSize="12" fontUri="pkg:/fonts/Archivo-Bold.otf" />
             </Group>
             
@@ -105,14 +106,14 @@
             <Group translation="[850,100]">
                 <!-- Low Latency Indicator -->
                 <Group id="lowLatencyIndicator" visible="false">
-                    <Rectangle color="0x9146FFFF" width="185" height="22" cornerRadius="11" />
-                    <SimpleLabel text="Stream Mode: Low Latency" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" width="165" horizAlign="center" />
+                    <Rectangle color="0x9146FFFF" width="270" height="22" />
+                    <SimpleLabel id="lowLatencyIndicatorLabel" text="Stream Mode: Low Latency" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
                 </Group>
                 
                 <!-- Normal Latency Indicator -->
                 <Group id="normalLatencyIndicator" visible="false">
-                    <Rectangle color="0x9146FFFF" width="155" height="22" cornerRadius="11" />
-                    <SimpleLabel text="Stream Mode: Normal" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" width="135" horizAlign="center" />
+                    <Rectangle color="0x9146FFFF" width="155" height="22" />
+                    <SimpleLabel id="normalLatencyIndicatorLabel" text="Stream Mode: Normal" color="0xFFFFFFFF" fontSize="11" fontUri="pkg:/fonts/Archivo-Bold.otf" translation="[10,5]" />
                 </Group>
             </Group>
         </Group>
