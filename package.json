@@ -6,15 +6,15 @@
         "package": "bsc --create-package"
     },
     "devDependencies": {
-        "@rokucommunity/bslint": "^0.8.31",
-        "brighterscript-formatter": "^1.7.14",
+        "@rokucommunity/bslint": "^0.8.32",
+        "brighterscript-formatter": "^1.7.15",
         "ghooks": "^2.0.4",
-        "ropm": "^0.10.33"
+        "ropm": "^0.10.34"
     },
     "dependencies": {
         "@npmcli/fs": "^4.0.0",
         "@rokucommunity/bslib": "^0.1.1",
-        "brighterscript": "^0.69.9",
+        "brighterscript": "^0.69.10",
         "bslib": "npm:@rokucommunity/bslib@^0.1.1",
         "glob": "^11.0.2",
         "lru-cache": "^11.1.0",

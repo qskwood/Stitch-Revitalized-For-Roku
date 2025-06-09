@@ -28,7 +28,7 @@
         "default": "normal",
         "options": [
             {
-                "title": "Low Latency (Minimal delay, may buffer more)",
+                "title": "Low Latency (Lowest possible latency)",
                 "id": "low"
             },
             {
