@@ -109,7 +109,7 @@ sub configureVideoForLatency(video as object, isLive as boolean)
         }
 
         video.enableDecoderCompatibility = false
-        video.maxVideoDecodeResolution = "1080p"
+        video.maxVideoDecodeResolution = "1440p"
 
         video.adaptiveBitrateConfig = {
             initialBandwidthBps: 5000000,
