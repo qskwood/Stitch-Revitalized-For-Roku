@@ -263,21 +263,21 @@ sub main()
                     if stream_item["FRAME-RATE"] <> invalid
                         fps = stream_item["FRAME-RATE"].split(".")[0]
                     end if
-                    value = res + "P"
+                    value = res + "p"
                     if fps <> invalid
                         value = value + fps + " (Source)"
                     end if
                     if lowLatencyEnabled and isLowLatencyStream
-                        value = value + " Low Latency"
+                        value = value + " LL"
                     else if lowLatencyEnabled
-                        value = value + " Low Latency*" ' Asterisk indicates low-latency was requested but not confirmed
+                        value = value + " LL*" ' Asterisk indicates low-latency was requested but not confirmed
                     end if
                 else
                     value = stream_item["VIDEO"]
                     if lowLatencyEnabled and isLowLatencyStream
-                        value = value + " Low Latency"
+                        value = value + " LL"
                     else if lowLatencyEnabled
-                        value = value + " Low Latency*"
+                        value = value + " LL*"
                     end if
                 end if
 
@@ -414,16 +414,8 @@ sub main()
 
         ' Set live stream properties
         if m.top.contentRequested.contentType = "LIVE"
+            content.streamFormat = isLowLatencyStream ? "lhls" : "hls"
             content.live = true
-
-            ' Determine streamFormat based on preference and availability
-            ' lowLatencyEnabled is set earlier based on user settings (typically from get_user_setting("preferred.latency", "low"))
-            ' lowLatencyStreamsFound is determined by parsing the stream manifest earlier in this task
-            if lowLatencyEnabled and lowLatencyStreamsFound > 0 then
-                content.streamFormat = "lhls"
-            else
-                content.streamFormat = "hls"
-            end if
         end if
 
         userQualityPreference = get_user_setting("playback.video.quality", "auto")
