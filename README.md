@@ -1,9 +1,9 @@
-[![stars - Stitch-Revitalized-For-Roku](https://img.shields.io/github/stars/Narehood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/Narehood/Stitch-Revitalized-For-Roku)
-[![forks - Stitch-Revitalized-For-Roku](https://img.shields.io/github/forks/Narehood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/Narehood/Stitch-Revitalized-For-Roku)
-[![GitHub release](https://img.shields.io/github/release/Narehood/Stitch-Revitalized-For-Roku?include_prereleases=&sort=semver&color=blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/)
-[![License](https://img.shields.io/badge/License-Unlicense-blue)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/blob/main/LICENSE)
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Narehood/Stitch-Revitalized-For-Roku?utm_source=oss&utm_medium=github&utm_campaign=Narehood%2FStitch-Revitalized-For-Roku&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
-[![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/Narehood/Stitch-Revitalized-For-Roku)](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues)
+[![stars - Stitch-Revitalized-For-Roku](https://img.shields.io/github/stars/qskwood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/qskwood/Stitch-Revitalized-For-Roku)
+[![forks - Stitch-Revitalized-For-Roku](https://img.shields.io/github/forks/qskwood/Stitch-Revitalized-For-Roku?style=social)](https://github.com/qskwood/Stitch-Revitalized-For-Roku)
+[![GitHub release](https://img.shields.io/github/release/qskwood/Stitch-Revitalized-For-Roku?include_prereleases=&sort=semver&color=blue)](https://github.com/qskwood/Stitch-Revitalized-For-Roku/releases/)
+[![License](https://img.shields.io/badge/License-Unlicense-blue)](https://github.com/qskwood/Stitch-Revitalized-For-Roku/blob/main/LICENSE)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/qskwood/Stitch-Revitalized-For-Roku?utm_source=oss&utm_medium=github&utm_campaign=qskwood%2FStitch-Revitalized-For-Roku&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+[![issues - Stitch-Revitalized-For-Roku](https://img.shields.io/github/issues/qskwood/Stitch-Revitalized-For-Roku)](https://github.com/qskwood/Stitch-Revitalized-For-Roku/issues)
 
 ![Roku](https://img.shields.io/badge/roku-6f1ab1?style=for-the-badge&logo=roku&logoColor=white)
 ![Twitch](https://img.shields.io/badge/Twitch-9347FF?style=for-the-badge&logo=twitch&logoColor=white)
@@ -11,16 +11,16 @@
 # Stitch Revitalized (for Roku)
 Stitch Revitalized is a Roku channel that aims to provide an actively maintained, reasonably feature-complete Twitch experience while respecting Twitch's business model (ads, monetization, and the like). This channel is based on the now archived Stich channel https://github.com/0xW1sKy/Stitch-For-Roku (Nov 24, 2024).
 
-## Installation
+## Installation from the Roku Store
 
-No longer available
+No longer available.
 
 ## Side Loading
 If the link is not loading or you otherwise want to sideload this you can do so by doing the following (this is not a full tutorial, I may make one at some point). There may be a better way to do this, but this was what I was able to figure out without any previous instruction/documentation.
 
 Easy: 
 
-- Download the ZIP here: [Sitch Revitalized Download](https://github.com/Narehood/Stitch-Revitalized-For-Roku/releases/download/v1.6.6/Stitch.Revitalized.zip)
+- Download the ZIP here: [Sitch Revitalized Download](https://github.com/qskwood/Stitch-Revitalized-For-Roku/releases/download/v2.1/Stitch-Revitalized.zip)
 - Enable/Configure Dev mode on your Roku
 - Upload the ZIP file to your Roku through a web browser
 
@@ -36,7 +36,7 @@ Manual Compiling:
 
 ## Contributing
 
-If you are comfortable using the GitHub interface, you can report bugs or request features by opening a [GitHub Issue](https://github.com/Narehood/Stitch-Revitalized-For-Roku/issues). (Please check to see if your issue has already been reported before opening a new one.)
+If you are comfortable using the GitHub interface, you can report bugs or request features by opening a [GitHub Issue](https://github.com/qskwood/Stitch-Revitalized-For-Roku/issues). (Please check to see if your issue has already been reported before opening a new one.)
 
 
 In addition to issues, Pull Requests are welcome. All contributions must be made [under the Unlicense](./LICENSE).
